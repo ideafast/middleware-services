@@ -1,25 +1,37 @@
 import json
 from fastapi import FastAPI
 
+
 app = FastAPI()
 
 
-@app.get("/")
-async def root():
+@app.get('/devices')
+async def devices():
+    devices_file = open('devices.json')
+    devices_data = json.load(devices_file)
+    devices_file.close()
+    return devices_data
+
+
+@app.get('/devices/{device_id}/metrics')
+async def metrics(device_id: str):
+    metrics_file = open('metrics.json')
+    metrics_data = json.load(metrics_file)
+    metrics_file.close()
+    return metrics_data
+
+
+@app.get('/devices/{device_id}/status')
+async def status(device_id: str):
     status_file = open('status.json')
-    data = json.load(status_file)
+    status_data = json.load(status_file)
     status_file.close()
-    return data
-
-@app.get("/items/{item_id}")
-async def read_item(item_id: int):
-    return {"item_id": item_id}
-
-@app.get("/users/me")
-async def read_user_me():
-    return {"user_id": "the current user"}
+    return status_data
 
 
-@app.get("/users/{user_id}")
-async def read_user(user_id: str):
-    return {"user_id": user_id}
+@app.get('/verify')
+async def verify():
+    verification_file = open('verification.json')
+    verification_data = json.load(verification_file)
+    verification_file.close()
+    return verification_data
