@@ -1,3 +1,4 @@
+import json
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -5,7 +6,10 @@ app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    status_file = open('status.json')
+    data = json.load(status_file)
+    status_file.close()
+    return data
 
 @app.get("/items/{item_id}")
 async def read_item(item_id: int):
