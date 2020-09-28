@@ -1,37 +1,54 @@
 import json
-from fastapi import FastAPI
+import typing
+from fastapi import FastAPI, Response
 
 
-app = FastAPI()
+class CustomResponse(Response):
+    def envelope(self, content: typing.Any) -> dict:
+        errors = []
+        return {
+            "data": content if not errors else None,
+            "meta": {
+                "success": self.status_code in [200, 201, 204],
+                "code": self.status_code,
+                "errors": errors
+            }
+        }
+
+    def render(self, content: typing.Any) -> bytes:
+        return json.dumps(
+            self.envelope(content),
+            ensure_ascii=False,
+            allow_nan=False,
+            indent=None,
+            separators=(",", ":"),
+        ).encode("utf-8")
+
+
+app = FastAPI(default_response_class=CustomResponse)
+
+
+def dataFromJson(fname: str):
+    with open(fname) as content:
+        data = json.load(content)
+    return data
 
 
 @app.get('/devices')
-async def devices():
-    devices_file = open('devices.json')
-    devices_data = json.load(devices_file)
-    devices_file.close()
-    return devices_data
+async def devices(response: Response):
+    return dataFromJson('devices.json')
 
 
 @app.get('/devices/{device_id}/metrics')
 async def metrics(device_id: str):
-    metrics_file = open('metrics.json')
-    metrics_data = json.load(metrics_file)
-    metrics_file.close()
-    return metrics_data
+    return dataFromJson('metrics.json')
 
 
 @app.get('/devices/{device_id}/status')
 async def status(device_id: str):
-    status_file = open('status.json')
-    status_data = json.load(status_file)
-    status_file.close()
-    return status_data
+    return dataFromJson('status.json')
 
 
 @app.get('/verify')
 async def verify():
-    verification_file = open('verification.json')
-    verification_data = json.load(verification_file)
-    verification_file.close()
-    return verification_data
+    return dataFromJson('verification.json')
