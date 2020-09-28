@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "middleware-services"
+version = "0.1.0"
+description = "Hosts the middleware services for IDEA-FAST, including: data transfer protocols and application consumer APIs."
+authors = ["Drew Miley <drew.miley@ncl.ac.uk>", "Jay Rainey <jay.rainey@ncl.ac.uk>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = "^0.61.1"
+
+[tool.poetry.dev-dependencies]
+uvicorn = "^0.11.8"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
