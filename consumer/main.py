@@ -5,6 +5,8 @@ from fastapi import FastAPI, Response
 
 
 class CustomResponse(Response):
+    media_type = "application/json"
+
     def envelope(self, content: typing.Any) -> dict:
         errors = []
         return {
