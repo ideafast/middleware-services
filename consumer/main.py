@@ -1,5 +1,6 @@
 import json
 import typing
+import uvicorn
 from fastapi import FastAPI, Response
 
 
@@ -25,7 +26,7 @@ class CustomResponse(Response):
         ).encode("utf-8")
 
 
-app = FastAPI(default_response_class=CustomResponse)
+consumer = FastAPI(default_response_class=CustomResponse)
 
 
 def dataFromJson(fname: str):
@@ -34,21 +35,32 @@ def dataFromJson(fname: str):
     return data
 
 
-@app.get('/devices')
+def mock_data_path(name):
+    return f'./consumer/mock-data/{name}.json'
+
+@consumer.get('/devices')
 async def devices(response: Response):
-    return dataFromJson('devices.json')
+    return dataFromJson(mock_data_path('devices'))
 
 
-@app.get('/devices/{device_id}/metrics')
+@consumer.get('/devices/{device_id}/metrics')
 async def metrics(device_id: str):
-    return dataFromJson('metrics.json')
+    return dataFromJson(mock_data_path('metrics'))
 
 
-@app.get('/devices/{device_id}/status')
+@consumer.get('/devices/{device_id}/status')
 async def status(device_id: str):
-    return dataFromJson('status.json')
+    return dataFromJson(mock_data_path('status'))
 
 
-@app.get('/verify')
+@consumer.get('/verify')
 async def verify():
-    return dataFromJson('verification.json')
+    return dataFromJson(mock_data_path('verification'))
+
+
+def main():
+    uvicorn.run("consumer.main:consumer", host="0.0.0.0", port=8000, reload=True, workers=2)
+
+
+if __name__ == "__main__":
+    main()

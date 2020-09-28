@@ -16,7 +16,7 @@ To setup a virtual environment with your local pyenv version run:
 
 ## Local Development
 
-    cd src/ && uvicorn main:app --reload
+    poetry run start
 
 ## Documentation
 
