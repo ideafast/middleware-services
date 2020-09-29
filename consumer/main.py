@@ -2,6 +2,11 @@ import json
 import typing
 import uvicorn
 from fastapi import FastAPI, Response
+from pydantic import BaseModel
+
+
+class VerifyToken(BaseModel):
+    token: str
 
 
 class CustomResponse(Response):
@@ -13,7 +18,6 @@ class CustomResponse(Response):
             "data": content if not errors else None,
             "meta": {
                 "success": self.status_code in [200, 201, 204],
-                "code": self.status_code,
                 "errors": errors
             }
         }
@@ -55,8 +59,8 @@ async def status(device_id: str):
     return dataFromJson(mock_data_path('status'))
 
 
-@consumer.get('/verify')
-async def verify():
+@consumer.post('/verify')
+async def verify(token: VerifyToken):
     return dataFromJson(mock_data_path('verification'))
 
 
