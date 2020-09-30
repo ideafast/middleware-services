@@ -1,11 +1,12 @@
 import uvicorn
 from fastapi import FastAPI
 
-from consumer.routers import devices
+from consumer.routers import devices, auth
 from consumer.utils.general import CustomResponse
 
 consumer = FastAPI(default_response_class=CustomResponse)
 consumer.include_router(devices.router)
+consumer.include_router(auth.router)
 
 
 def main():
