@@ -1,13 +1,31 @@
-## To install
+# IDEA-FAST WP3 Middleware Services
 
-1. `python3 -m pip install --user virtualenv`
-1. `python3 -m venv env`
-1. `source env/bin/activate`
-1. `pip install -r requirements.txt`
-1. `cd src/`
-1. `uvicorn main:app --reload`
+Currently developing scripts to facilitate data transfer between sensor device manufactures and IDA-FAST's internal data platform, and a separate API to provide updates on device wear and use.
+
+## Installation
+
+[Poetry](https://python-poetry.org/) is used for dependency management and
+[pyenv](https://github.com/pyenv/pyenv) to manage python installations, so
+please install both on your local machine. We use python 3.8 by default, so
+please make sure this is installed via pyenv, e.g.
+
+    pyenv install 3.8.0 && pyenv global 3.8.0
+
+Once done, you can install dependencies for this project via:
+
+    poetry install
+
+To setup a virtual environment with your local pyenv version run:
+
+    poetry shell
+
+## Local Development
+
+    poetry run start
 
 ## Documentation
 
-Visit `http://127.0.0.1:8000/docs#/` to see Swagger documentation
-Visit `http://127.0.0.1:8000/redoc` to see ReDoc documentation
+Interactive documentation is available at:
+
+- Swagger: [http://127.0.0.1:8000/docs#](http://127.0.0.1:8000/docs#)
+- ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
