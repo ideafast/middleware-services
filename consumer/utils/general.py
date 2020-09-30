@@ -26,11 +26,8 @@ class CustomResponse(Response):
         ).encode("utf-8")
 
 
-def dataFromJson(fname: str):
+def dataFromJson(name: str):
+    fname = f'./consumer/mock-data/{name}.json'
     with open(fname) as content:
         data = json.load(content)
     return data
-
-
-def mock_data_path(name: str) -> str:
-    return f'./consumer/mock-data/{name}.json'
