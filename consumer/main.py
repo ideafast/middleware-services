@@ -14,8 +14,7 @@ def main():
         "consumer.main:consumer",
         host="0.0.0.0",
         port=8000,
-        reload=True,
-        workers=2)
+        reload=True)
 
 
 if __name__ == "__main__":
