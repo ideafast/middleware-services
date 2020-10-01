@@ -21,7 +21,13 @@ To setup a virtual environment with your local pyenv version run:
 
 ## Local Development
 
+When developing the consumer API run:
+
     poetry run start
+
+When developing the data transfer jobs run:
+
+    poetry run transfer
 
 ## Documentation
 
