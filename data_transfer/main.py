@@ -1,15 +1,24 @@
 import uvicorn
+import logging
+import time
 from fastapi import FastAPI
+from fastapi_utils.tasks import repeat_every
 
-from data_transfer.jobs import example
+logger = logging.getLogger(__name__)
+app = FastAPI()
+counter = 0
 
-data_transfer = FastAPI()
-data_transfer.include_router(example.router)
-
+@app.on_event("startup")
+@repeat_every(seconds=1, logger=logger, wait_first=True)
+def periodic():
+    global counter
+    print('counter is', counter)
+    counter += 1
+    # Run file
 
 def main():
     uvicorn.run(
-        "data_transfer.main:data_transfer",
+        "data_transfer.main:app",
         host="0.0.0.0",
         port=8001,
         reload=True)
