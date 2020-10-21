@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+import json
 import os
 import requests
 
@@ -11,7 +12,8 @@ headers = {"Accept": "application/json", "Content-Type": "application/json", "Au
 
 @router.get('/users')
 async def users():
-    get_hardware = requests.get(
-        "https://inventory.ideafast.eu/api/v1/hardware?status=&order_number=&company_id=&status_id=&sort=name&order=asc&offset=0&limit=20",
+    get_users_request = requests.get(
+        "https://inventory.ideafast.eu/api/v1/users",
         headers=headers)
-    return get_hardware.text
+    all_users = json.loads(get_users_request.text)["rows"]
+    return all_users[0]
