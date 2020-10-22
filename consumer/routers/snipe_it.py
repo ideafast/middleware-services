@@ -12,8 +12,10 @@ headers = {"Accept": "application/json", "Content-Type": "application/json", "Au
 
 @router.get('/users')
 async def users():
-    get_users_request = requests.get(
+    get_users_response = requests.get(
         "https://inventory.ideafast.eu/api/v1/users",
         headers=headers)
-    all_users = json.loads(get_users_request.text)["rows"]
-    return all_users[0]
+    users_list = json.loads(get_users_response.text)["rows"]
+    usernames = list(map(lambda user: user["username"], users_list))
+    patient_ids = list(filter(lambda name: name[1] == "-", usernames))
+    return patient_ids
