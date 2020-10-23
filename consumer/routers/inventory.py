@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 import json
 import os
 import requests
@@ -15,6 +15,10 @@ async def users():
     get_users_response = requests.get(
         "https://inventory.ideafast.eu/api/v1/users",
         headers=headers)
+    if 400 <= get_users_response.status_code < 500:
+        raise HTTPException(
+            status_code=get_users_response.status_code,
+            detail="General Error")
     users_list = get_users_response.json()["rows"]
     usernames = list(map(lambda user: user["username"], users_list))
     patient_ids = list(filter(lambda name: name[1] == "-", usernames))
