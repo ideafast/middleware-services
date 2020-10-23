@@ -15,7 +15,7 @@ async def users():
     get_users_response = requests.get(
         "https://inventory.ideafast.eu/api/v1/users",
         headers=headers)
-    users_list = json.loads(get_users_response.text)["rows"]
+    users_list = get_users_response.json()["rows"]
     usernames = list(map(lambda user: user["username"], users_list))
     patient_ids = list(filter(lambda name: name[1] == "-", usernames))
     return patient_ids
