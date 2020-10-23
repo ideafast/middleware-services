@@ -1,20 +1,19 @@
 from fastapi import APIRouter, HTTPException
-import json
 import os
 import requests
 
 
 router = APIRouter()
+base_url = os.getenv("INVENTORY_BASE_URL")
 bearer_token = os.getenv("INVENTORY_TOKEN")
-headers = {"Accept": "application/json", "Content-Type": "application/json", "Authorization": f'Bearer {bearer_token}'}
 # See https://snipe-it.readme.io/reference for full Snipe-IT API reference
 
 
 @router.get('/users')
 async def users():
     get_users_response = requests.get(
-        "https://inventory.ideafast.eu/api/v1/users",
-        headers=headers)
+        f"{base_url}users",
+        headers={"Authorization": f'Bearer {bearer_token}'})
     if 400 <= get_users_response.status_code < 500:
         raise HTTPException(
             status_code=get_users_response.status_code,
