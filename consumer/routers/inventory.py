@@ -5,7 +5,7 @@ import requests
 
 
 router = APIRouter()
-bearer_token = os.getenv("SNIPE_IT_TOKEN")
+bearer_token = os.getenv("INVENTORY_TOKEN")
 headers = {"Accept": "application/json", "Content-Type": "application/json", "Authorization": f'Bearer {bearer_token}'}
 # See https://snipe-it.readme.io/reference for full Snipe-IT API reference
 
