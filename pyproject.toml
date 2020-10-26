@@ -10,9 +10,9 @@ repository = "https://github.com/ideafast/middleware-services"
 python = "^3.8"
 fastapi = "^0.61.1"
 fastapi_utils = "^0.2.1"
+uvicorn = "^0.12.2"
 
 [tool.poetry.dev-dependencies]
-uvicorn = "^0.11.8"
 
 [tool.poetry.scripts]
 start = "consumer.main:main"
