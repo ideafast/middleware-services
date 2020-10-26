@@ -21,7 +21,8 @@ To setup a virtual environment with your local pyenv version run:
     
 ## Setting up .env
 
-Copy `.env.example` file to `.env` and add relevant local/live values and credentials
+Copy `.env.example` file to `.NAME.env` where `NAME` is the python package (consumer, data_transfer).
+Then add relevant local/live values and credentials.
 
 ## Local Development
 

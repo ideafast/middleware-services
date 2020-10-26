@@ -9,6 +9,8 @@ services:
     environment:
       MODULE_NAME: consumer.main
       VARIABLE_NAME: consumer
+    env_file:
+      - .consumer.env
 
   dtransfer:
     container_name: dtransfer
