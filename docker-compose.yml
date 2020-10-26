@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  consumer:
+    container_name: consumer
+    image: middleware
+    ports:
+      - 5000:80
+    environment:
+      MODULE_NAME: consumer.main
+      VARIABLE_NAME: consumer
+
+  dtransfer:
+    container_name: dtransfer
+    image: middleware
+    ports:
+      - 5001:80
+    environment:
+      MODULE_NAME: data_transfer.main
+      VARIABLE_NAME: data_transfer

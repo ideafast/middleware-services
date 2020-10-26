@@ -29,9 +29,20 @@ When developing the data transfer jobs run:
 
     poetry run transfer
 
+### Using Docker
+
+When developing you can opt to use Docker. Build the local image:
+
+    docker build -t middleware .
+
+The middleware image is used for all packages. The compose file
+contains all environmental variables to run it locally:
+
+    docker-compose up -d
+
 ## Documentation
 
 Interactive documentation is available at:
 
-- Swagger: [http://127.0.0.1:8000/docs#](http://127.0.0.1:8000/docs#)
+- Swagger: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 - ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
