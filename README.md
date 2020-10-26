@@ -18,6 +18,10 @@ Once done, you can install dependencies for this project via:
 To setup a virtual environment with your local pyenv version run:
 
     poetry shell
+    
+## Setting up .env
+
+Copy `.env.example` file to `.env` and add relevant local/live values and credentials
 
 ## Local Development
 

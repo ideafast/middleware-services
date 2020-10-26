@@ -1,12 +1,16 @@
 import uvicorn
 from fastapi import FastAPI
+from dotenv import load_dotenv, find_dotenv
 
-from consumer.routers import devices, auth
+from consumer.routers import devices, auth, inventory
 from consumer.utils.general import CustomResponse
 
+
+load_dotenv(find_dotenv())
 consumer = FastAPI(default_response_class=CustomResponse)
 consumer.include_router(devices.router)
 consumer.include_router(auth.router)
+consumer.include_router(inventory.router, prefix="/inventory")
 
 
 def main():
