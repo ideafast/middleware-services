@@ -1,6 +1,6 @@
 # IDEA-FAST WP3 Middleware Services
 
-Currently developing scripts to facilitate data transfer between sensor device manufactures and IDA-FAST's internal data platform, and a separate API to provide updates on device wear and use.
+Currently developing scripts to facilitate data transfer between sensor device manufactures and IDEA-FAST's internal data platform, and a separate API to provide updates on device wear and use.
 
 ## Installation
 
@@ -46,7 +46,4 @@ The compose file contains all environmental variables and runs all services:
 
 ## Documentation
 
-Interactive documentation is available at:
-
-- Swagger: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-- ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+Interactive documentation is available in **Swagger** ([/docs](http://127.0.0.1:8000/docs)) and **ReDoc** ([/redoc](http://127.0.0.1:8000/redoc)).
