@@ -19,4 +19,5 @@ async def users():
             status_code=get_users_response.status_code,
             detail="General Error")
     users_list = get_users_response.json()
-    return users_list
+    usernames = list(map(lambda user: f"{user['firstname']} {user['lastname']}", users_list))
+    return usernames
