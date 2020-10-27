@@ -18,7 +18,7 @@ Once done, you can install dependencies for this project via:
 To setup a virtual environment with your local pyenv version run:
 
     poetry shell
-    
+
 ## Setting up .env
 
 Copy `.env.example` file to `.NAME.env` where `NAME` is the python package (consumer, data_transfer).
@@ -34,14 +34,13 @@ When developing the data transfer jobs run:
 
     poetry run transfer
 
-### Using Docker
+### Deploying
 
-When developing you can opt to use Docker. Build the local image:
+To deploy the middleware we use Docker, which can be run locally:
 
     docker build -t middleware .
 
-The middleware image is used for all packages. The compose file
-contains all environmental variables to run it locally:
+The compose file contains all environmental variables and runs all services:
 
     docker-compose up -d
 
