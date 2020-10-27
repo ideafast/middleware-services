@@ -6,9 +6,6 @@ services:
     image: middleware
     ports:
       - 80
-    environment:
-      MODULE_NAME: consumer.main
-      VARIABLE_NAME: consumer
     env_file:
       - .consumer.env
 
@@ -17,6 +14,5 @@ services:
     image: middleware
     ports:
       - 80
-    environment:
-      MODULE_NAME: data_transfer.main
-      VARIABLE_NAME: data_transfer
+    env_file:
+      - .dtransfer.env
