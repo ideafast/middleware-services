@@ -36,7 +36,7 @@ When developing the data transfer jobs run:
 
 ### Deploying
 
-To deploy the middleware we use Docker, which can be run locally:
+To deploy the middleware we use Docker based on one image:
 
     docker build -t middleware .
 
