@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  consumer:
+    container_name: consumer
+    image: middleware
+    ports:
+      - 80
+    env_file:
+      - .consumer.env
+
+  dtransfer:
+    container_name: dtransfer
+    image: middleware
+    ports:
+      - 80
+    env_file:
+      - .dtransfer.env

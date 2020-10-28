@@ -5,7 +5,7 @@ from dotenv import load_dotenv, find_dotenv
 from consumer.routers import auth, devices, inventory, support
 from consumer.utils.general import CustomResponse
 
-
+a = find_dotenv()
 load_dotenv(find_dotenv())
 consumer = FastAPI(default_response_class=CustomResponse)
 consumer.include_router(auth.router)
