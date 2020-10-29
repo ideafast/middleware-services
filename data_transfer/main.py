@@ -19,7 +19,7 @@ data_transfer.include_router(dmp.router, prefix="/dmp")
 @repeat_every(seconds=3600, logger=logger, wait_first=True)
 def print_time():
     dmp.run_job()
-    example.run_job()
+    # example.run_job()
 
 
 def main():
