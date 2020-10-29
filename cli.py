@@ -11,12 +11,12 @@ def run_command(command: str) -> None:
 
 
 def git_tag_local(version: str) -> None:
-    """Create a local git lightweight with version."""
+    """Create lightweight git tag with version against local branch."""
     run_command(f"git tag {version}")
 
 
 def git_push_tag_remote(version: str) -> None:
-    """Push local tag to git remote."""
+    """Push local tag to git remote origin."""
     run_command(f"git push origin {version}")
 
 
