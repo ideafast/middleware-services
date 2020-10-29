@@ -24,8 +24,8 @@ def docker_image_exists(version: str) -> str:
     """Check if docker image exists based on version."""
     command = f'docker images -q {REGISTRY}:{version}'
     res = run_command(command, True)
-    image_hash = res.stdout.decode('ascii').rstrip()
-    return image_hash
+    # The hash ID of the image if it exists
+    return res.stdout.decode('ascii').rstrip()
 
 
 @click.group()
