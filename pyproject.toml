@@ -22,7 +22,7 @@ start = "consumer.main:main"
 transfer = "data_transfer.main:main"
 build = "cli:build"
 publish = "cli:publish"
-withdocker = "cli:runwithdocker"
+compose = "cli:compose"
 
 [build-system]
 requires = ["poetry>=0.12"]

@@ -42,7 +42,7 @@ def publish(version: str) -> None:
 
 
 @cli.command()
-def runwithdocker() -> None:
+def compose() -> None:
     """Run docker compose locally."""
     run_command("docker-compose up -d")
 
