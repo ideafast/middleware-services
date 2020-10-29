@@ -37,9 +37,10 @@ When developing the data transfer jobs run:
 ### Deploying
 
 [Semantic versioning](https://semver.org/) is used when core changes are merged
-to master to enable continuous deployment. To build an image locally:
+to master to enable continuous deployment. To build an image locally where `$VERSION`
+for your desired version:
 
-    poetry run build
+    poetry run build $VERSION
 
 The compose file contains all environmental variables and runs all services:
 
@@ -48,7 +49,7 @@ The compose file contains all environmental variables and runs all services:
 We use [Docker Hub](https://hub.docker.com/u/ideafast) to store images. To push
 to your own image registry update `REGISTRY` inside `cli.py` and run:
 
-    poetry run publish
+    poetry run publish $VERSION
 
 ## Documentation
 
