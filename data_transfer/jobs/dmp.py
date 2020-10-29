@@ -66,7 +66,7 @@ async def studies():
         "password": password,
         "totp": totp,
     }
-    result = client.execute(query, variable_vars=params)
+    result = client.execute(query, params)
     login_response = requests.get(
         f"{base_url}graphql")
     if 400 <= login_response.status_code < 500:
