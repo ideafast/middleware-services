@@ -47,7 +47,7 @@ The compose file contains all environmental variables and runs all services:
     poetry run compose
 
 We use [Docker Hub](https://hub.docker.com/u/ideafast) to store images. To push
-to your own image registry update `REGISTRY` inside `cli.py` and run:
+to your own image, update `REGISTRY` inside `cli.py` and run:
 
     poetry run publish $VERSION
 
