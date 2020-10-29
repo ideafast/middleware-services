@@ -15,10 +15,14 @@ requests = "^2.24.0"
 python-dotenv = "^0.14.0"
 
 [tool.poetry.dev-dependencies]
+click = "^7.1.2"
 
 [tool.poetry.scripts]
 start = "consumer.main:main"
 transfer = "data_transfer.main:main"
+build = "cli:build"
+publish = "cli:publish"
+compose = "cli:compose"
 
 [build-system]
 requires = ["poetry>=0.12"]

@@ -171,7 +171,7 @@ h11 = ">=0.8"
 standard = ["websockets (>=8.0.0,<9.0.0)", "watchgod (>=0.6,<0.7)", "python-dotenv (>=0.13)", "PyYAML (>=5.1)", "httptools (>=0.1.0,<0.2.0)", "uvloop (>=0.14.0)", "colorama (>=0.4)"]
 
 [metadata]
-content-hash = "3350a81bb1effe64c38fa1a969584cecb0f9fae30278de6933d353186c653554"
+content-hash = "722ff973021cf24420071dd17f75524dd1dc88f3a14c4d0c639a6e1dec61ca94"
 lock-version = "1.0"
 python-versions = "^3.8"
 

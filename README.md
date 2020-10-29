@@ -36,13 +36,20 @@ When developing the data transfer jobs run:
 
 ### Deploying
 
-To deploy the middleware we use Docker based on one image:
+[Semantic versioning](https://semver.org/) is used when core changes are merged
+to master to enable continuous deployment. To build an image locally where `$VERSION`
+for your desired version:
 
-    docker build -t middleware .
+    poetry run build $VERSION
 
 The compose file contains all environmental variables and runs all services:
 
-    docker-compose up -d
+    poetry run compose
+
+We use [Docker Hub](https://hub.docker.com/u/ideafast) to store images. To push
+to your own image, update `REGISTRY` inside `cli.py` and run:
+
+    poetry run publish $VERSION
 
 ## Documentation
 
