@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi_utils.tasks import repeat_every
 from dotenv import load_dotenv, find_dotenv
 
-from .jobs import dmp, example
+from data_transfer.jobs import dmp, example
 
 logger = logging.getLogger(__name__)
 load_dotenv(find_dotenv('.dtransfer.env'))
