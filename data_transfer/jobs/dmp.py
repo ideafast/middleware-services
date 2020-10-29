@@ -67,6 +67,79 @@ async def studies():
         "totp": totp,
     }
     result = client.execute(query, params)
+    query2 = gql('''
+        fragment ALL_FOR_JOB on Job {
+            id
+            studyId
+            projectId
+            jobType
+            requester
+            requestTime
+            receivedFiles
+            status
+            error
+            cancelled
+            cancelledTime
+            data
+        }
+        
+        query getStudy($studyId: String!) {
+                getStudy(studyId: $studyId) {
+                    id
+                    name
+                    createdBy
+                    jobs {
+                        ...ALL_FOR_JOB
+                    }
+                    projects {
+                        id
+                        studyId
+                        name
+                    }
+                    roles {
+                        id
+                        name
+                        permissions
+                        projectId
+                        studyId
+                        users {
+                            id
+                            firstname
+                            lastname
+                            organisation
+                            username
+                        }
+                    }
+                    files {
+                        id
+                        fileName
+                        studyId
+                        projectId
+                        fileSize
+                        description
+                        uploadTime
+                        uploadedBy
+                    }
+                    numOfSubjects
+                    currentDataVersion
+                    dataVersions {
+                        id
+                        version
+                        tag
+                        uploadDate
+                        jobId
+                        extractedFrom
+                        fileSize
+                        contentId
+                        fieldTrees
+                    }
+                }
+            }
+    ''')
+    params2 = {
+        "studyId": "8f223906-809c-41aa-8e58-3d4ee1f694b1",
+    }
+    blah = client.execute(query2, params2)
     login_response = requests.get(
         f"{base_url}graphql")
     if 400 <= login_response.status_code < 500:
