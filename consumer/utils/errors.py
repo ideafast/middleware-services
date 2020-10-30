@@ -8,7 +8,7 @@ class CustomException(Exception):
     Usage:
         raise CustomException(errors=["INVALID_TOKEN"], status_code=401)
     """
-    def __init__(self, errors: str, status_code: str = 400):
+    def __init__(self, errors: list, status_code: str = 400):
         self.errors = errors
         self.status_code = status_code
 
