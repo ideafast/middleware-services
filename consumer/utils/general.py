@@ -7,7 +7,7 @@ class CustomResponse(Response):
     media_type = "application/json"
 
     def envelope(self, content: typing.Any) -> dict:
-        # Only when an HTTP/CustomException is thrown content includes an errors dict
+        # Only when an HTTP/CustomException is thrown content is {errors: []}
         is_errors = isinstance(content, dict) and 'errors' in content
         errors = content['errors'] if is_errors else []
         return {
