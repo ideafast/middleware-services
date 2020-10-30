@@ -28,7 +28,7 @@ Then add relevant local/live values and credentials.
 
 When developing the consumer API run:
 
-    poetry run start
+    poetry run consumer
 
 When developing the data transfer jobs run:
 

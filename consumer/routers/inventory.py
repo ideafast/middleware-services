@@ -1,19 +1,19 @@
+# See https://snipe-it.readme.io/reference
 from fastapi import APIRouter, HTTPException
 import os
 import requests
 
+from consumer.config import config
 
 router = APIRouter()
-base_url = os.getenv("INVENTORY_BASE_URL")
-bearer_token = os.getenv("INVENTORY_TOKEN")
-# See https://snipe-it.readme.io/reference for full Snipe-IT API reference
 
+headers={"Authorization": f'Bearer {config.inventory_token}'}
 
 @router.get('/users')
 async def users():
     get_users_response = requests.get(
-        f"{base_url}users",
-        headers={"Authorization": f'Bearer {bearer_token}'})
+        f"{config.inventory_base_url}users",
+        headers=headers)
     if 400 <= get_users_response.status_code < 500:
         raise HTTPException(
             status_code=get_users_response.status_code,
