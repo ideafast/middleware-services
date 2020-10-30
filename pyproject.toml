@@ -18,8 +18,8 @@ python-dotenv = "^0.14.0"
 click = "^7.1.2"
 
 [tool.poetry.scripts]
-start = "consumer.main:main"
-transfer = "data_transfer.main:main"
+consumer = "cli:consumer"
+dtransfer = "cli:data_transfer"
 build = "cli:build"
 publish = "cli:publish"
 compose = "cli:compose"

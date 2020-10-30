@@ -1,5 +1,6 @@
-import subprocess
 import click
+import subprocess
+import uvicorn
 
 
 REGISTRY = 'ideafast/middleware'
@@ -28,9 +29,26 @@ def docker_image_exists(version: str) -> str:
     return res.stdout.decode('ascii').rstrip()
 
 
+def run_uvicorn(app: str, port: int, host: str = "0.0.0.0", reload: bool = True) -> None:
+    """Run run_uvicorn for local development."""
+    uvicorn.run(app, host=host, port=port, reload=reload)
+
+
 @click.group()
 def cli():
     """CLI for building and deploying middleware in Docker."""
+
+
+@cli.command()
+def consumer():
+    """Run the consumer app for local development."""
+    run_uvicorn("consumer.main:consumer", 8000)
+
+
+@cli.command()
+def data_transfer():
+    """Run the data transfer for local development."""
+    run_uvicorn("data_transfer.main:data_transfer", 8001)
 
 
 @cli.command()

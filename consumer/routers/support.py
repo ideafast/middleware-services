@@ -1,19 +1,19 @@
+# See https://docs.zammad.org/en/latest/api/intro.html
 from fastapi import APIRouter, HTTPException
 import os
 import requests
 
+from consumer.config import config
 
 router = APIRouter()
-base_url = os.getenv("SUPPORT_BASE_URL")
-bearer_token = os.getenv("SUPPORT_TOKEN")
-# See https://docs.zammad.org/en/latest/api/intro.html for full Zammad API reference
 
+headers = {"Authorization": f'Bearer {config.support_token}'}
 
 @router.get('/users')
 async def users():
     get_users_response = requests.get(
-        f"{base_url}users",
-        headers={"Authorization": f'Bearer {bearer_token}'})
+        f"{config.support_base_url}users",
+        headers=headers)
     if 400 <= get_users_response.status_code < 500:
         raise HTTPException(
             status_code=get_users_response.status_code,
