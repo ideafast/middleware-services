@@ -29,6 +29,11 @@ def docker_image_exists(version: str) -> str:
     return res.stdout.decode('ascii').rstrip()
 
 
+def run_uvicorn(app: str, port: int, host: str = "0.0.0.0", reload: bool = True) -> None:
+    """Run run_uvicorn for local development."""
+    uvicorn.run(app, host=host, port=port, reload=reload)
+
+
 @click.group()
 def cli():
     """CLI for building and deploying middleware in Docker."""
@@ -36,12 +41,14 @@ def cli():
 
 @cli.command()
 def consumer():
-    uvicorn.run("consumer.main:consumer", reload=True)
+    """Run the consumer app for local development."""
+    run_uvicorn("consumer.main:consumer", 8000)
 
 
 @cli.command()
 def data_transfer():
-    uvicorn.run("data_transfer.main:data_transfer", reload=True)
+    """Run the data transfer for local development."""
+    run_uvicorn("data_transfer.main:data_transfer", 8001)
 
 
 @cli.command()
