@@ -32,7 +32,7 @@ When developing the consumer API run:
 
 When developing the data transfer jobs run:
 
-    poetry run transfer
+    poetry run dtransfer
 
 ### Deploying
 
