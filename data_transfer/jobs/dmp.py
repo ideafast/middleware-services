@@ -1,9 +1,8 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from dotenv import load_dotenv, find_dotenv
 from gql import gql, Client
 from gql.transport.requests import RequestsHTTPTransport
 import os
-import requests
 
 
 router = APIRouter()
@@ -25,11 +24,7 @@ client = Client(
     transport=sample_transport,
     fetch_schema_from_transport=True,
 )
-
-
-@router.get('/studies')
-async def studies():
-    query = gql('''
+login_query = gql('''
         fragment ALL_FOR_USER on User {
             id
             username
@@ -61,13 +56,17 @@ async def studies():
           }
         }
     ''')
-    params = {
-        "username": username,
-        "password": password,
-        "totp": totp,
-    }
-    result = client.execute(query, params)
-    query2 = gql('''
+login_params = {
+    "username": username,
+    "password": password,
+    "totp": totp,
+}
+client.execute(login_query, login_params)
+
+
+@router.get('/studies')
+async def studies():
+    get_studies_query = gql('''
         fragment ALL_FOR_JOB on Job {
             id
             studyId
@@ -136,16 +135,10 @@ async def studies():
                 }
             }
     ''')
-    params2 = {
+    get_studies_params = {
         "studyId": "8f223906-809c-41aa-8e58-3d4ee1f694b1",
     }
-    blah = client.execute(query2, params2)
-    login_response = requests.get(
-        f"{base_url}graphql")
-    if 400 <= login_response.status_code < 500:
-        raise HTTPException(
-            status_code=login_response.status_code,
-            detail="General Error")
+    get_studies_response = client.execute(get_studies_query, get_studies_query)
     return 'STUDIES'
 
 
