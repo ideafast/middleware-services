@@ -1,4 +1,3 @@
-import uvicorn
 import os
 from fastapi import FastAPI
 from dotenv import load_dotenv, find_dotenv
@@ -20,15 +19,4 @@ consumer.include_router(devices.router)
 if access_authenticated_endpoints:
     consumer.include_router(inventory.router, prefix="/inventory")
     consumer.include_router(support.router, prefix="/support")
-
-
-def main():
-    uvicorn.run(
-        f"{module_name}:{variable_name}",
-        host="0.0.0.0",
-        port=8000,
-        reload=True)
-
-
-if __name__ == "__main__":
-    main()
+    
