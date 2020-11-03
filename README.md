@@ -35,12 +35,11 @@ When developing the data transfer jobs run:
     poetry run dtransfer
 
     
-## Debugging in PyCharm
+### Debugging in PyCharm
 
-For debugging in PyCharm, have the Poetry plugin installed (https://github.com/koxudaxi/poetry-pycharm-plugin)
+To run in PyCharm successfully, it's best to have the Poetry plugin installed (https://github.com/koxudaxi/poetry-pycharm-plugin)
 
-The python files `run-consumer.py` and `run-dtransfer.py` can be used for debugging purposes. Right-click on them in PyCharm to access these options.
-
+When adding a new Python run configuration, make sure that the script path points to `cli.py` and that your parameters are respectively `consumer` and `data-transfer`
 
 ### Deploying
 
