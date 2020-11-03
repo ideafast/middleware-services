@@ -39,7 +39,7 @@ When developing the data transfer jobs run:
 
 To run in PyCharm successfully, it's best to have the Poetry plugin installed (https://github.com/koxudaxi/poetry-pycharm-plugin)
 
-When adding a new Python run configuration, make sure that the script path points to `cli.py` and that your parameters are respectively `consumer` and `data-transfer`
+When adding a new Python run configuration, make sure that the script path points to `cli.py` and that your parameters are respectively `consumer` and `dtransfer`
 
 ### Deploying
 

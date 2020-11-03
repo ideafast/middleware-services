@@ -46,7 +46,7 @@ def consumer():
 
 
 @cli.command()
-def data_transfer():
+def dtransfer():
     """Run the data transfer for local development."""
     run_uvicorn("data_transfer.main:data_transfer", 8001)
 

@@ -19,7 +19,7 @@ click = "^7.1.2"
 
 [tool.poetry.scripts]
 consumer = "cli:consumer"
-dtransfer = "cli:data_transfer"
+dtransfer = "cli:dtransfer"
 build = "cli:build"
 publish = "cli:publish"
 compose = "cli:compose"
