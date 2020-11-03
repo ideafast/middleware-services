@@ -34,6 +34,14 @@ When developing the data transfer jobs run:
 
     poetry run dtransfer
 
+    
+## Debugging in PyCharm
+
+For debugging in PyCharm, have the Poetry plugin installed (https://github.com/koxudaxi/poetry-pycharm-plugin)
+
+The python files `run-consumer.py` and `run-dtransfer.py` can be used for debugging purposes. Right-click on them in PyCharm to access these options.
+
+
 ### Deploying
 
 [Semantic versioning](https://semver.org/) is used when core changes are merged
