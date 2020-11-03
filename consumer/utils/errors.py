@@ -1,10 +1,8 @@
-import json
-import typing
-
 from .general import CustomResponse
 from fastapi import Request
 
 from starlette.exceptions import HTTPException
+
 
 class CustomException(Exception):
     """

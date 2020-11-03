@@ -1,6 +1,4 @@
 import logging
-import os
-
 from fastapi import FastAPI
 from fastapi_utils.tasks import repeat_every
 

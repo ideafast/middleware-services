@@ -1,13 +1,13 @@
 # See https://snipe-it.readme.io/reference
 from fastapi import APIRouter, HTTPException
-import os
 import requests
 
 from consumer.config import config
 
 router = APIRouter()
 
-headers={"Authorization": f'Bearer {config.inventory_token}'}
+headers = {"Authorization": f'Bearer {config.inventory_token}'}
+
 
 @router.get('/users')
 async def users():

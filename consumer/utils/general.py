@@ -29,7 +29,7 @@ class CustomResponse(Response):
 
 
 def dataFromJson(name: str):
-    fname = f'./consumer/mock-data/{name}.json'
-    with open(fname) as content:
+    file_name = f'./consumer/mock-data/{name}.json'
+    with open(file_name) as content:
         data = json.load(content)
     return data
