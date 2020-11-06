@@ -4,10 +4,20 @@ from .utils.general import CustomResponse
 from .utils.errors import CustomException, custom_error_handler, http_error_handler
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 
 consumer = FastAPI(default_response_class=CustomResponse)
+
+origins = ["*", "http://localhost:3000/"]
+consumer.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 consumer.include_router(auth.router)
 consumer.include_router(devices.router)
