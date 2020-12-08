@@ -28,7 +28,6 @@ def test_device_serial_incorrect_id(serial_response, client, monkeypatch):
 
 def test_device_serial_multiple_devices(serial_response, client, monkeypatch):
     async def mock_get(path: str, params: str = None):
-        # d1, d2 = serial_response, serial_response
         row = serial_response['rows'][0].copy()
         row.update({'asset_tag': 'SMP-SERIAL', 'checkout_counter': 9001})
         serial_response['rows'].append(row)
