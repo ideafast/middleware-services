@@ -2,7 +2,6 @@
 import os
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
 
 from consumer.schemas.device import Device
 from consumer.schemas.patient import PatientDevice
@@ -11,9 +10,8 @@ from consumer.services import inventory
 
 router = APIRouter()
 
-
-def serialize(device: dict) -> Device:
-    """Helper method as this is used across endpoints."""
+def serialize_device(device: dict) -> Device:
+    """Simplifies reuse across inventory API."""
     return Device(
         device_id=device['asset_tag'],
         name=device['model']['name'],
@@ -23,8 +21,7 @@ def serialize(device: dict) -> Device:
         serial=device['serial'],
         id=device['id'],
     )
-
-
+    
 @router.get('/device/byserial/{serial}')
 async def device_by_serial(serial: str) -> Device:
     """Retrieve metadata about a device based on its serial code."""
@@ -40,7 +37,7 @@ async def device_by_serial(serial: str) -> Device:
     # Note: multiple devices may exist with same serial,
     # e.g. DRMDAX2S4 and DRM-DAX2S4. As such, sort by use.
     rows = sorted(rows, key=lambda k: k['checkout_counter'], reverse=True)
-    return serialize(rows[0]) if len(rows) > 0 else []
+    return serialize_device(rows[0]) if len(rows) > 0 else []
 
 
 @router.get('/device/byid/{device_id}')
@@ -52,8 +49,7 @@ async def device_by_id(device_id: str) -> Device:
     if device.get('status', '') == 'error':
         raise CustomException(errors=[device['messages']], status_code=404)
 
-    print (serialize(device))
-    return serialize(device)
+    return serialize_device(device)
 
 
 @router.get('/device/history/{device_id}')
@@ -71,7 +67,7 @@ async def device_history(device_id: str) -> [PatientDevice]:
 
     # The device has been assigned to a patient ID.
     rows = [row for row in res['rows'] if row['target']]
-    # Build history
+
     for row in rows:
         item = PatientDevice(
             patient_id=row['target']['name'].strip(),

@@ -58,14 +58,12 @@ def test_device_id_not_found(response_row, client, monkeypatch):
     res = client.get("/inventory/device/byid/VALID_ID")
 
     assert res.status_code == 404
-    errors = res.json()['meta']['errors']
-    assert len(errors) > 0
-    assert errors[0] == response_row['messages']
+    assert res.json()['meta']['errors'][0] == response_row['messages']
 
 
 def test_device_history_with_device_in_use(response_row, device_history, client, monkeypatch):
     async def mock_device_by_id(device_id: str):
-        return router_inventory.serialize(response_row)
+        return router_inventory.serialize_device(response_row)
 
     monkeypatch.setattr(router_inventory, "device_by_id", mock_device_by_id)
 

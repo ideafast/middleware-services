@@ -10,7 +10,7 @@ async def response(path: str, params: str = None) -> json:
     url = f"{config.inventory_base_url}/{path}"
     res = requests.get(url, params=params, headers=headers)
 
-    # snipe-it returns a login page (html) when this is the case.
+    # snipe-it returns a login page (html) on error
     if 'text/html' in res.headers.get('content-type', ''):
         raise CustomException(
             errors=['Invalid inventory configuration.'],
