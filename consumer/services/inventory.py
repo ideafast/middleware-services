@@ -4,7 +4,7 @@ import json
 from consumer.config import config
 
 
-def response(path: str, params: str = None) -> json:
+async def response(path: str, params: str = None) -> json:
     """Helper method to share validation across requests."""
     headers = {"Authorization": f'Bearer {config.inventory_token}'}
     url = f"{config.inventory_base_url}/{path}"
