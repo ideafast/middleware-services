@@ -12,12 +12,16 @@ router = APIRouter()
 
 def serialize_device(device: dict) -> Device:
     """Simplifies reuse across inventory API."""
+
+    def name_or_none(item: dict):
+        return item.get('name', None)
+
     return Device(
         device_id=device['asset_tag'],
-        name=device['model']['name'],
-        manufacturer=device['manufacturer']['name'],
+        model=name_or_none(device['model']),
+        manufacturer=name_or_none(device['manufacturer']),
         is_checkout=device['status_label']['status_meta'] == 'deployed',
-        location=device['location']['name'],
+        location=name_or_none(device['location']),
         serial=device['serial'],
         id=device['id'],
     )
