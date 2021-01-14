@@ -14,7 +14,7 @@ def serialize_device(device: dict) -> Device:
     """Simplifies reuse across inventory API."""
 
     def name_or_none(item: dict):
-        return item.get('name', None)
+        return item.get('name', None) if item else None
 
     return Device(
         device_id=device['asset_tag'],
