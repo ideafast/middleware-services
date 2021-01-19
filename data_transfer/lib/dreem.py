@@ -69,7 +69,8 @@ def download_file(session: requests.Session, record_id: str) -> bool:
     """
     GET specified file based on known record
     """
-    url = __build_url(args.ftype, record_id)
+    file_type = args.ftype
+    url = __build_url(file_type, record_id)
 
     response = session.get(url)
     # TODO: catch/log exception
