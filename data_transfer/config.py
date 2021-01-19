@@ -1,0 +1,53 @@
+from pydantic import BaseSettings
+from functools import lru_cache
+from dotenv import load_dotenv
+from pathlib import Path
+
+import os
+
+
+load_dotenv('.dtransfer.env')
+
+
+# TODO: would be docker volume
+root_path = Path(__file__).parent.parent
+
+
+class Settings(BaseSettings):
+    database_uri: str
+
+    dreem_users: Path = root_path / 'ideafast-users-full.csv'
+    dreem_devices: Path = root_path / 'ideafast-devices-full.csv'
+    storage_vol: Path = root_path / 'data/input'
+    storage_output: Path = root_path / 'data/processing'
+
+    inventory_api: str
+
+    support_base_url: str
+    support_token: str
+
+    dreem_login_url: str
+    dreem_api_url: str
+
+    # Hardcoded as this data structure is not
+    # supported unless JSON is stored in .env
+    dreem: dict = {
+        "kiel": (
+            os.getenv("DREEM_KIEL_USERNAME"),
+            os.getenv("DREEM_KIEL_PASSWORD")
+        ),
+        "newcastle": (
+            os.getenv("DREEM_NEWCASTLE_USERNAME"),
+            os.getenv("DREEM_NEWCASTLE_PASSWORD")
+        ),
+        "munster": (
+            os.getenv("DREEM_MUNSTER_USERNAME"),
+            os.getenv("DREEM_MUNSTER_PASSWORD")
+        )
+    }
+
+@lru_cache()
+def settings() -> Settings:
+    return Settings()
+
+config = settings()
