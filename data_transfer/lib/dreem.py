@@ -69,13 +69,17 @@ def download_file(session: requests.Session, record_id: str) -> bool:
     """
     GET specified file based on known record
     """
-    url, key = __build_url(args.ftype, record_id)
+    url = __build_url(args.ftype, record_id)
 
     response = session.get(url)
     # TODO: catch/log exception
     response.raise_for_status()
     response = response.json()
+    
+    # Used to lookup the download URL
+    key = "url" if file_type == "raw" else "data_url"
     file_url = response[key]
+    
     # NOTE: file_url may be empty if a file is unavailable:
     # (1): file is on dreem headband but not uploaded
     # (2): file is being processed by dreem's algorithms
@@ -140,14 +144,9 @@ def __build_url(file_type: str, record_id: str) -> (str, str):
     # TODO: can be simplified once we determine if we will download only H5 data.
     if file_type == "raw":
         url = f"{config.dreem_api_url}/dreem/dataupload/data/{record_id}"
-        key = "url"
-    elif file_type == "edf":
-        url = f"{config.dreem_api_url}/dreem/algorythm/record/{record_id}/edf/"
-        key = "data_url"
-    elif file_type == "h5":
-        url = f"{config.dreem_api_url}/dreem/algorythm/record/{record_id}/h5/"
-        key = "data_url"
-    return (url, key)
+    else:
+        url = f"{config.dreem_api_url}/dreem/algorythm/record/{record_id}/{file_type}/"
+    return url
     
 
 @lru_cache(maxsize=None)
