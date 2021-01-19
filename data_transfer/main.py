@@ -6,7 +6,7 @@ from data_transfer.config import config
 from data_transfer.devices.dreem import Dreem
 from data_transfer.database import records_not_downloaded, \
     records_not_processed, records_not_uploaded
-from data_transfer.lib import dmpy
+from data_transfer.services import dmpy
 from data_transfer.preprocessing.main import prepare_for_upload
 
 from pathlib import Path
