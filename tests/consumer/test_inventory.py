@@ -74,3 +74,25 @@ def test_device_history_with_device_in_use(response_row, device_history, client,
 
     assert data['T-123']['checkout'] and not data['T-123']['checkin']
     assert data['T-456']['checkout'] and data['T-456']['checkin']
+
+# NOTE: these are the keys from the response rather than device object
+serial_required_params = ['id', 'serial', 'asset_tag', 'status_label']
+
+@pytest.mark.parametrize("key", serial_required_params)
+def test_serialize_device_required_params(key, response_row):
+    del response_row[key]
+    with pytest.raises(KeyError):
+        router_inventory.serialize_device(response_row)
+
+
+serial_optional_params = [
+    ('location', 'name'),
+    ('model', 'name'),
+    ('manufacturer', 'name')
+]
+
+@pytest.mark.parametrize("key, child", serial_optional_params)
+def test_device_serial_optional_params(key, child, response_row):
+    del response_row[key][child]
+    device = router_inventory.serialize_device(response_row)
+    assert not device.dict()[key]

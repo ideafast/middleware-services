@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
 class Device(BaseModel):
@@ -6,6 +7,6 @@ class Device(BaseModel):
     serial: str
     device_id: str
     is_checkout: bool
-    name: str
-    manufacturer: str
-    location: str
+    model: Optional[str]
+    manufacturer: Optional[str]
+    location: Optional[str]
