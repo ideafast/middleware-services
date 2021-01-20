@@ -52,13 +52,14 @@ class Dreem:
 
             # NOTE: lookup Patient ID by email: if None (e.g. personal email used), then use inventory
             patient_id = dreem_api.patient_id_by_user(item['user']) or inventory.patient_id_by_device_id(device_id)
+            
+            # NOTE: using inventory to determine intended wear time period.
+            # Useful for historical data, but (TODO) should be replaced with UCAM API. 
+            history = inventory.device_history(device_id)[patient_id]
 
-            # TODO: confirm this wear-time is within intended wear period on inventory?
-            # TODO: should be determined from UCAM database based on device/patient ID
-            start_time = item['report']['start_time']
-            start_wear = utils.format_weartime(item['report']['start_time'])
-            end_time = start_time + item['report']['duration']
-            end_wear = utils.format_weartime(end_time)
+            start_wear = utils.format_inventory_weartime(history['checkout'])
+            # NOTE: if device not returned the current day is used.
+            end_wear = utils.format_inventory_weartime(history['checkin'])
 
             record = Record(
                 # NOTE: id is a unique uuid used to GET raw data from Dreem

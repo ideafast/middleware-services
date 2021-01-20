@@ -1,6 +1,7 @@
 from typing import Optional, Any
 from bson import ObjectId 
 from pydantic import BaseModel, Field, validator
+from datetime import datetime
 
 
 class Record(BaseModel):
@@ -11,13 +12,10 @@ class Record(BaseModel):
     filename: str
     device_id: str
     patient_id: str
-    # TODO: these should be datetimes
-    # offers more granular filter control
-    start_wear: str
-    end_wear: str
+    start_wear: datetime
+    end_wear: datetime
 
     # Each stage of the pipeline
-    # NOTE: used to re-run stages if unsuccessful
     is_downloaded: Optional[bool] = False
     is_processed: Optional[bool] = False
     is_prepared: Optional[bool] = False
