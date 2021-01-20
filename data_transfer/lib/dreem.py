@@ -105,6 +105,10 @@ def patient_id_by_user(uuid: str) -> Optional[str]:
     """
     email = __key_by_value(config.dreem_users, uuid)
     if email:
+        # Initially, gmail accounts were used for dreem based on SamsungA40 ID.
+        # We want to skip this record and determine PatientID elsewhere.
+        if 'gmail' in email:
+            return None
         email = email.replace("ideafast.", "")
         email = email.split("@")[0]
     # TODO: what if personal email used (e.g., in CVS)?
