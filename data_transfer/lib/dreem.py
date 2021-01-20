@@ -111,6 +111,9 @@ def patient_id_by_user(uuid: str) -> Optional[str]:
             return None
         email = email.replace("ideafast.", "")
         email = email.split("@")[0]
+        # Create consistency in Patient ID format
+        if email[1] != "-":
+            email = f"{email[0]}-{email[1:]}"
     # TODO: what if personal email used (e.g., in CVS)?
     return email
 
