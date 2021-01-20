@@ -5,7 +5,7 @@
 from data_transfer.config import config
 from data_transfer.devices.dreem import Dreem
 from data_transfer.database import records_not_downloaded, \
-    records_not_processed, records_not_uploaded
+    records_not_processed, records_not_uploaded, records_not_prepared
 from data_transfer.services import dmpy
 from data_transfer.preprocessing.main import prepare_for_upload
 
@@ -26,12 +26,14 @@ def stage_2_task_download_data(mongoid: str) -> str:
     dreem_example.download_file(mongoid)
 
 
-# TODO: should this be per data file, or per wear period?
 def stage_3_task_preprocess_data(mongoid: str):
     # STAGE THREE (TASK): PRE-PROCESSING: (1) perform analysis; (2) restructure data
-    # NOTE: this should be done for each raw datafile INDIVIDUALLY (hence taking an ID as param).
     # TODO: this should call preprocessing library and notify staff/us if errors in data
-    pass
+    # NOTE: the code below is called so next steps can be run. This is not the final logic.
+    from data_transfer.database import read_record, update_record
+    record = read_record(mongoid)
+    record.is_processed = True
+    update_record(record)
 
 
 def stage_4_task_prepare_data(mongoid: str) -> Path:
@@ -53,17 +55,17 @@ def stage_5_batch_upload_data(prepared_data_path: Path) -> None:
 
 
 def main():
+    # NOTE: below simulates pipeline for dreem
     stage_1_batch_metadata()
-    
-    # NOTE: loops below are used to simulate tasks
-    
+
     # for record in records_not_downloaded():
     #     stage_2_task_download_data(record.id)
 
-    # for _id in records_not_processed():
-    #     stage_3_task_preprocess_data(_id)
+    # for record in records_not_processed():
+    #     stage_3_task_preprocess_data(record.id)
 
-    # stage_4_task_prepare_data("")
+    # for record in records_not_prepared():
+    #     stage_4_task_prepare_data(record.id)
 
     # for _id in records_not_uploaded():
     #     stage_5_batch_upload_data(_id)

@@ -30,22 +30,26 @@ def all_filenames() -> [str]:
     return [doc['filename'] for doc in db.records.find()]
 
 
-def __all_docs_by_attribute(attribute: str, value: bool = False) -> [Record]:
-    docs = db.records.find({attribute: value})
+def __all_docs_by_attribute(attributes: dict) -> [Record]:
+    docs = db.records.find(attributes)
     return [Record(**doc) for doc in docs]
 
 
 def records_not_downloaded() -> [Record]:
-    return __all_docs_by_attribute("is_downloaded")
+    attributes = {"is_downloaded": False}
+    return __all_docs_by_attribute(attributes)
 
 
 def records_not_processed() -> [Record]:
-    return __all_docs_by_attribute("is_processed")
+    attributes = {"is_downloaded": True, "is_processed": False}
+    return __all_docs_by_attribute(attributes)
 
 
 def records_not_prepared() -> [Record]:
-    return __all_docs_by_attribute("is_prepared")
+    attributes = {"is_downloaded": True, "is_processed": True, "is_prepared": False}
+    return __all_docs_by_attribute(attributes)
 
 
 def records_not_uploaded() -> [Record]:
-    return __all_docs_by_attribute("is_uploaded")
+    attributes = {"is_downloaded": True, "is_processed": True, "is_prepared": True, "is_uploaded": False}
+    return __all_docs_by_attribute(attributes)
