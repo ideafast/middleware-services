@@ -43,6 +43,10 @@ class Settings(BaseSettings):
         "munster": (
             os.getenv("DREEM_MUNSTER_USERNAME"),
             os.getenv("DREEM_MUNSTER_PASSWORD")
+        ),
+        "rotterdam": (
+            os.getenv("DREEM_ROTTERDAM_USERNAME"),
+            os.getenv("DREEM_ROTTERDAM_PASSWORD")
         )
     }
 
