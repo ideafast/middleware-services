@@ -23,8 +23,8 @@ def prepare_for_upload(mongo_id: str):
     patient_id = record.patient_id.replace("-", "")
     device_id = record.device_id.replace("-", "")
 
-    start_wear = record.start_wear.strftime("%d%m%Y")
-    end_wear = record.end_wear.strftime("%d%m%Y")
+    start_wear = record.start_wear.strftime("%Y%m%d")
+    end_wear = record.end_wear.strftime("%Y%m%d")
 
     upload_folder = f"{patient_id}-{device_id}-{start_wear}-{end_wear}"
 
