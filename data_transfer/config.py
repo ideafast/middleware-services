@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     dreem_users: Path = root_path / 'ideafast-users-full.csv'
     dreem_devices: Path = root_path / 'ideafast-devices-full.csv'
     storage_vol: Path = root_path / 'data/input'
-    storage_output: Path = root_path / 'data/processing'
+    upload_folder: Path = root_path / 'data/uploading'
 
     inventory_api: str
 

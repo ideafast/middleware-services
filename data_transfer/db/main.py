@@ -18,6 +18,11 @@ def read_record(mongo_id: str) -> Record:
     return Record(**result)
 
 
+def record_by_filename(filename: str) -> Record:
+    result = _db.records.find_one(({"filename": filename}))
+    return Record(**result)
+    
+
 def update_record(record: Record) -> Record:
     result = _db.records.update_one(
         {'_id': ObjectId(record.id)}, 
@@ -31,25 +36,5 @@ def all_filenames() -> [str]:
 
 
 def records_not_downloaded() -> [Record]:
-    attributes = {"is_downloaded": False}
-    return __all_docs_by_attribute(attributes)
-
-
-def records_not_processed() -> [Record]:
-    attributes = {"is_downloaded": True, "is_processed": False}
-    return __all_docs_by_attribute(attributes)
-
-
-def records_not_prepared() -> [Record]:
-    attributes = {"is_downloaded": True, "is_processed": True, "is_prepared": False}
-    return __all_docs_by_attribute(attributes)
-
-
-def records_not_uploaded() -> [Record]:
-    attributes = {"is_downloaded": True, "is_processed": True, "is_prepared": True, "is_uploaded": False}
-    return __all_docs_by_attribute(attributes)
-
-
-def __all_docs_by_attribute(attributes: dict) -> [Record]:
-    docs = _db.records.find(attributes)
+    docs = _db.records.find({"is_downloaded": False})
     return [Record(**doc) for doc in docs]
