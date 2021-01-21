@@ -2,7 +2,7 @@ from data_transfer.config import config
 from data_transfer.lib import dreem as dreem_api
 from data_transfer.services import inventory
 from data_transfer.schemas.record import Record
-from data_transfer.database import create_record, \
+from data_transfer.db import create_record, \
     read_record, update_record, all_filenames
 from data_transfer import utils
 

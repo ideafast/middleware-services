@@ -1,4 +1,4 @@
-from data_transfer.database import records_not_prepared, update_record, read_record
+from data_transfer.db import records_not_prepared, update_record, read_record
 from data_transfer.config import config
 
 from collections import defaultdict
