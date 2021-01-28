@@ -1,11 +1,8 @@
 from data_transfer.config import config
-from data_transfer.utils import format_weartime
+from data_transfer.utils import format_weartime, read_csv_from_cache
 from dataclasses import dataclass, asdict
 from datetime import datetime
-from functools import lru_cache
 from pathlib import Path
-
-import csv
 
 
 @dataclass
@@ -53,17 +50,6 @@ class PatientRecord:
     devices: [Device]
 
 
-@lru_cache(maxsize=None)
-def __load_csv(path: Path) -> [dict]:
-    # TODO: move to utils and refactor from Dreem
-    """
-    Load full CSV into memory for quick lookup
-    """
-    with open(path) as csv_file:
-        data = [row for row in csv.DictReader(csv_file)]
-    return data
-
-
 def __get_patients() -> [UCAMPayload]:
     """
     All records from the UCAM.
@@ -79,12 +65,12 @@ def __get_patients() -> [UCAMPayload]:
             patient_id=data['SubjectID'],
             devitations=data['Deviations'],
             sma_id=data['VTTGeneratedParticipantID'],
-            start_wear=format_weartime(data['StartDate']),
-            end_wear=format_weartime(data['EndDate']),
+            start_wear=format_weartime(data['StartDate'], 'ucam'),
+            end_wear=format_weartime(data['EndDate'], 'ucam'),
             disease=data['SubjectGroup']
         )
 
-    return [__create_record(d) for d in __load_csv(config.ucam_data)]
+    return [__create_record(d) for d in read_csv_from_cache(config.ucam_data)]
 
 
 def record_by_patient_id(patient_id: str) -> PatientRecord:
@@ -117,14 +103,11 @@ def device_history(device_id: str) -> [UCAMPayload]:
     return [r for r in __get_patients() if r.device_id == device_id]
 
 
-def record_id_by_data_creation(device_id: str, start_wear: str, end_wear: str) -> UCAMPayload:
+def record_id_by_data_creation(device_id: str, start_wear: datetime, end_wear: datetime) -> UCAMPayload:
     """
     If data was created on a certain period then it belongs to an individual patient.
     """
     device_wear_periods = device_history(device_id)
-
-    start_wear = format_weartime(start_wear)
-    end_wear = format_weartime(end_wear)
 
     for record in device_wear_periods:
         within_start_period = start_wear >= record.start_wear <= record.end_wear
@@ -146,5 +129,5 @@ print (history)
 
 # i.e., if a device is used by multiple patients and
 # we know when data was created we can determine patient ID
-record_found = record_id_by_data_creation('DRM-DAX2S4', '29/10/2020', '31/10/2020')
+record_found = record_id_by_data_creation('DRM-DAX2S4', format_weartime('29/10/2020', 'ucam'), format_weartime('31/10/2020', 'ucam'))
 print (record_found.patient_id)

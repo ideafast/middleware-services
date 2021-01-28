@@ -1,24 +1,28 @@
 from datetime import datetime
 from pathlib import Path
+from functools import lru_cache
+
+import csv
 import json
 
 
-def format_weartime(period: str) -> datetime:
-    return __str_to_datetime(period)
+FORMATS = {
+    'ucam': "%d/%m/%Y",
+    'inventory': "%Y-%m-%d %H:%M:%S"
+}
+
+def format_weartime(period: str, type: str) -> datetime:
+    return datetime.strptime(period, FORMATS[type])
 
 
-def __str_to_datetime(period: str) -> datetime:
-    datetime_format = "%d/%m/%Y"
-    return datetime.strptime(period, datetime_format)
-
-
-def format_inventory_weartime(period: str) -> datetime:
-    datetime_format = "%Y-%m-%d %H:%M:%S"
-    # NOTE: as the device may not been returned yet (i.e. still in use)
-    # we set the end_wear as today. TODO: temporary until UCAM db access.
-    if not period: 
-        return datetime.now().strftime(datetime_format)
-    return datetime.strptime(period, datetime_format)
+@lru_cache(maxsize=None)
+def read_csv_from_cache(path: Path) -> [dict]:
+    """
+    Load full CSV into memory for quick lookup
+    """
+    with open(path) as csv_file:
+        data = [row for row in csv.DictReader(csv_file)]
+    return data
 
 
 def read_json(filepath: Path) -> json:
