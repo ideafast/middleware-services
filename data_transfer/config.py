@@ -18,6 +18,9 @@ class Settings(BaseSettings):
 
     dreem_users: Path = root_path / 'ideafast-users-full.csv'
     dreem_devices: Path = root_path / 'ideafast-devices-full.csv'
+
+    ucam_data: Path = root_path / 'ucam_db.csv'
+    
     storage_vol: Path = root_path / 'data/input'
     upload_folder: Path = root_path / 'data/uploading'
 
