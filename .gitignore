@@ -1,6 +1,10 @@
 *.egg-info/
 **/*/__pycache__/
+__pycache__
 *.env
 .idea
 .vscode/launch.json
 .vscode/settings.json
+/data/*
+ideafast-*-full.csv
+*.json

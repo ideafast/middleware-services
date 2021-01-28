@@ -46,12 +46,6 @@ def consumer():
 
 
 @cli.command()
-def data_transfer():
-    """Run the data transfer for local development."""
-    run_uvicorn("data_transfer.main:data_transfer", 8001)
-
-
-@cli.command()
 @click.argument('version')
 def build(version: str) -> None:
     """Build docker image."""
