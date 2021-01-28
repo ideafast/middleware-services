@@ -2,6 +2,7 @@ import requests
 import json
 
 from consumer.config import config
+from consumer.utils.errors import CustomException
 
 
 async def response(path: str, params: str = None) -> json:
