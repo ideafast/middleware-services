@@ -32,6 +32,8 @@ class Settings(BaseSettings):
     dreem_login_url: str
     dreem_api_url: str
 
+    # TODO: add VTT url, api and .csv (temporary until UCAM data), etc.
+
     # Hardcoded as this data structure is not
     # supported unless JSON is stored in .env
     dreem: dict = {
