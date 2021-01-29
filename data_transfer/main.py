@@ -45,12 +45,12 @@ def vtt_dag():
 
     # NOTE: simulates initiation of tasks upon metadata download
     # TODO: in practice the tasks should be invoked within the batch job.
-    # for record in records_not_downloaded():
-    #     # Each task should be idempotent. Returned values feeds subsequent task
-    #     mongoid = vtt_tasks.task_download_data(study_site, record.id)
-    #     mongoid = vtt_tasks.task_preprocess_data(mongoid)
-    #     # Data is finalised and moved to a folder in /uploading/
-    #     # shared_tasks.task_prepare_data("DRM", mongoid)
+    for record in records_not_downloaded():
+        # Each task should be idempotent. Returned values feeds subsequent task
+        mongoid = vtt_tasks.task_download_data(record.id)
+        mongoid = vtt_tasks.task_preprocess_data(mongoid)
+        # Data is finalised and moved to a folder in /uploading/
+        # shared_tasks.task_prepare_data("DRM", mongoid)
     
     # All said folders FOR ALL DEVICES are uploaded once per day
     # shared_jobs.batch_upload_data()

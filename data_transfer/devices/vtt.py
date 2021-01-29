@@ -15,8 +15,8 @@ class Vtt:
         """
         Set up a session to the s3 bucket to use in multiple steps
         """
-        #  self.bucket = self.authenticate()
-        self.bucket = ""
+        self.bucket = self.authenticate()
+        # self.bucket = ""
 
     def authenticate(self):
         """
@@ -59,7 +59,7 @@ class Vtt:
         # NOTE: includes metadata for ALL data records, therefore we must filter them 
         # NOTE: currently downloads all dumps (inc. historical) TODO: only since last run
         all_records = vtt_api.get_list(self.bucket)
-        
+
         # Only add records that are not known in the DB based on stored filename (ID and filename in dreem)
         unknown_records = [r for r in all_records if r['id'] not in set(all_filenames())]
 
@@ -87,6 +87,7 @@ class Vtt:
             record = Record(
                 # NOTE: id is the hashedID provided by VTT
                 filename=item['id'],
+                vtt_dump_date=item['dumps'][0],
                 device_id=device_id,
                 patient_id=patient_id,
                 start_wear=start_wear,
@@ -99,6 +100,7 @@ class Vtt:
             # Store metadata from memory to file
             utils.write_json(path, item)
     
+    
     def download_file(self, mongo_id: str) -> None:
         """
         Downloads files and store them to {config.storage_vol}
@@ -108,7 +110,7 @@ class Vtt:
         NOTE/TODO: is run as a task.
         """
         record = read_record(mongo_id)
-        is_downloaded_success = vtt_api.download_file(self.session, record.filename)
+        is_downloaded_success = vtt_api.download_file(self.bucket, record.filename, record.vtt_dump_date)
         if is_downloaded_success:
             record.is_downloaded = is_downloaded_success
             update_record(record)

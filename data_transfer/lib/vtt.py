@@ -49,53 +49,33 @@ def get_list(bucket) -> [dict]: # TODO: add typing
     # returns a list of s3.ObjectSummary() objects containing keys
     # contains metadata, such as .last_modified
     
-    # objects = bucket.objects.all()
-    # object_paths = [obj.key for obj in summary]
-    
+    objects = bucket.objects.all()
+    object_paths = [obj.key for obj in objects]
 
     # ignore users.txt files - will deduct from folders
     split_paths = [p.split('/') for p in object_paths if p.find('users.txt') == -1]
 
     # generally follows [dump_date, raw/files, patienthash, patienthash.file (.nfo or .zip)]
-    # transform list to set to list to remove duplicates due to each object having a full path
-    patients = dict()
-    for path in split_paths:
-        if path[2] in patients:
-            patients[path[2]].add()
-        patients.add(path[2])
-
-    patients = list(set(p[2] for p in split_paths))
-    patients = [dict(id=p) for p in patients]
-    # dump_dates = set(d[0] for d in split_paths)
-
-    return patients
-
-
-# def download_file(session: requests.Session, record_id: str) -> bool:
-#     """
-#     GET specified file based on known record
-#     # TODO: adapt for VTT approach
-#     """
-#     file_type = args.ftype
-#     url = __build_url(file_type, record_id)
-
-#     response = session.get(url)
-#     # TODO: catch/log exception
-#     response.raise_for_status()
-#     response = response.json()
+    patients = list(set([p[2] for p in split_paths]))
     
-#     # Used to lookup the download URL
-#     key = "url" if file_type == "raw" else "data_url"
-#     file_url = response[key]
+    result = []
+    for patient in patients:
+        # TODO: only process dump dates of interest (i.e. since last run)
+        result.append(dict(id=patient, dumps=list(set([p[0] for p in split_paths if p[2] == patient]))))
+        
+    return result
+
+
+def download_file(bucket, patient_hash: str, dump_date: str,) -> bool:  # TODO: add typing
+    """
+    GET specified file based on known record
+    """
+    ext = 'zip' if args.ftype == 'raw' else args.ftype
+    file_path = Path(config.storage_vol) / f"{patient_hash}.{ext}"
+    download_path = f"{dump_date}/raw/{patient_hash}/{patient_hash}.zip"
     
-#     # NOTE: file_url may be empty if a file is unavailable:
-#     # (1): file is on dreem headband but not uploaded
-#     # (2): file is being processed by dreem's algorithms
-#     if not file_url:
-#         return False
-#     # TODO: for now, assumes that this method never throws ...
-#     __download_file(file_url, record_id)
-#     return True
+    bucket.download_file(download_path, str(file_path))
+    return True
 
 
 def serial_by_device(uuid: str) -> Optional[str]:
@@ -137,37 +117,7 @@ def __key_by_value(filename: Path, needle: str) -> Optional[str]:
         if needle == value:
             return key
     return None
-
-
-def __download_file(url: str, record_id: str) -> None:
-    """
-    Builds the target filename and starts downloading the file to disk
-    # NOTE: this approach is specific for Dreem
-    # TODO: adapt for VTT approach
-    """
-    # NOTE: can be simplified once we agree on specific file type
-    ext = 'tar.gz' if args.ftype == 'raw' else args.ftype
-    file_path = Path(config.storage_vol) / f"{record_id}.{ext}"
-    response = requests.get(url, stream=True)
-
-    with open(file_path, "wb") as output_file:
-        for chunk in response.iter_content(chunk_size=1024):
-            if chunk:
-                output_file.write(chunk)
-
-
-def __build_url(file_type: str, record_id: str) -> (str, str):
-    """
-    Build URL based on file info. This varied by filetype, e.g., raw/EDF/H5. 
-    # TODO: adapt for VTT approach
-    """
-    # TODO: can be simplified once we determine if we will download only H5 data.
-    if file_type == "raw":
-        url = f"{config.dreem_api_url}/dreem/dataupload/data/{record_id}"
-    else:
-        url = f"{config.dreem_api_url}/dreem/algorythm/record/{record_id}/{file_type}/"
-    return url
-    
+   
 
 @lru_cache(maxsize=None)
 def __load_csv(path: Path) -> [tuple]:
