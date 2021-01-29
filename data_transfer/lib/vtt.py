@@ -7,87 +7,95 @@ from pathlib import Path
 from dataclasses import dataclass
 from typing import Optional
 from functools import lru_cache  # note: @cache exists in py >= 3.9
-import requests
 import csv
+import boto3
 
 
 @dataclass
 class VttFileDownload:
     """Use as CLI arguments for Dreem's library."""
+    # TODO: how does this relate to VTT?
     directory: Path = config.storage_vol
     # TODO: Check VTT's data file type and format and choose appopriately
-    # ftype: str = "h5"
+    ftype: str = "zip"
 
 
 # Define location and filetype to download
 args = VttFileDownload()
 
-
-def get_token(creds: dict) -> (str, str):
+def get_bucket(creds: dict): # TODO: add typing from https://pypi.org/project/mypy-boto3-s3/
     """
-    Generates a JWT token with the credentials for API access
+    Builds a S3 session bucket object to interface with the S3 bucket
+    # NOTE: https://boto3.amazonaws.com/v1/documentation/api/1.9.42/reference/services/s3.html#bucket
     """
-    # TODO: mimick for S3 bucket
-    # res = requests.post(f"{config.dreem_login_url}/token/", auth=creds)
-    # TODO: catch/log exception
-    res.raise_for_status()
-    resp = res.json()
-    return (resp["token"], resp["user_id"])
-
-
-def get_session(token: str) -> requests.Session:
-    """
-    Builds a requests session object with the required header
-    """
-    #  TODO: check if still needed / adapt for VTT
-    session = requests.Session()
-    session.headers.update({"Authorization": f"Bearer {token}"})
-    return session
-
-
-def get_restricted_list(session: requests.Session, user_id: str) -> [dict]:
-    """
-    GET all records (metadata) associated with a restricted account (e.g. study site)
-    TODO: adapt for VTT approach
-    """
-    url = f"{config.dreem_api_url}/dreem/algorythm/restricted_list/{user_id}/record/"
-    results = []
-
-    while url:
-        response = session.get(url)
-        # TODO: catch/log exception
-        response.raise_for_status()
-        response = response.json()
-        url = response["next"]
-        results.extend(response["results"])
-    return results
-
-
-def download_file(session: requests.Session, record_id: str) -> bool:
-    """
-    GET specified file based on known record
-    # TODO: adapt for VTT approach
-    """
-    file_type = args.ftype
-    url = __build_url(file_type, record_id)
-
-    response = session.get(url)
-    # TODO: catch/log exception
-    response.raise_for_status()
-    response = response.json()
+    session = boto3.session.Session(
+        aws_access_key_id=creds['aws_ak'], 
+        aws_secret_access_key=creds['aws_ask'],
+    )
     
-    # Used to lookup the download URL
-    key = "url" if file_type == "raw" else "data_url"
-    file_url = response[key]
+    s3 = session.resource('s3')
+    bucket = s3.Bucket(creds['bucket_name'])    
     
-    # NOTE: file_url may be empty if a file is unavailable:
-    # (1): file is on dreem headband but not uploaded
-    # (2): file is being processed by dreem's algorithms
-    if not file_url:
-        return False
-    # TODO: for now, assumes that this method never throws ...
-    __download_file(file_url, record_id)
-    return True
+    return bucket
+
+
+def get_list(bucket) -> [dict]: # TODO: add typing
+    """
+    GET all records (metadata) from the AWS S3 bucket 
+    """
+    # using boto3 Resource instead of Client for a readable
+    # object oriented approach. Not 100% coverage of AWS API functionality
+    
+    # returns a list of s3.ObjectSummary() objects containing keys
+    # contains metadata, such as .last_modified
+    
+    # objects = bucket.objects.all()
+    # object_paths = [obj.key for obj in summary]
+    
+
+    # ignore users.txt files - will deduct from folders
+    split_paths = [p.split('/') for p in object_paths if p.find('users.txt') == -1]
+
+    # generally follows [dump_date, raw/files, patienthash, patienthash.file (.nfo or .zip)]
+    # transform list to set to list to remove duplicates due to each object having a full path
+    patients = dict()
+    for path in split_paths:
+        if path[2] in patients:
+            patients[path[2]].add()
+        patients.add(path[2])
+
+    patients = list(set(p[2] for p in split_paths))
+    patients = [dict(id=p) for p in patients]
+    # dump_dates = set(d[0] for d in split_paths)
+
+    return patients
+
+
+# def download_file(session: requests.Session, record_id: str) -> bool:
+#     """
+#     GET specified file based on known record
+#     # TODO: adapt for VTT approach
+#     """
+#     file_type = args.ftype
+#     url = __build_url(file_type, record_id)
+
+#     response = session.get(url)
+#     # TODO: catch/log exception
+#     response.raise_for_status()
+#     response = response.json()
+    
+#     # Used to lookup the download URL
+#     key = "url" if file_type == "raw" else "data_url"
+#     file_url = response[key]
+    
+#     # NOTE: file_url may be empty if a file is unavailable:
+#     # (1): file is on dreem headband but not uploaded
+#     # (2): file is being processed by dreem's algorithms
+#     if not file_url:
+#         return False
+#     # TODO: for now, assumes that this method never throws ...
+#     __download_file(file_url, record_id)
+#     return True
 
 
 def serial_by_device(uuid: str) -> Optional[str]:

@@ -29,10 +29,13 @@ class Settings(BaseSettings):
     support_base_url: str
     support_token: str
 
+    # NOTE: VTT does not differentiate between study sites
+    vtt_aws_accesskey: str
+    vtt_aws_secret_accesskey: str
+    vtt_aws_bucket_name: str
+
     dreem_login_url: str
     dreem_api_url: str
-
-    # TODO: add VTT url, api and .csv (temporary until UCAM data), etc.
 
     # Hardcoded as this data structure is not
     # supported unless JSON is stored in .env

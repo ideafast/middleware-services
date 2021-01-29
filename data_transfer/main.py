@@ -33,33 +33,28 @@ def dreem_dag(study_site):
     # All said folders FOR ALL DEVICES are uploaded once per day
     # shared_jobs.batch_upload_data()
 
-def vtt_dag(study_site):
+def vtt_dag():
     """
-    Directed acyclic graph (DAG) representing dreem data pipeline:
-
-        batch_metadata
-            ->task_download_data
-            ->task_preprocess_data
-            ->task_prepare_data
-        ->batch_upload_data
+    Directed acyclic graph (DAG) representing data_transfer pipeline as used for all devices
+    Note that VTT does not distinguish between study sites
 
     NOTE/TODO: this method simulates the pipeline.
     """
     # TODO: adjust for VTT
-    # dreem_jobs.batch_metadata(study_site)
+    vtt_jobs.batch_metadata()
 
     # NOTE: simulates initiation of tasks upon metadata download
     # TODO: in practice the tasks should be invoked within the batch job.
-    for record in records_not_downloaded():
-        # Each task should be idempotent. Returned values feeds subsequent task
-        # mongoid = dreem_tasks.task_download_data(study_site, record.id)
-        # mongoid = dreem_tasks.task_preprocess_data(mongoid)
-        # Data is finalised and moved to a folder in /uploading/
-        shared_tasks.task_prepare_data("DRM", mongoid)
+    # for record in records_not_downloaded():
+    #     # Each task should be idempotent. Returned values feeds subsequent task
+    #     mongoid = vtt_tasks.task_download_data(study_site, record.id)
+    #     mongoid = vtt_tasks.task_preprocess_data(mongoid)
+    #     # Data is finalised and moved to a folder in /uploading/
+    #     # shared_tasks.task_prepare_data("DRM", mongoid)
     
     # All said folders FOR ALL DEVICES are uploaded once per day
     # shared_jobs.batch_upload_data()
 
 if __name__ == "__main__":
     # dreem_dag("munster")
-    vtt_dag("munster")
+    vtt_dag()
