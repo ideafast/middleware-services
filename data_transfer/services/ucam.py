@@ -65,6 +65,42 @@ def get_record(patient_id: str) -> Optional[PatientRecord]:
     return PatientRecord(patient, devices)
 
 
+def record_by_vtt(vtt_hash: str) -> Optional[PatientRecord]:
+    """
+    Return a patient record based on then Hashed ID provided by VTT
+    The VTT hashes are unique to each patient
+
+    GET /vtt/<vtt_hash>/      
+    """
+    patient_records = [r for r in __get_patients() if r.vttsma_id == vtt_hash]
+    
+    # No records exist for that patient, 
+    # e.g., if a device was not worn or a staff member forget to add the record
+    if len(patient_records) == 0:
+        return None
+
+    # Records returned from UCAM contain the patient ID in each row.
+    # Rather than duplicating this, we create it once, then associate
+    # all other rows (i.e., devices) below
+    patient = patient_records[0]
+    patient = Patient(patient.patient_id, patient.disease)
+
+    def __device_from_record(device: Payload) -> Device:
+        """
+        Convenient method to only store Device-specific metadata.
+        """
+        return Device(
+            id=device.device_id, 
+            vttsma_id=device.vttsma_id, 
+            devitations=device.devitations,
+            start_wear=device.start_wear,
+            end_wear=device.end_wear
+        )
+
+    devices = [__device_from_record(r) for r in patient_records]
+    return PatientRecord(patient, devices)
+
+
 def device_history(device_id: str) -> [Payload]:
     """
     A device may be worn by many patients. This returns such history.

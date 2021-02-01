@@ -1,6 +1,6 @@
 from data_transfer.config import config
 from data_transfer.lib import vttsma as vttsma_api
-from data_transfer.services import inventory
+from data_transfer.services import inventory, ucam
 from data_transfer.schemas.record import Record
 from data_transfer.db import create_record, \
     read_record, update_record, all_filenames
@@ -65,39 +65,30 @@ class Vttsma:
         # Aim: construct valid record (metadata) and add to DB
         for item in unknown_records:
 
-            # device_serial = dreem_api.serial_by_device(item['device'])
-            # device_id = inventory.device_id_by_serial(device_serial)
-            device_id = 'x'
+            if patient_record := ucam.record_by_vtt(item['id']):
+                device_used = [r for r in patient_record.devices if r.vttsma_id == item['id']]
 
-            # NOTE: lookup Patient ID by email: if None (e.g. personal email used), then use inventory
-            # patient_id = dreem_api.patient_id_by_user(item['user']) or inventory.patient_id_by_device_id(device_id)
-            patient_id = 'x'
+                # Assuming that only one device (phone) is used for the VTT SMA
+                device_used = device_used[0]
+
+                record = Record(
+                    filename=device_used.vttsma_id,             # NOTE: id is the hashedID provided by VTT
+                    vttsma_dump_date=item['dumps'][0],          # TODO: expect data across dumps
+                    device_id=device_used.vttsma_id,            # Currently the VTT SMA hash represents the device, might change
+                    patient_id=patient_record.patient.id,
+                    start_wear=device_used.start_wear,
+                    end_wear=device_used.end_wear
+                )
+
+                create_record(record)
+
+                path = Path(config.storage_vol / f'{record.filename}-meta.json')
+                # Store metadata from memory to file
+                utils.write_json(path, item)
             
-            # NOTE: using inventory to determine intended wear time period.
-            # Useful for historical data, but (TODO) should be replaced with UCAM API. 
-            # history = inventory.device_history(device_id)[patient_id]
-
-            # start_wear = utils.format_inventory_weartime(history['checkout'])
-            # NOTE: if device not returned the current day is used.
-            # end_wear = utils.format_inventory_weartime(history['checkin'])
-            start_wear = utils.format_inventory_weartime("2020-01-01 01:01:01")
-            end_wear = utils.format_inventory_weartime("2020-01-01 01:01:01")
-
-            record = Record(
-                # NOTE: id is the hashedID provided by VTT
-                filename=item['id'],
-                vttsma_dump_date=item['dumps'][0],
-                device_id=device_id,
-                patient_id=patient_id,
-                start_wear=start_wear,
-                end_wear=end_wear
-            )
-
-            create_record(record)
-
-            path = Path(config.storage_vol / f'{record.filename}-meta.json')
-            # Store metadata from memory to file
-            utils.write_json(path, item)
+            else:
+                # throw / log here
+                pass
     
     
     def download_file(self, mongo_id: str) -> None:

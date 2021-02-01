@@ -15,7 +15,7 @@ class Record(BaseModel):
     start_wear: datetime
     end_wear: datetime
 
-    vtt_dump_date: Optional[str]
+    vttsma_dump_date: Optional[str]
 
     # Each stage of the pipeline
     is_downloaded: Optional[bool] = False

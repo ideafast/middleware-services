@@ -3,7 +3,8 @@ from data_transfer.config import config
 
 
 FILE_TYPES = {
-    'DRM': '.h5'
+    'DRM': '.h5',
+    'SMA': '.zip'
 }
 
 
