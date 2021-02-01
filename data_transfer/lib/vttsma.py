@@ -3,6 +3,7 @@
 # endpoint rather than pull from a CSV file.
 
 from data_transfer.config import config
+from data_transfer.services import dmpy
 from pathlib import Path
 from dataclasses import dataclass
 from typing import Optional
@@ -54,7 +55,7 @@ def get_list(bucket: Bucket) -> [dict]:
     # ignore users.txt files - duplicate data present in object key
     split_paths = [p.split('/') for p in object_paths if p.find('users.txt') == -1]
 
-    # follows [dump_date, raw/files, patienthash, patienthash.file (.nfo or .zip)]
+    # follows [dump_date, raw/files, patienthash, patienthash.nfo/.zip/.audio?)]
     patients = list(set([p[2] for p in split_paths]))
     
     result = []
@@ -65,13 +66,23 @@ def get_list(bucket: Bucket) -> [dict]:
     return result
 
 
-def download_file(bucket: Bucket, patient_hash: str, dump_date: str,) -> bool: 
+def download_files(bucket: Bucket, patient_hash: str, dump_date: str,) -> bool: 
     """
-    GET specified file based on known record
+    GET all files associated with the known record.
+    NOTE: S3 folder association is symbolic, so a need to pull down data
+    through a nested loop.
     """
     ext = 'zip' if args.ftype == 'raw' else args.ftype
-    file_path = Path(config.storage_vol) / f"{patient_hash}.{ext}"
-    download_path = f"{dump_date}/raw/{patient_hash}/{patient_hash}.zip"
+    folder_path = Path(config.storage_vol) / f"{patient_hash}"
     
-    bucket.download_file(download_path, str(file_path))
+    for prefix in ['raw','files']:
+        sub_folder = folder_path/prefix
+        sub_folder.mkdir(parents=True, exist_ok=True)
+        for obj in bucket.objects.filter(Prefix=f"{dump_date}/{prefix}/{patient_hash}"):
+            file_name = obj.key.rsplit('/',1)[1]
+            bucket.download_file(obj.key, str(folder_path/prefix/file_name))
+
+    # added method to dmpy service
+    dmpy.zip_folder_and_rm_local(folder_path)
+
     return True

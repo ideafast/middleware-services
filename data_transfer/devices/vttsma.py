@@ -100,7 +100,7 @@ class Vttsma:
         NOTE/TODO: is run as a task.
         """
         record = read_record(mongo_id)
-        is_downloaded_success = vttsma_api.download_file(self.bucket, record.filename, record.vttsma_dump_date)
+        is_downloaded_success = vttsma_api.download_files(self.bucket, record.filename, record.vttsma_dump_date)
         if is_downloaded_success:
             record.is_downloaded = is_downloaded_success
             update_record(record)
