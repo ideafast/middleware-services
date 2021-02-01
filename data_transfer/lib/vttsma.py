@@ -12,7 +12,7 @@ import boto3
 
 
 @dataclass
-class VttFileDownload:
+class VttsmaFileDownload:
     """Use as CLI arguments for Dreem's library."""
     # TODO: how does this relate to VTT?
     directory: Path = config.storage_vol
@@ -21,7 +21,7 @@ class VttFileDownload:
 
 
 # Define location and filetype to download
-args = VttFileDownload()
+args = VttsmaFileDownload()
 
 def get_bucket(creds: dict): # TODO: add typing from https://pypi.org/project/mypy-boto3-s3/
     """

@@ -1,5 +1,5 @@
 from data_transfer.config import config
-from data_transfer.lib import vtt as vtt_api
+from data_transfer.lib import vttsma as vttsma_api
 from data_transfer.services import inventory
 from data_transfer.schemas.record import Record
 from data_transfer.db import create_record, \
@@ -10,7 +10,7 @@ from pathlib import Path
 from datetime import datetime
 import json
 
-class Vtt:
+class Vttsma:
     def __init__(self):
         """
         Set up a session to the s3 bucket to use in multiple steps
@@ -23,12 +23,12 @@ class Vtt:
         Authenticate once when object created to share session between requests
         """
         credentials = dict(
-            aws_ak=config.vtt_aws_accesskey, 
-            aws_ask=config.vtt_aws_secret_accesskey, 
-            bucket_name=config.vtt_aws_bucket_name,
+            aws_ak=config.vttsma_aws_accesskey, 
+            aws_ask=config.vttsma_aws_secret_accesskey, 
+            bucket_name=config.vttsma_aws_bucket_name,
             )
 
-        bucket = vtt_api.get_bucket(credentials)
+        bucket = vttsma_api.get_bucket(credentials)
         return bucket
 
     def download_metadata(self) -> None:
@@ -58,7 +58,7 @@ class Vtt:
         
         # NOTE: includes metadata for ALL data records, therefore we must filter them 
         # NOTE: currently downloads all dumps (inc. historical) TODO: only since last run
-        all_records = vtt_api.get_list(self.bucket)
+        all_records = vttsma_api.get_list(self.bucket)
 
         # Only add records that are not known in the DB based on stored filename (ID and filename in dreem)
         unknown_records = [r for r in all_records if r['id'] not in set(all_filenames())]
@@ -87,7 +87,7 @@ class Vtt:
             record = Record(
                 # NOTE: id is the hashedID provided by VTT
                 filename=item['id'],
-                vtt_dump_date=item['dumps'][0],
+                vttsma_dump_date=item['dumps'][0],
                 device_id=device_id,
                 patient_id=patient_id,
                 start_wear=start_wear,
@@ -110,7 +110,7 @@ class Vtt:
         NOTE/TODO: is run as a task.
         """
         record = read_record(mongo_id)
-        is_downloaded_success = vtt_api.download_file(self.bucket, record.filename, record.vtt_dump_date)
+        is_downloaded_success = vttsma_api.download_file(self.bucket, record.filename, record.vttsma_dump_date)
         if is_downloaded_success:
             record.is_downloaded = is_downloaded_success
             update_record(record)

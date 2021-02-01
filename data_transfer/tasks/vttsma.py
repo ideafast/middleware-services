@@ -1,13 +1,13 @@
 
 from data_transfer.db import read_record, update_record
-from data_transfer.devices.vtt import Vtt
+from data_transfer.devices.vttsma import Vttsma
 
 
 def task_download_data(mongoid: str) -> str:
     """
     Download a datafile for the VTT dump device.
     """
-    Vtt().download_file(mongoid)
+    Vttsma().download_file(mongoid)
     return mongoid
 
 

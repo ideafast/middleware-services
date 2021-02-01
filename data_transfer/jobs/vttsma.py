@@ -1,5 +1,5 @@
 
-from data_transfer.devices.vtt import Vtt
+from data_transfer.devices.vttsma import Vttsma
 from data_transfer.schemas.record import Record
 
 
@@ -11,5 +11,5 @@ def batch_metadata() -> [Record]:
 
     NOTE/TODO: this cron batch should be run weekly to accomodate the weekly VTT S3 dump
     """
-    vtt = Vtt()
-    vtt.download_metadata()
+    vttsma = Vttsma()
+    vttsma.download_metadata()
