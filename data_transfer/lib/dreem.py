@@ -6,12 +6,12 @@
 # endpoint rather than pull from a CSV file.
 
 from data_transfer.config import config
+from data_transfer.utils import read_csv_from_cache
 from pathlib import Path
 from dataclasses import dataclass
 from typing import Optional
-from functools import lru_cache  # note: @cache exists in py >= 3.9
+
 import requests
-import csv
 
 
 @dataclass
@@ -122,11 +122,10 @@ def __key_by_value(filename: Path, needle: str) -> Optional[str]:
     """
     Helper method to find key in CSV by value (needle)
     """
-    data = __load_csv(filename)
-    for pair in data:
-        key, value = pair
-        if needle == value:
-            return key
+    data = read_csv_from_cache(filename)
+    for item in data:
+        if needle == item['hash']:
+            return item['value']
     return None
 
 
@@ -155,14 +154,3 @@ def __build_url(file_type: str, record_id: str) -> (str, str):
     else:
         url = f"{config.dreem_api_url}/dreem/algorythm/record/{record_id}/{file_type}/"
     return url
-    
-
-@lru_cache(maxsize=None)
-def __load_csv(path: Path) -> [tuple]:
-    """
-    Load full CSV into memory for quick lookup
-    """
-    with open(path) as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        data = [(row[0], row[1]) for row in csv_reader]
-    return data

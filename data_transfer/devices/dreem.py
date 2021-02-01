@@ -57,10 +57,9 @@ class Dreem:
             # Useful for historical data, but (TODO) should be replaced with UCAM API. 
             history = inventory.device_history(device_id)[patient_id]
 
-            start_wear = utils.format_inventory_weartime(history['checkout'])
+            start_wear = utils.format_weartime(history['checkout'])
             # NOTE: if device not returned the current day is used.
-            end_wear = utils.format_inventory_weartime(history['checkin'])
-
+            end_wear = utils.format_weartime(history['checkin'])
             record = Record(
                 # NOTE: id is a unique uuid used to GET raw data from Dreem
                 filename=item['id'],

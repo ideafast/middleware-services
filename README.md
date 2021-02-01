@@ -1,6 +1,6 @@
 # IDEA-FAST WP3 Middleware Services
 
-Currently developing scripts to facilitate data transfer between sensor device manufactures and IDEA-FAST's internal data platform, and a separate API to provide updates on device wear and use.
+Currently developing scripts to facilitate _data transfer_ between sensor device manufactures and IDEA-FAST's internal data platform, and a separate _consumer_ API to provide updates on device wear and use.
 
 ## Installation
 
@@ -50,7 +50,3 @@ We use [Docker Hub](https://hub.docker.com/u/ideafast) to store images. To push
 to your own image, update `REGISTRY` inside `cli.py` and run:
 
     poetry run publish $VERSION
-
-## Documentation
-
-Interactive documentation is available in **Swagger** ([/docs](http://127.0.0.1:8000/docs)) and **ReDoc** ([/redoc](http://127.0.0.1:8000/redoc)).
