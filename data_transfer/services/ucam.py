@@ -21,7 +21,7 @@ class UCAMPayload:
 
     device_id: str
     devitations: str
-    sma_id: str
+    vttsma_id: str
     start_wear: datetime
     end_wear: datetime
 
@@ -29,7 +29,7 @@ class UCAMPayload:
 @dataclass
 class Device:
     id: str
-    sma_id: str
+    vttsma_id: str
     devitations: str
     start_wear: datetime
     end_wear: datetime
@@ -65,7 +65,7 @@ def __get_patients() -> [UCAMPayload]:
             device_id=data['DeviceID'],
             patient_id=data['SubjectID'],
             devitations=data['Deviations'],
-            sma_id=data['VTTGeneratedParticipantID'],
+            vttsma_id=data['VTTGeneratedParticipantID'],
             start_wear=format_weartime(data['StartDate'], 'ucam'),
             end_wear=format_weartime(data['EndDate'], 'ucam'),
             disease=data['SubjectGroup']
@@ -96,7 +96,7 @@ def get_record(patient_id: str) -> Optional[PatientRecord]:
         """
         return Device(
             id=device.device_id, 
-            sma_id=device.sma_id, 
+            vttsma_id=device.vttsma_id, 
             devitations=device.devitations,
             start_wear=device.start_wear,
             end_wear=device.end_wear

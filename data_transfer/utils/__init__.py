@@ -27,7 +27,7 @@ def read_csv_from_cache(path: Path) -> [dict]:
 
 def read_json(filepath: Path) -> json:
     with open(filepath, 'r') as f:
-            data = f.read()
+        data = f.read()
     return json.loads(data)
 
 
