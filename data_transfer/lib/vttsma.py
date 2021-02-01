@@ -8,7 +8,9 @@ from dataclasses import dataclass
 from typing import Optional
 from functools import lru_cache  # note: @cache exists in py >= 3.9
 import csv
+
 import boto3
+from mypy_boto3_s3.service_resource import Bucket
 
 
 @dataclass
@@ -23,10 +25,9 @@ class VttsmaFileDownload:
 # Define location and filetype to download
 args = VttsmaFileDownload()
 
-def get_bucket(creds: dict): # TODO: add typing from https://pypi.org/project/mypy-boto3-s3/
+def get_bucket(creds: dict) -> Bucket:
     """
     Builds a S3 session bucket object to interface with the S3 bucket
-    # NOTE: https://boto3.amazonaws.com/v1/documentation/api/1.9.42/reference/services/s3.html#bucket
     """
     session = boto3.session.Session(
         aws_access_key_id=creds['aws_ak'], 
@@ -39,23 +40,21 @@ def get_bucket(creds: dict): # TODO: add typing from https://pypi.org/project/my
     return bucket
 
 
-def get_list(bucket) -> [dict]: # TODO: add typing
+def get_list(bucket: Bucket) -> [dict]:
     """
     GET all records (metadata) from the AWS S3 bucket 
-    """
-    # using boto3 Resource instead of Client for a readable
-    # object oriented approach. Not 100% coverage of AWS API functionality
-    
-    # returns a list of s3.ObjectSummary() objects containing keys
-    # contains metadata, such as .last_modified
-    
+
+    NOTE: S3 folder structure is symbolic. The 'key' (str) for each file object \
+        represents the path. See also `download_metadata()` in devices > vttsma.py \
+        When split, results in [dump_date, raw/files, patienthash, patienthash.nfo/.zip]
+    """    
     objects = bucket.objects.all()
     object_paths = [obj.key for obj in objects]
 
-    # ignore users.txt files - will deduct from folders
+    # ignore users.txt files - duplicate data present in object key
     split_paths = [p.split('/') for p in object_paths if p.find('users.txt') == -1]
 
-    # generally follows [dump_date, raw/files, patienthash, patienthash.file (.nfo or .zip)]
+    # follows [dump_date, raw/files, patienthash, patienthash.file (.nfo or .zip)]
     patients = list(set([p[2] for p in split_paths]))
     
     result = []
@@ -66,7 +65,7 @@ def get_list(bucket) -> [dict]: # TODO: add typing
     return result
 
 
-def download_file(bucket, patient_hash: str, dump_date: str,) -> bool:  # TODO: add typing
+def download_file(bucket: Bucket, patient_hash: str, dump_date: str,) -> bool: 
     """
     GET specified file based on known record
     """

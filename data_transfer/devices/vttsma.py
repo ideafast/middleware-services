@@ -16,7 +16,6 @@ class Vttsma:
         Set up a session to the s3 bucket to use in multiple steps
         """
         self.bucket = self.authenticate()
-        # self.bucket = ""
 
     def authenticate(self):
         """
@@ -34,7 +33,7 @@ class Vttsma:
     def download_metadata(self) -> None:
         """
         Before downloading raw data we need to know which files to download.
-        VTT provides a weekly dump in an S3 bucket, with the structure:
+        VTT provides a weekly dump in an S3 bucket, with a symbolic structure:
         .
         ├── data_yyyy_mm_dd
         │   ├── users.txt
@@ -60,7 +59,7 @@ class Vttsma:
         # NOTE: currently downloads all dumps (inc. historical) TODO: only since last run
         all_records = vttsma_api.get_list(self.bucket)
 
-        # Only add records that are not known in the DB based on stored filename (ID and filename in dreem)
+        # Only add records that are not known in the DB based on stored filename (id = VTT hash id)
         unknown_records = [r for r in all_records if r['id'] not in set(all_filenames())]
 
         # Aim: construct valid record (metadata) and add to DB

@@ -49,7 +49,7 @@ def vttsma_dag():
         mongoid = vttsma_tasks.task_download_data(record.id)
         mongoid = vttsma_tasks.task_preprocess_data(mongoid)
         # Data is finalised and moved to a folder in /uploading/
-        # shared_tasks.task_prepare_data("DRM", mongoid)
+        # shared_tasks.task_prepare_data("SMA", mongoid)
     
     # All said folders FOR ALL DEVICES are uploaded once per day
     # shared_jobs.batch_upload_data()
