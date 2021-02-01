@@ -1,67 +1,23 @@
 from data_transfer.config import config
+from data_transfer.schemas.ucam import Payload, Device, Patient, PatientRecord
 from data_transfer.utils import format_weartime, read_csv_from_cache
-from dataclasses import dataclass
+
 from datetime import datetime
 from typing import Optional
 
 
-@dataclass
-class UCAMPayload:
-    """
-    UCAM uses different field naming than our middleware. This Payload
-    Creates consistency between how Records are used
-
-    Current return values from UCAM DB:
-        SubjectID, Deviations, DeviceID, 
-        VTTGeneratedParticipantID, StartDate, 
-        EndDate, SubjectGroup
-    """
-    patient_id: str
-    disease: str
-
-    device_id: str
-    devitations: str
-    vttsma_id: str
-    start_wear: datetime
-    end_wear: datetime
-
-
-@dataclass
-class Device:
-    id: str
-    vttsma_id: str
-    devitations: str
-    start_wear: datetime
-    end_wear: datetime
-
-
-@dataclass
-class Patient:
-    id: str
-    disease: str
-
-
-@dataclass
-class PatientRecord:
-    """
-    Simplifies accessing Devices a Patient used.
-    """
-    patient: Patient
-    devices: [Device]
-
-
-def __get_patients() -> [UCAMPayload]:
+def __get_patients() -> [Payload]:
     """
     All records from the UCAM DB.
     
     GET /patients/
     """
-    def __create_record(data: dict) -> UCAMPayload:
+    def __create_record(data: dict) -> Payload:
         """
         Convenient method to serialise payload.
         Creates mapping between UCAM and our intended use.
         """
-        return UCAMPayload(
+        return Payload(
             device_id=data['DeviceID'],
             patient_id=data['SubjectID'],
             devitations=data['Deviations'],
@@ -87,10 +43,13 @@ def get_record(patient_id: str) -> Optional[PatientRecord]:
     if len(patient_records) == 0:
         return None
 
+    # Records returned from UCAM contain the patient ID in each row.
+    # Rather than duplicating this, we create it once, then associate
+    # all other rows (i.e., devices) below
     patient = patient_records[0]
     patient = Patient(patient.patient_id, patient.disease)
 
-    def __device_from_record(device: UCAMPayload) -> Device:
+    def __device_from_record(device: Payload) -> Device:
         """
         Convenient method to only store Device-specific metadata.
         """
@@ -106,14 +65,14 @@ def get_record(patient_id: str) -> Optional[PatientRecord]:
     return PatientRecord(patient, devices)
 
 
-def device_history(device_id: str) -> [UCAMPayload]:
+def device_history(device_id: str) -> [Payload]:
     """
     A device may be worn by many patients. This returns such history.
     """
     return [r for r in __get_patients() if r.device_id == device_id]
 
 
-def record_by_wear_period(device_id: str, start_wear: datetime, end_wear: datetime) -> Optional[UCAMPayload]:
+def record_by_wear_period(device_id: str, start_wear: datetime, end_wear: datetime) -> Optional[Payload]:
     """
     If data was created on a certain period then it belongs to an individual patient.
     """
