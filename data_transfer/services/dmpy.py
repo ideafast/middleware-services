@@ -8,7 +8,7 @@ def zip_folder(path: Path) -> Path:
 
 def zip_folder_and_rm_local(path: Path) -> Path:
     """Zips folder and removes the original immediately"""
-    zip_path = Path(shutil.make_archive(path, 'zip', path))
+    zip_path = zip_folder(path)
     shutil.rmtree(path)
     return zip_path
 

@@ -1,30 +1,11 @@
-# NOTE: some methods exist for convience and will be advanced
-# for the CVS, e.g. serial_by_device_uuid might to hit a live 
-# endpoint rather than pull from a CSV file.
-
 from data_transfer.config import config
 from data_transfer.services import dmpy
 from pathlib import Path
 from dataclasses import dataclass
-from typing import Optional
-from functools import lru_cache  # note: @cache exists in py >= 3.9
-import csv
 
 import boto3
 from mypy_boto3_s3.service_resource import Bucket
 
-
-@dataclass
-class VttsmaFileDownload:
-    """Use as CLI arguments for Dreem's library."""
-    # TODO: how does this relate to VTT?
-    directory: Path = config.storage_vol
-    # TODO: Check VTT's data file type and format and choose appopriately
-    ftype: str = "zip"
-
-
-# Define location and filetype to download
-args = VttsmaFileDownload()
 
 def get_bucket(creds: dict) -> Bucket:
     """
@@ -56,14 +37,12 @@ def get_list(bucket: Bucket) -> [dict]:
 
     # follows [dump_date, raw/files, patienthash, patienthash.nfo/.zip/.audio?)]
     # remove duplicates via a set()
-    patients = list(set([p[2] for p in split_paths]))
+    patients = set([p[2] for p in split_paths])
     
-    result = []
-    for patient in patients:
-        # TODO: only process dump dates of interest (i.e. since last run)
-        result.append(dict(id=patient, dumps=list(set([p[0] for p in split_paths if p[2] == patient]))))
-        
-    return result
+    return [
+      dict(id=patient, dumps=list(set([p[0] for p in split_paths if p[2] == patient]))) 
+      for patient in patients
+    ]
 
 
 def download_files(bucket: Bucket, patient_hash: str, dump_date: str,) -> bool: 
@@ -71,7 +50,6 @@ def download_files(bucket: Bucket, patient_hash: str, dump_date: str,) -> bool:
     GET all files associated with the known record.
     NOTE: S3 folder association is symbolic, so a need to pull down data through a nested loop.
     """
-    ext = 'zip' if args.ftype == 'raw' else args.ftype
     folder_path = Path(config.storage_vol) / f"{patient_hash}"
     
     # 'raw' and 'files' are 2nd level top folders
