@@ -1,13 +1,16 @@
 from data_transfer.db import update_record, read_record
 from data_transfer.config import config
+from data_transfer.utils import DeviceType
 
 
 FILE_TYPES = {
-    'DRM': '.h5'
+    # Possibly move this to utils or embed with the enums
+    'DRM': '.h5',
+    'SMA': '.zip'
 }
 
 
-def task_prepare_data(device_name: str, mongo_id: str) -> None:
+def task_prepare_data(device_type: DeviceType, mongo_id: str) -> None:
     """
     Moves all data (meta/raw/preprocessed) from /input/ into one 
     folder by Device/Patient ID in /uploading of the format:
@@ -36,7 +39,7 @@ def task_prepare_data(device_name: str, mongo_id: str) -> None:
     if not destination.exists():
         destination.mkdir()
     
-    for extension in [FILE_TYPES[device_name], "-meta.json"]:
+    for extension in [FILE_TYPES[device_type.name], "-meta.json"]:
         fname = f'{record.filename}{extension}'
         
         old_path = data_input / fname

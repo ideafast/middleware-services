@@ -29,6 +29,12 @@ class Settings(BaseSettings):
     support_base_url: str
     support_token: str
 
+    # NOTE: VTT does not differentiate between study sites
+    vttsma_aws_accesskey: str
+    vttsma_aws_secret_accesskey: str
+    vttsma_aws_bucket_name: str
+    vttsma_global_device_id: str
+
     dreem_login_url: str
     dreem_api_url: str
 

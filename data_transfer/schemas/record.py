@@ -10,10 +10,13 @@ class Record(BaseModel):
     """
     id: Optional[Any] = Field(alias='_id')
     filename: str
+    device_type: str
     device_id: str
     patient_id: str
     start_wear: datetime
     end_wear: datetime
+
+    vttsma_export_date: Optional[str]
 
     # Each stage of the pipeline
     is_downloaded: Optional[bool] = False

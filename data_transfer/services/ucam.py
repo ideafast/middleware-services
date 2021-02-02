@@ -29,15 +29,12 @@ def __get_patients() -> [Payload]:
 
     return [__create_record(d) for d in read_csv_from_cache(config.ucam_data)]
 
-
-def get_record(patient_id: str) -> Optional[PatientRecord]:
+def __serialise_records(patient_records: [Payload]) -> Optional[PatientRecord]:
     """
-    Transforms the payload for consistent access with Record
-
-    GET /patients/<patient_id>/
-    """
-    patient_records = [r for r in __get_patients() if r.patient_id == patient_id]
+    All records from the UCAM DB.
     
+    GET /patients/
+    """
     # No records exist for that patient, 
     # e.g., if a device was not worn or a staff member forget to add the record
     if len(patient_records) == 0:
@@ -64,6 +61,27 @@ def get_record(patient_id: str) -> Optional[PatientRecord]:
     devices = [__device_from_record(r) for r in patient_records]
     return PatientRecord(patient, devices)
 
+
+def get_record(patient_id: str) -> Optional[PatientRecord]:
+    """
+    Transforms the payload for consistent access with Record
+
+    GET /patients/<patient_id>/
+    """
+    patient_records = [r for r in __get_patients() if r.patient_id == patient_id]
+    return __serialise_records(patient_records)
+
+
+def record_by_vtt(vtt_hash: str) -> Optional[PatientRecord]:
+    """
+    Return a patient record based on then Hashed ID provided by VTT
+    The VTT hashes are unique to each patient
+
+    GET /vtt/<vtt_hash>/      
+    """
+    patient_records = [r for r in __get_patients() if r.vttsma_id == vtt_hash]
+    return __serialise_records(patient_records)
+    
 
 def device_history(device_id: str) -> [Payload]:
     """
