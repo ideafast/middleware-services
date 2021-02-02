@@ -55,7 +55,6 @@ class Vttsma:
         NOTE/TODO: will run as BATCH job.
         """
         
-        # NOTE: includes metadata for ALL data records, therefore we must filter them 
         # NOTE: currently downloads all dumps (inc. historical) TODO: only since last run
         all_records = vttsma_api.get_list(self.bucket)
 
