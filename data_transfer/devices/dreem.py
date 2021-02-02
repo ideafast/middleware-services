@@ -63,6 +63,7 @@ class Dreem:
             record = Record(
                 # NOTE: id is a unique uuid used to GET raw data from Dreem
                 filename=item['id'],
+                device_type=utils.DeviceType.DRM.name,
                 device_id=device_id,
                 patient_id=patient_id,
                 start_wear=start_wear,

@@ -73,6 +73,7 @@ class Vttsma:
 
                 record = Record(
                     filename=device_used.vttsma_id,             # NOTE: id is the hashedID provided by VTT
+                    device_type=utils.DeviceType.SMA.name,
                     vttsma_dump_date=item['dumps'][0],          # TODO: expect data across dumps
                     device_id=config.vttsma_global_device_id,   # All VTT-SMA share the same device ID
                     patient_id=patient_record.patient.id,

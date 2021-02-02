@@ -1,9 +1,24 @@
+from enum import Enum
 from datetime import datetime
 from pathlib import Path
 from functools import lru_cache
 
 import csv
 import json
+
+
+class DeviceType(Enum):
+    AX6 = 1 # Axivity
+    BTF = 2 # Byteflies
+    DRM = 3 # Dreem
+    TFA = 4 # Think Fast
+    BVN = 5 # Everion
+    MMM = 6 # Move Monitor
+    SMP = 7 # Samsung Smartphone
+    SMA = 8 # Stress Monitor App
+    BED = 9 # EBedSensor
+    VTP = 10 # Vital Patch
+    YSM = 11 # ZKOne YOLI
 
 
 FORMATS = {

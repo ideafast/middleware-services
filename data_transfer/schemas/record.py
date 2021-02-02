@@ -10,6 +10,7 @@ class Record(BaseModel):
     """
     id: Optional[Any] = Field(alias='_id')
     filename: str
+    device_type: str
     device_id: str
     patient_id: str
     start_wear: datetime

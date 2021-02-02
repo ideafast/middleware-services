@@ -2,6 +2,7 @@ from bson import ObjectId
 from pymongo import MongoClient
 from data_transfer.config import config
 from data_transfer.schemas.record import Record
+from data_transfer.utils import DeviceType
 
 
 client = MongoClient(config.database_uri)
@@ -35,6 +36,6 @@ def all_filenames() -> [str]:
     return [doc['filename'] for doc in _db.records.find()]
 
 
-def records_not_downloaded() -> [Record]:
-    docs = _db.records.find({"is_downloaded": False})
+def records_not_downloaded(device_type: DeviceType) -> [Record]:
+    docs = _db.records.find({"is_downloaded": False, "device_type": device_type.name})
     return [Record(**doc) for doc in docs]
