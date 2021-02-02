@@ -32,7 +32,7 @@ def get_list(bucket: Bucket) -> [dict]:
     object_paths = [obj.key for obj in objects]
 
     # ignore users.txt files - data already present in object key
-    split_paths = [p.split('/') for p in object_paths if p.find('users.txt') == -1]
+    split_paths = [p.split('/') for p in object_paths if 'users.txt' not in p]
 
     # follows [dump_date, raw/files, patienthash, patienthash.nfo/.zip/.audio?)]
     # remove duplicates via a set()
