@@ -1,7 +1,6 @@
 from data_transfer.config import config
 from data_transfer.services import dmpy
 from pathlib import Path
-from dataclasses import dataclass
 
 import boto3
 from mypy_boto3_s3.service_resource import Bucket
