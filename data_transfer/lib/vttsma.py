@@ -34,17 +34,17 @@ def get_list(bucket: Bucket) -> [dict]:
     # ignore users.txt files - data already present in object key
     split_paths = [p.split('/') for p in object_paths if 'users.txt' not in p]
 
-    # follows [dump_date, raw/files, patienthash, patienthash.nfo/.zip/.audio?)]
+    # follows [export_date, raw/files, patienthash, patienthash.nfo/.zip/.audio?)]
     # remove duplicates via a set()
     patients = set([p[2] for p in split_paths])
     
     return [
-      dict(id=patient, dumps=list(set([p[0] for p in split_paths if p[2] == patient]))) 
+      dict(id=patient, exports=list(set([p[0] for p in split_paths if p[2] == patient]))) 
       for patient in patients
     ]
 
 
-def download_files(bucket: Bucket, patient_hash: str, dump_date: str,) -> bool: 
+def download_files(bucket: Bucket, patient_hash: str, export_date: str,) -> bool: 
     """
     GET all files associated with the known record.
     NOTE: S3 folder association is symbolic, so a need to pull down data through a nested loop.
@@ -57,7 +57,7 @@ def download_files(bucket: Bucket, patient_hash: str, dump_date: str,) -> bool:
         sub_folder.mkdir(parents=True, exist_ok=True)
         
         # filter to limit returned results to just this patient
-        for obj in bucket.objects.filter(Prefix=f"{dump_date}/{prefix}/{patient_hash}"):
+        for obj in bucket.objects.filter(Prefix=f"{export_date}/{prefix}/{patient_hash}"):
             file_name = obj.key.rsplit('/',1)[1]
             bucket.download_file(obj.key, str(folder_path/prefix/file_name))
 

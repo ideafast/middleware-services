@@ -5,7 +5,7 @@ from data_transfer.devices.vttsma import Vttsma
 
 def task_download_data(mongoid: str) -> str:
     """
-    Download a datafile for the VTT dump device.
+    Download a datafile for the VTT export device.
     """
     Vttsma().download_file(mongoid)
     return mongoid

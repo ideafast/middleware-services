@@ -32,7 +32,7 @@ class Vttsma:
     def download_metadata(self) -> None:
         """
         Before downloading raw data we need to know which files to download.
-        VTT provides a weekly dump in an S3 bucket, with a symbolic structure:
+        VTT provides a weekly export in an S3 bucket, with a symbolic structure:
         .
         ├── data_yyyy_mm_dd
         │   ├── users.txt
@@ -46,15 +46,15 @@ class Vttsma:
         .
        
         NOTE:
-            - users.txt contains the user hashes present in this dump (equal to subfolders)
-            - .nfo files contain the time spans of the specific hash dumps, e.g.:
+            - users.txt contains the user hashes present in this export (equal to subfolders)
+            - .nfo files contain the time spans of the specific hash exports, e.g.:
                 - Start time : 2020-10-28T00:00:01Z
                 - End time   : 2020-11-24T00:00:00.001Z
         
         NOTE/TODO: will run as BATCH job.
         """
         
-        # NOTE: currently downloads all dumps (inc. historical) TODO: only since last run
+        # NOTE: currently downloads all exports (inc. historical) TODO: only since last run
         all_records = vttsma_api.get_list(self.bucket)
 
         # Only add records that are not known in the DB based on stored filename (id = VTT hash id)
@@ -73,7 +73,7 @@ class Vttsma:
                 record = Record(
                     filename=device_used.vttsma_id,             # NOTE: id is the hashedID provided by VTT
                     device_type=utils.DeviceType.SMA.name,
-                    vttsma_dump_date=item['dumps'][0],          # TODO: expect data across dumps
+                    vttsma_export_date=item['exports'][0],          # TODO: expect data across exports
                     device_id=config.vttsma_global_device_id,   # All VTT-SMA share the same device ID
                     patient_id=patient_record.patient.id,
                     start_wear=device_used.start_wear,
@@ -100,7 +100,7 @@ class Vttsma:
         NOTE/TODO: is run as a task.
         """
         record = read_record(mongo_id)
-        is_downloaded_success = vttsma_api.download_files(self.bucket, record.filename, record.vttsma_dump_date)
+        is_downloaded_success = vttsma_api.download_files(self.bucket, record.filename, record.vttsma_export_date)
         if is_downloaded_success:
             record.is_downloaded = is_downloaded_success
             update_record(record)
