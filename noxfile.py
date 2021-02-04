@@ -4,6 +4,7 @@ from typing import Any
 import nox
 from nox.sessions import Session
 
+package = "session", "data_transfer"
 nox.options.sessions = "black", "lint", "tests"
 locations = "consumer", "data_transfer", "tests", "noxfile.py"
 
@@ -18,7 +19,6 @@ def install_with_constraints(session: Session, *args: str, **kwargs: Any) -> Non
             "export",
             "--dev",
             "--format=requirements.txt",
-            "--without-hashes",
             f"--output={requirements.name}",
             external=True,
         )
@@ -53,7 +53,14 @@ def lint(session: Session) -> None:
 @nox.session(python=["3.8"])
 def tests(session: Session) -> None:
     """Setup for automated testing with pytest"""
-    args = session.posargs
-    session.run("poetry", "install", "--no-dev", external=True)
-    install_with_constraints(session, "pytest")
-    session.run("pytest", *args)
+    from cli import run_command
+    run_command("pytest")
+
+    # NOTE: Old and perhaps proper approach below. But issues prevent it to be ran on
+    # all dev's machines. Needs further investigation. Definitely a local issue.
+    
+    # args = session.posargs
+    # session.run("poetry", "install", "--no-dev", external=True)
+    # install_with_constraints(session, "pytest")
+    # session.run("pytest", *args)
+    
