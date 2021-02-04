@@ -1,4 +1,4 @@
-from bson import ObjectId 
+from bson import ObjectId
 from pymongo import MongoClient
 from data_transfer.config import config
 from data_transfer.schemas.record import Record
@@ -22,18 +22,16 @@ def read_record(mongo_id: str) -> Record:
 def record_by_filename(filename: str) -> Record:
     result = _db.records.find_one(({"filename": filename}))
     return Record(**result)
-    
+
 
 def update_record(record: Record) -> Record:
     result = _db.records.update_one(
-        {'_id': ObjectId(record.id)}, 
-        {"$set": record.dict()}, 
-        upsert=False
+        {"_id": ObjectId(record.id)}, {"$set": record.dict()}, upsert=False
     )
 
 
 def all_filenames() -> [str]:
-    return [doc['filename'] for doc in _db.records.find()]
+    return [doc["filename"] for doc in _db.records.find()]
 
 
 def records_not_downloaded(device_type: DeviceType) -> [Record]:

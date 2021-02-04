@@ -3,7 +3,7 @@ from functools import lru_cache
 from dotenv import load_dotenv
 
 
-load_dotenv('.consumer.env')
+load_dotenv(".consumer.env")
 
 
 class Settings(BaseSettings):
@@ -20,6 +20,7 @@ class Settings(BaseSettings):
 @lru_cache()
 def settings() -> Settings:
     return Settings()
+
 
 # Create singleton for accessing configuration
 config = settings()

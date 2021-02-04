@@ -1,5 +1,5 @@
 from typing import Optional, Any
-from bson import ObjectId 
+from bson import ObjectId
 from pydantic import BaseModel, Field, validator
 from datetime import datetime
 
@@ -8,7 +8,8 @@ class Record(BaseModel):
     """
     Stores metadata pipeline information for a raw data file
     """
-    id: Optional[Any] = Field(alias='_id')
+
+    id: Optional[Any] = Field(alias="_id")
     filename: str
     device_type: str
     device_id: str
@@ -27,7 +28,7 @@ class Record(BaseModel):
     @validator("id")
     def validate_id(cls, id):
         """
-        Skip validation and cast to ObjectID. 
+        Skip validation and cast to ObjectID.
         Skipping as this is created by DB.
         """
         return ObjectId(id)

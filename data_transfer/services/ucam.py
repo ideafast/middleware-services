@@ -9,33 +9,35 @@ from typing import Optional
 def __get_patients() -> [Payload]:
     """
     All records from the UCAM DB.
-    
+
     GET /patients/
     """
+
     def __create_record(data: dict) -> Payload:
         """
         Convenient method to serialise payload.
         Creates mapping between UCAM and our intended use.
         """
         return Payload(
-            device_id=data['DeviceID'],
-            patient_id=data['SubjectID'],
-            devitations=data['Deviations'],
-            vttsma_id=data['VTTGeneratedParticipantID'],
-            start_wear=format_weartime(data['StartDate'], 'ucam'),
-            end_wear=format_weartime(data['EndDate'], 'ucam'),
-            disease=data['SubjectGroup']
+            device_id=data["DeviceID"],
+            patient_id=data["SubjectID"],
+            devitations=data["Deviations"],
+            vttsma_id=data["VTTGeneratedParticipantID"],
+            start_wear=format_weartime(data["StartDate"], "ucam"),
+            end_wear=format_weartime(data["EndDate"], "ucam"),
+            disease=data["SubjectGroup"],
         )
 
     return [__create_record(d) for d in read_csv_from_cache(config.ucam_data)]
 
+
 def __serialise_records(patient_records: [Payload]) -> Optional[PatientRecord]:
     """
     All records from the UCAM DB.
-    
+
     GET /patients/
     """
-    # No records exist for that patient, 
+    # No records exist for that patient,
     # e.g., if a device was not worn or a staff member forget to add the record
     if len(patient_records) == 0:
         return None
@@ -51,11 +53,11 @@ def __serialise_records(patient_records: [Payload]) -> Optional[PatientRecord]:
         Convenient method to only store Device-specific metadata.
         """
         return Device(
-            id=device.device_id, 
-            vttsma_id=device.vttsma_id, 
+            id=device.device_id,
+            vttsma_id=device.vttsma_id,
             devitations=device.devitations,
             start_wear=device.start_wear,
-            end_wear=device.end_wear
+            end_wear=device.end_wear,
         )
 
     devices = [__device_from_record(r) for r in patient_records]
@@ -77,11 +79,11 @@ def record_by_vtt(vtt_hash: str) -> Optional[PatientRecord]:
     Return a patient record based on then Hashed ID provided by VTT
     The VTT hashes are unique to each patient
 
-    GET /vtt/<vtt_hash>/      
+    GET /vtt/<vtt_hash>/
     """
     patient_records = [r for r in __get_patients() if r.vttsma_id == vtt_hash]
     return __serialise_records(patient_records)
-    
+
 
 def device_history(device_id: str) -> [Payload]:
     """
@@ -90,7 +92,9 @@ def device_history(device_id: str) -> [Payload]:
     return [r for r in __get_patients() if r.device_id == device_id]
 
 
-def record_by_wear_period(device_id: str, start_wear: datetime, end_wear: datetime) -> Optional[Payload]:
+def record_by_wear_period(
+    device_id: str, start_wear: datetime, end_wear: datetime
+) -> Optional[Payload]:
     """
     If data was created on a certain period then it belongs to an individual patient.
     """

@@ -6,6 +6,6 @@ from consumer.schemas.token import VerifyToken
 router = APIRouter()
 
 
-@router.post('/verify')
+@router.post("/verify")
 async def verify(token: VerifyToken):
-    return dataFromJson('verification')
+    return dataFromJson("verification")

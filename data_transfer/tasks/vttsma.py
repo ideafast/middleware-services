@@ -1,4 +1,3 @@
-
 from data_transfer.db import read_record, update_record
 from data_transfer.devices.vttsma import Vttsma
 

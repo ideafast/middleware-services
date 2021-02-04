@@ -8,23 +8,21 @@ import json
 
 
 class DeviceType(Enum):
-    AX6 = 1 # Axivity
-    BTF = 2 # Byteflies
-    DRM = 3 # Dreem
-    TFA = 4 # Think Fast
-    BVN = 5 # Everion
-    MMM = 6 # Move Monitor
-    SMP = 7 # Samsung Smartphone
-    SMA = 8 # Stress Monitor App
-    BED = 9 # EBedSensor
-    VTP = 10 # Vital Patch
-    YSM = 11 # ZKOne YOLI
+    AX6 = 1  # Axivity
+    BTF = 2  # Byteflies
+    DRM = 3  # Dreem
+    TFA = 4  # Think Fast
+    BVN = 5  # Everion
+    MMM = 6  # Move Monitor
+    SMP = 7  # Samsung Smartphone
+    SMA = 8  # Stress Monitor App
+    BED = 9  # EBedSensor
+    VTP = 10  # Vital Patch
+    YSM = 11  # ZKOne YOLI
 
 
-FORMATS = {
-    'ucam': "%d/%m/%Y",
-    'inventory': "%Y-%m-%d %H:%M:%S"
-}
+FORMATS = {"ucam": "%d/%m/%Y", "inventory": "%Y-%m-%d %H:%M:%S"}
+
 
 def format_weartime(period: str, type: str) -> datetime:
     return datetime.strptime(period, FORMATS[type])
@@ -41,11 +39,11 @@ def read_csv_from_cache(path: Path) -> [dict]:
 
 
 def read_json(filepath: Path) -> json:
-    with open(filepath, 'r') as f:
+    with open(filepath, "r") as f:
         data = f.read()
     return json.loads(data)
 
 
 def write_json(filepath: Path, data: dict) -> None:
-    with open(filepath, 'w') as f:
+    with open(filepath, "w") as f:
         json.dump(data, f, indent=4)

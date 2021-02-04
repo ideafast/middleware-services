@@ -1,4 +1,3 @@
-
 from data_transfer.db import record_by_filename, update_record
 from data_transfer.services import dmpy
 from data_transfer.config import config
@@ -8,7 +7,7 @@ from pathlib import Path
 
 def batch_upload_data() -> None:
     """
-    Zips and uploads all folders in /uploading/ to the DMP, which 
+    Zips and uploads all folders in /uploading/ to the DMP, which
     if successful, updates database record and removes data locally.
 
     This means that if prior tasks preprocessed multiple files from the same wear
@@ -23,7 +22,7 @@ def batch_upload_data() -> None:
         # Once uploaded to DMP, update metadata db
         if is_uploaded:
             # All records that were uploaded
-            filenames = [f.stem for f in data_folder.iterdir() if '-meta' not in f.name]
+            filenames = [f.stem for f in data_folder.iterdir() if "-meta" not in f.name]
             for filename in filenames:
                 record = record_by_filename(filename)
                 record.is_uploaded = True

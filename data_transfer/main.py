@@ -1,9 +1,13 @@
-from data_transfer.jobs import shared as shared_jobs, \
-    dreem as dreem_jobs, \
-    vttsma as vttsma_jobs
-from data_transfer.tasks import shared as shared_tasks, \
-    dreem as dreem_tasks, \
-    vttsma as vttsma_tasks
+from data_transfer.jobs import (
+    shared as shared_jobs,
+    dreem as dreem_jobs,
+    vttsma as vttsma_jobs,
+)
+from data_transfer.tasks import (
+    shared as shared_tasks,
+    dreem as dreem_tasks,
+    vttsma as vttsma_tasks,
+)
 from data_transfer.db import records_not_downloaded
 from data_transfer.utils import DeviceType
 
@@ -30,9 +34,10 @@ def dreem_dag(study_site):
         mongoid = dreem_tasks.task_preprocess_data(mongoid)
         # Data is finalised and moved to a folder in /uploading/
         shared_tasks.task_prepare_data(DeviceType.DRM, mongoid)
-    
+
     # All said folders FOR ALL DEVICES are uploaded once per day
     # shared_jobs.batch_upload_data()
+
 
 def vttsma_dag():
     """
@@ -51,9 +56,10 @@ def vttsma_dag():
         mongoid = vttsma_tasks.task_preprocess_data(mongoid)
         # Data is finalised and moved to a folder in /uploading/
         shared_tasks.task_prepare_data(DeviceType.SMA, mongoid)
-    
+
     # All said folders FOR ALL DEVICES are uploaded once per day
     # shared_jobs.batch_upload_data()
+
 
 if __name__ == "__main__":
     # dreem_dag("munster")

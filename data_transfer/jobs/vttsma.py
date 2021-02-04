@@ -1,11 +1,10 @@
-
 from data_transfer.devices.vttsma import Vttsma
 from data_transfer.schemas.record import Record
 
 
 def batch_metadata() -> [Record]:
     """
-    VTT exports the patient data weekly in an S3 bucket 
+    VTT exports the patient data weekly in an S3 bucket
 
     This method stores the records we have not yet processed.
 

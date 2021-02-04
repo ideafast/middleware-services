@@ -1,4 +1,3 @@
-
 from data_transfer.devices.dreem import Dreem
 from data_transfer.schemas.record import Record
 

@@ -4,7 +4,7 @@ from typing import Any
 import nox
 from nox.sessions import Session
 
-nox.options.sessions = "lint", "tests"
+nox.options.sessions = "black", "lint", "tests"
 locations = "consumer", "data_transfer", "tests", "noxfile.py"
 
 
