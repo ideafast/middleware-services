@@ -1,6 +1,5 @@
 # See https://docs.zammad.org/en/latest/api/intro.html
 from fastapi import APIRouter, HTTPException
-import os
 import requests
 
 from consumer.config import config

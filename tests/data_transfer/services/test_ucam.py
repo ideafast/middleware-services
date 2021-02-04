@@ -1,10 +1,6 @@
 from data_transfer.services import ucam
 from data_transfer.utils import format_weartime
 
-from datetime import datetime
-
-import pytest
-
 
 def test_get_record_success(mock_data):
     # Act

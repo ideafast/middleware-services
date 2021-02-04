@@ -36,7 +36,7 @@ def dreem_dag(study_site):
         shared_tasks.task_prepare_data(DeviceType.DRM, mongoid)
 
     # All said folders FOR ALL DEVICES are uploaded once per day
-    # shared_jobs.batch_upload_data()
+    shared_jobs.batch_upload_data()
 
 
 def vttsma_dag():
@@ -58,7 +58,7 @@ def vttsma_dag():
         shared_tasks.task_prepare_data(DeviceType.SMA, mongoid)
 
     # All said folders FOR ALL DEVICES are uploaded once per day
-    # shared_jobs.batch_upload_data()
+    shared_jobs.batch_upload_data()
 
 
 if __name__ == "__main__":

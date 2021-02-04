@@ -2,8 +2,6 @@ from data_transfer.db import record_by_filename, update_record
 from data_transfer.services import dmpy
 from data_transfer.config import config
 
-from pathlib import Path
-
 
 def batch_upload_data() -> None:
     """

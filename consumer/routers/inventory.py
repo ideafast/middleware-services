@@ -1,7 +1,5 @@
 # See: https://snipe-it.readme.io/reference
-import os
-
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
 from consumer.schemas.device import Device
 from consumer.schemas.patient import PatientDevice

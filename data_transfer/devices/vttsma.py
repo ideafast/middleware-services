@@ -6,7 +6,6 @@ from data_transfer.db import create_record, read_record, update_record, all_file
 from data_transfer import utils
 
 from pathlib import Path
-from datetime import datetime
 
 
 class Vttsma:
