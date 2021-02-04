@@ -1,7 +1,8 @@
-from typing import Optional, Any
+from datetime import datetime
+from typing import Any, Optional
+
 from bson import ObjectId
 from pydantic import BaseModel, Field, validator
-from datetime import datetime
 
 
 class Record(BaseModel):

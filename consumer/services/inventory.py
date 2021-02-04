@@ -1,5 +1,6 @@
-import requests
 import json
+
+import requests
 
 from consumer.config import config
 from consumer.utils.errors import CustomException

@@ -1,7 +1,7 @@
-from consumer.services import inventory
-from consumer.routers import inventory as router_inventory
-
 import pytest
+
+from consumer.routers import inventory as router_inventory
+from consumer.services import inventory
 
 
 def test_device_serial_correct_id(serial_response, client, monkeypatch):

@@ -1,10 +1,9 @@
-from enum import Enum
-from datetime import datetime
-from pathlib import Path
-from functools import lru_cache
-
 import csv
 import json
+from datetime import datetime
+from enum import Enum
+from functools import lru_cache
+from pathlib import Path
 
 
 class DeviceType(Enum):

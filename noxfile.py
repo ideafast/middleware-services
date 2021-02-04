@@ -5,7 +5,7 @@ import nox
 from nox.sessions import Session
 
 package = "session", "data_transfer"
-nox.options.sessions = "black", "lint", "tests", "isort"
+nox.options.sessions = "black", "lint", "mypy", "tests", "isort"
 locations = "consumer", "data_transfer", "tests", "noxfile.py"
 
 
@@ -18,6 +18,7 @@ def install_with_constraints(session: Session, *args: str, **kwargs: Any) -> Non
             "poetry",
             "export",
             "--dev",
+            "--without-hashes",
             "--format=requirements.txt",
             f"--output={requirements.name}",
             external=True,
@@ -41,6 +42,13 @@ def isort(session: Session) -> None:
     args = session.posargs or locations
     install_with_constraints(session, "isort")
     session.run("isort", *args)
+
+
+@nox.session(python=["3.8"])
+def mypy(session: Session) -> None:
+    args = session.posargs or locations
+    install_with_constraints(session, "mypy")
+    session.run("mypy", *args)
 
 
 @nox.session(python=["3.8"])

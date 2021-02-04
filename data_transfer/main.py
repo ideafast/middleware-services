@@ -1,14 +1,10 @@
-from data_transfer.jobs import (
-    shared as shared_jobs,
-    dreem as dreem_jobs,
-    vttsma as vttsma_jobs,
-)
-from data_transfer.tasks import (
-    shared as shared_tasks,
-    dreem as dreem_tasks,
-    vttsma as vttsma_tasks,
-)
 from data_transfer.db import records_not_downloaded
+from data_transfer.jobs import dreem as dreem_jobs
+from data_transfer.jobs import shared as shared_jobs
+from data_transfer.jobs import vttsma as vttsma_jobs
+from data_transfer.tasks import dreem as dreem_tasks
+from data_transfer.tasks import shared as shared_tasks
+from data_transfer.tasks import vttsma as vttsma_tasks
 from data_transfer.utils import DeviceType
 
 

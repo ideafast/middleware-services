@@ -3,8 +3,8 @@ from fastapi import APIRouter
 
 from consumer.schemas.device import Device
 from consumer.schemas.patient import PatientDevice
-from consumer.utils.errors import CustomException
 from consumer.services import inventory
+from consumer.utils.errors import CustomException
 
 router = APIRouter()
 

@@ -5,13 +5,14 @@
 # for the CVS, e.g. serial_by_device_uuid might to hit a live
 # endpoint rather than pull from a CSV file.
 
-from data_transfer.config import config
-from data_transfer.utils import read_csv_from_cache
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional
 
 import requests
+
+from data_transfer.config import config
+from data_transfer.utils import read_csv_from_cache
 
 
 @dataclass

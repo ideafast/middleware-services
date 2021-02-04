@@ -9,3 +9,8 @@ __pycache__
 ideafast-*-full.csv
 *.json
 ucam_db.csv
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json

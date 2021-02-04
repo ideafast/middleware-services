@@ -1,5 +1,4 @@
 import pytest
-
 from fastapi.testclient import TestClient
 
 from consumer.main import consumer

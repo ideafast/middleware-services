@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from consumer.utils.general import dataFromJson
 from consumer.schemas.token import VerifyToken
+from consumer.utils.general import dataFromJson
 
 router = APIRouter()
 

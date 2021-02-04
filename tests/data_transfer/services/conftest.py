@@ -1,7 +1,8 @@
 from pathlib import Path
-from data_transfer.services import ucam
 
 import pytest
+
+from data_transfer.services import ucam
 
 
 @pytest.fixture(scope="function")

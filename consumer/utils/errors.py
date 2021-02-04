@@ -1,7 +1,7 @@
-from .general import CustomResponse
 from fastapi import Request
-
 from starlette.exceptions import HTTPException
+
+from .general import CustomResponse
 
 
 class CustomException(Exception):

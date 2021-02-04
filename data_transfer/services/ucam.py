@@ -1,9 +1,9 @@
-from data_transfer.config import config
-from data_transfer.schemas.ucam import Payload, Device, Patient, PatientRecord
-from data_transfer.utils import format_weartime, read_csv_from_cache
-
 from datetime import datetime
 from typing import Optional
+
+from data_transfer.config import config
+from data_transfer.schemas.ucam import Device, Patient, PatientRecord, Payload
+from data_transfer.utils import format_weartime, read_csv_from_cache
 
 
 def __get_patients() -> [Payload]:

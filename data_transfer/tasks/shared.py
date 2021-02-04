@@ -1,7 +1,6 @@
-from data_transfer.db import update_record, read_record
 from data_transfer.config import config
+from data_transfer.db import read_record, update_record
 from data_transfer.utils import DeviceType
-
 
 FILE_TYPES = {
     # Possibly move this to utils or embed with the enums

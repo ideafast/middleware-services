@@ -1,9 +1,10 @@
-from data_transfer.config import config
-from data_transfer.services import dmpy
 from pathlib import Path
 
 import boto3
 from mypy_boto3_s3.service_resource import Bucket
+
+from data_transfer.config import config
+from data_transfer.services import dmpy
 
 
 def get_bucket(creds: dict) -> Bucket:
