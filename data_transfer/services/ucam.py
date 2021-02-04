@@ -106,4 +106,14 @@ def record_by_wear_period(
         if within_start_period and within_end_period:
             return record
 
+
+def record_by_wear_period_in_list(devices: [Device], start_wear: datetime, end_wear: datetime) -> Optional[Payload]:
+    """
+    If data was created on a certain period then it belongs to an individual patient.
+    """
+    for record in devices:
+        within_start_period = start_wear >= record.start_wear <= record.end_wear
+        within_end_period = record.start_wear <= end_wear <= record.end_wear
+        if within_start_period and within_end_period:
+            return record
     return None
