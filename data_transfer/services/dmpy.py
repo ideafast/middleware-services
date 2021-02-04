@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 def zip_folder(path: Path) -> Path:
-    return Path(shutil.make_archive(path, "zip", path))
+    return Path(shutil.make_archive(str(path), "zip", path))
 
 
 def zip_folder_and_rm_local(path: Path) -> Path:

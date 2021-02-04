@@ -8,7 +8,7 @@ from data_transfer.tasks import vttsma as vttsma_tasks
 from data_transfer.utils import DeviceType
 
 
-def dreem_dag(study_site):
+def dreem_dag(study_site) -> None:
     """
     Directed acyclic graph (DAG) representing dreem data pipeline:
 
@@ -35,7 +35,7 @@ def dreem_dag(study_site):
     shared_jobs.batch_upload_data()
 
 
-def vttsma_dag():
+def vttsma_dag() -> None:
     """
     Directed acyclic graph (DAG) representing data_transfer pipeline as used for all devices
     Note that VTT does not distinguish between study sites
