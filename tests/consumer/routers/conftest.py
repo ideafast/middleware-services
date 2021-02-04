@@ -3,7 +3,6 @@ import pytest
 from fastapi.testclient import TestClient
 
 from consumer.main import consumer
-from consumer.schemas.device import Device
 
 
 @pytest.fixture(scope="module")

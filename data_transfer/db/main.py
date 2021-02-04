@@ -24,8 +24,8 @@ def record_by_filename(filename: str) -> Record:
     return Record(**result)
 
 
-def update_record(record: Record) -> Record:
-    result = _db.records.update_one(
+def update_record(record: Record) -> None:
+    _db.records.update_one(
         {"_id": ObjectId(record.id)}, {"$set": record.dict()}, upsert=False
     )
 

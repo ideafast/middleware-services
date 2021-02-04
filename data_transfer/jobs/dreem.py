@@ -8,7 +8,8 @@ def batch_metadata(study_site: str) -> [Record]:
 
     This method stores the records we have not yet processed.
 
-    NOTE/TODO: this cron batch should be run daily at lunchtime: i.e. when most patients have finished sleep.
+    NOTE/TODO: this cron batch should be run daily at lunchtime:
+        i.e. when most patients have finished sleep.
     """
     dreem = Dreem(study_site)
     dreem.download_metadata()

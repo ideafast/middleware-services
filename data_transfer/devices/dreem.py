@@ -38,7 +38,8 @@ class Dreem:
         # Note: includes metadata for ALL data records, therefore we must filter them
         all_records = dreem_api.get_restricted_list(self.session, self.user_id)
 
-        # Only add records that are not known in the DB based on stored filename (ID and filename in dreem)
+        # Only add records that are not known in the DB based on stored filename
+        # i.e. (ID and filename in dreem)
         unknown_records = [
             r for r in all_records if r["id"] not in set(all_filenames())
         ]

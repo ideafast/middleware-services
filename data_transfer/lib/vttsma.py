@@ -23,10 +23,10 @@ def get_bucket(creds: dict) -> Bucket:
 
 def get_list(bucket: Bucket) -> [dict]:
     """
-    GET all records (metadata) from the AWS S3 bucket 
+    GET all records (metadata) from the AWS S3 bucket
 
     NOTE: S3 folder structure is symbolic. The 'key' (str) for each file object \
-        represents the path. See also `download_metadata()` in devices > vttsma.py 
+        represents the path. See also `download_metadata()` in devices > vttsma.py
     """
     objects = bucket.objects.all()
     object_paths = [obj.key for obj in objects]

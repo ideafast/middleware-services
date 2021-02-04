@@ -54,13 +54,13 @@ def lint(session: Session) -> None:
 def tests(session: Session) -> None:
     """Setup for automated testing with pytest"""
     from cli import run_command
+
     run_command("pytest")
 
     # NOTE: Old and perhaps proper approach below. But issues prevent it to be ran on
     # all dev's machines. Needs further investigation. Definitely a local issue.
-    
+
     # args = session.posargs
     # session.run("poetry", "install", "--no-dev", external=True)
     # install_with_constraints(session, "pytest")
     # session.run("pytest", *args)
-    
