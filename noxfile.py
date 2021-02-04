@@ -5,7 +5,7 @@ import nox
 from nox.sessions import Session
 
 package = "session", "data_transfer"
-nox.options.sessions = "black", "lint", "tests"
+nox.options.sessions = "black", "lint", "tests", "isort"
 locations = "consumer", "data_transfer", "tests", "noxfile.py"
 
 
@@ -33,6 +33,14 @@ def black(session: Session) -> None:
     args = session.posargs or locations
     install_with_constraints(session, "black")
     session.run("black", *args)
+
+
+@nox.session(python=["3.8"])
+def isort(session: Session) -> None:
+    """Automatic order import statements"""
+    args = session.posargs or locations
+    install_with_constraints(session, "isort")
+    session.run("isort", *args)
 
 
 @nox.session(python=["3.8"])
