@@ -53,8 +53,8 @@ def __serialise_records(patient_records: List[Payload]) -> Optional[PatientRecor
         Convenient method to only store Device-specific metadata.
         """
         return Device(
-            id=device.device_id,
-            vttsma_id=device.vttsma_id,
+            device_id=device.device_id, 
+            vttsma_id=device.vttsma_id, 
             devitations=device.devitations,
             start_wear=device.start_wear,
             end_wear=device.end_wear,

@@ -9,7 +9,14 @@ from data_transfer.db import all_filenames, create_record, read_record, update_r
 from data_transfer.lib import dreem as dreem_api
 from data_transfer.services import inventory, ucam
 from data_transfer.schemas.record import Record
-from data_transfer.services import inventory
+from data_transfer.db import create_record, \
+    read_record, update_record, all_filenames
+from data_transfer import utils
+
+from pathlib import Path
+from datetime import datetime
+from dataclasses import asdict
+import json
 
 import time # temporary ...
 
@@ -66,111 +73,77 @@ class Dreem:
 
             patient_id = dreem_api.patient_id_by_user(item['user'])
 
-            # As this is reassigned below we must reset it here.
-            device_id = None
-            #
-            start_wear = None
-            end_wear = None
-
-            # # Note: this start_time and duration
+            # Note: this start_time and duration
             unix_start = item['report']['start_time']
             dreem_start = datetime.fromtimestamp(unix_start)
             dreem_end = datetime.fromtimestamp(unix_start + item['report']['duration'])
 
-
-            record = Record(
-                # NOTE: id is a unique uuid used to GET raw data from Dreem
-                filename=item['id'],
-                device_type=utils.DeviceType.DRM.name,
-                device_id=device_id,
-                patient_id=patient_id,
-                start_wear=start_wear,
-                end_wear=end_wear
-            )
+            # reset on each loop
+            record = None
+            filename = item['id']
+            device_type = utils.DeviceType.DRM.name
 
             if patient_id and (ucam_entry := ucam.get_record(patient_id)):
-                dreem_devices = [d for d in ucam_entry.devices if 'DRM' in d.id]
+                dreem_devices = [d for d in ucam_entry.devices if device_type in d.device_id]
 
                 # Best-case: only one device was worn and UCAM knows it
                 if len(dreem_devices) == 1:
-                    print ("single", device_id, ucam_entry.patient.id)
-                    _record = dreem_devices[0]
-                    device_id = _record.id
-                    start_wear = _record.start_wear
-                    end_wear = _record.end_wear
+                    record = Record(**dreem_devices[0])
+                
                 # Edge-case: multiple dreem headbands used, e.g., if one broke.
                 elif len(dreem_devices) > 1:
                     # Determine usage based on weartime
-                    _record = [d for d in dreem_devices if d.id == device_id]
-                    # What if the device ID differs from the one the patient used?
-                    # NOTE: unclear why this might happen ... user-input error?
-                    # TODO: rather than do this, we could just do wear period?
-                    if len(_record) == 1:
-                        _record = _record[0]
-                        device_id = _record.id
-                        start_wear = _record.start_wear
-                        end_wear = _record.end_wear
+                    _record = ucam.record_by_wear_period_in_list(dreem_devices, dreem_start, dreem_end)
+                    _record = Record(**asdict(_record))
                     continue
-                # Worst-case: UCAM record exists for this user, but not this device.
+                # Worst-case: UCAM record exists for this patient, but not this device.
                 # e.g. the clinician may have forgotten to add Dreem to UCAM
+                # NOTE: could remove this and let the ELSE below resolve it?
                 elif len(dreem_devices) == 0:
                     # Why do this over inventory? More reliable ...
                     device_id = inventory.device_id_by_serial(device_serial)
                     devices = [d for d in ucam_entry.devices]
-                    start_wear = min([d.start_wear for d in devices])
-                    end_wear = max([d.end_wear for d in devices])
-            # Data was recorded but user not in UCAM, so use inventory instead
+                    _record = Record(
+                        device_id=inventory.device_id_by_serial(device_serial),
+                        start_wear=min([d.start_wear for d in devices]),
+                        end_wear=max([d.end_wear for d in devices])
+                    )
+            # We cannot determine Patient ID from Dreem UUID, 
+            # e.g., an alternative email address was associated with the raw data.
             # This is primarily for historical data and extreme edge-cases.
             else:
-                continue
-                # # NOTE: determine Patient ID by Inventory History: 
-                # # DESIRED: weartime (via dreem unix start, end) and Patient ID.
-                # device_id = inventory.device_id_by_serial(device_serial)
-                
-                # # Note: this start_time and duration
-                # unix_start = item['report']['start_time']
-                # __start_wear = datetime.fromtimestamp(unix_start)
-                # __end_wear = datetime.fromtimestamp(unix_start + item['report']['duration'])
+                device_id = inventory.device_id_by_serial(device_serial)
 
-                # # print ("bfinal", device_id, item['id'], start_wear, end_wear)
-                # # TODO: this method should have same name as above ...
-                # history_record = inventory.patient_id_by_device_id(device_id, __start_wear, __end_wear)
+                # NOTE: alternatively, we might do this before UCAM to lookup patient ID,
+                # then use UCAM to pull out correct info? Saves a call to inventory (else logic above)
+                history_record = inventory.patient_id_by_device_id(device_id, dreem_start, dreem_end)
 
-                # print (history_record)
+                if not history_record:
+                    # Similar to above, if no record then skip logic below
+                    continue
 
-                # if history_record:
-                #     checkin = history_record['checkin'] or datetime.now().strftime(utils.FORMATS['inventory'])
+                checkin = history_record['checkin'] or datetime.now().strftime(utils.FORMATS['inventory'])
 
-                #     start_wear = utils.format_weartime(history_record['checkout'], 'inventory')
-                #     end_wear = utils.format_weartime(checkin, 'inventory')
-                #     patient_id = history_record['patient_id']
-                #     # if patient_id:
-                #     #     print ("in here?")
-                #     #     ucam_record = ucam.get_record(patient_id)
-                #     #     rec = [d for d in ucam_record.devices if d.id == device_id]
-                #     #     start_wear, end_wear = rec[0].start_wear, rec[0].end_wear
+                start_wear = utils.format_weartime(history_record['checkout'], 'inventory')
+                end_wear = utils.format_weartime(checkin, 'inventory')
+                patient_id = history_record['patient_id']
+                # Particuarly given we should use the weartime here 
+                if patient_id:
+                    ucam_record = ucam.get_record(patient_id)
+                    device_in_ucam = [d for d in ucam_record.devices if d.id == device_id]
+                    if len(device_in_ucam) == 1:
+                        dev = device_in_ucam[0]
+                        start_wear, end_wear = dev[0].start_wear, dev[0].end_wear
+
             time.sleep(5)
             continue
-
-            print(patient_id, device_id, start_wear, end_wear)
-            if not end_wear:
-                end_wear = start_wear
 
             if None in [patient_id, device_id, start_wear, end_wear]:
                 # TODO: email us as these are required attributes
                 continue
 
-            # Even though these may not exist, we want to store them with None entries
-            # As we will likely have edge-cases that require manual looking up initially.
-            record = Record(
-                # NOTE: id is a unique uuid used to GET raw data from Dreem
-                filename=item["id"],
-                device_type=utils.DeviceType.DRM.name,
-                device_id=device_id,
-                patient_id=patient_id,
-                start_wear=start_wear,
-                end_wear=end_wear,
-            )
+            record.filename = filename
+            record.device_type = device_type
 
             create_record(record)
 
