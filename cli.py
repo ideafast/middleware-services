@@ -1,14 +1,15 @@
+import subprocess  # noqa
+from typing import Any
+
 import click
-import subprocess
 import uvicorn
 
+REGISTRY = "ideafast/middleware"
 
-REGISTRY = 'ideafast/middleware'
 
-
-def run_command(command: str, capture: bool = False) -> None:
+def run_command(command: str, capture: bool = False) -> subprocess.CompletedProcess:
     """Helper method to run shell commands"""
-    return subprocess.run([command], shell=True, capture_output=capture)
+    return subprocess.run([command], shell=True, capture_output=capture)  # noqa
 
 
 def git_tag_local(version: str) -> None:
@@ -21,32 +22,34 @@ def git_push_tag_remote(version: str) -> None:
     run_command(f"git push origin {version}")
 
 
-def docker_image_exists(version: str) -> str:
+def docker_image_exists(version: str) -> Any:
     """Check if docker image exists based on version."""
-    command = f'docker images -q {REGISTRY}:{version}'
+    command = f"docker images -q {REGISTRY}:{version}"
     res = run_command(command, True)
     # The hash ID of the image if it exists
-    return res.stdout.decode('ascii').rstrip()
+    return res.stdout.decode("ascii").rstrip()
 
 
-def run_uvicorn(app: str, port: int, host: str = "0.0.0.0", reload: bool = True) -> None:
+def run_uvicorn(
+    app: str, port: int, host: str = "0.0.0.0", reload: bool = True  # noqa
+) -> None:
     """Run run_uvicorn for local development."""
     uvicorn.run(app, host=host, port=port, reload=reload)
 
 
 @click.group()
-def cli():
+def cli() -> None:
     """CLI for building and deploying middleware in Docker."""
 
 
 @cli.command()
-def consumer():
+def consumer() -> None:
     """Run the consumer app for local development."""
     run_uvicorn("consumer.main:consumer", 8000)
 
 
 @cli.command()
-@click.argument('version')
+@click.argument("version")
 def build(version: str) -> None:
     """Build docker image."""
     message = "THIS VERSION ALREADY EXISTS.\nDo you want to rebuild it?"
@@ -57,7 +60,7 @@ def build(version: str) -> None:
 
 
 @cli.command()
-@click.argument('version')
+@click.argument("version")
 def publish(version: str) -> None:
     """Publish git tag and docker image."""
     run_command(f"docker push {REGISTRY}:{version}")
@@ -70,5 +73,5 @@ def compose() -> None:
     run_command("docker-compose up -d")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()

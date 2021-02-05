@@ -1,14 +1,14 @@
-from data_transfer.jobs import shared as shared_jobs, \
-    dreem as dreem_jobs, \
-    vttsma as vttsma_jobs
-from data_transfer.tasks import shared as shared_tasks, \
-    dreem as dreem_tasks, \
-    vttsma as vttsma_tasks
 from data_transfer.db import records_not_downloaded
+from data_transfer.jobs import dreem as dreem_jobs
+from data_transfer.jobs import shared as shared_jobs
+from data_transfer.jobs import vttsma as vttsma_jobs
+from data_transfer.tasks import dreem as dreem_tasks
+from data_transfer.tasks import shared as shared_tasks
+from data_transfer.tasks import vttsma as vttsma_tasks
 from data_transfer.utils import DeviceType
 
 
-def dreem_dag(study_site):
+def dreem_dag(study_site: str) -> None:
     """
     Directed acyclic graph (DAG) representing dreem data pipeline:
 
@@ -30,11 +30,12 @@ def dreem_dag(study_site):
         mongoid = dreem_tasks.task_preprocess_data(mongoid)
         # Data is finalised and moved to a folder in /uploading/
         shared_tasks.task_prepare_data(DeviceType.DRM, mongoid)
-    
-    # All said folders FOR ALL DEVICES are uploaded once per day
-    # shared_jobs.batch_upload_data()
 
-def vttsma_dag():
+    # All said folders FOR ALL DEVICES are uploaded once per day
+    shared_jobs.batch_upload_data()
+
+
+def vttsma_dag() -> None:
     """
     Directed acyclic graph (DAG) representing data_transfer pipeline as used for all devices
     Note that VTT does not distinguish between study sites
@@ -51,9 +52,10 @@ def vttsma_dag():
         mongoid = vttsma_tasks.task_preprocess_data(mongoid)
         # Data is finalised and moved to a folder in /uploading/
         shared_tasks.task_prepare_data(DeviceType.SMA, mongoid)
-    
+
     # All said folders FOR ALL DEVICES are uploaded once per day
-    # shared_jobs.batch_upload_data()
+    shared_jobs.batch_upload_data()
+
 
 if __name__ == "__main__":
     # dreem_dag("munster")

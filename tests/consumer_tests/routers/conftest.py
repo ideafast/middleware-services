@@ -1,9 +1,7 @@
 import pytest
-
 from fastapi.testclient import TestClient
 
 from consumer.main import consumer
-from consumer.schemas.device import Device
 
 
 @pytest.fixture(scope="module")
@@ -19,13 +17,13 @@ def response_row():
     This is only a subset of a response that is used in the middleware.
     """
     yield {
-        'asset_tag': 'SMP-TEST',
-        'model': {'name': 'TestName'},
-        'manufacturer': {'name': 'SmallCo'},
-        'status_label': {'status_meta': 'deployed'},
-        'location': {'name': 'Kiel'},
-        'serial': '119202',
-        'id': 1123,
+        "asset_tag": "SMP-TEST",
+        "model": {"name": "TestName"},
+        "manufacturer": {"name": "SmallCo"},
+        "status_label": {"status_meta": "deployed"},
+        "location": {"name": "Kiel"},
+        "serial": "119202",
+        "id": 1123,
     }
 
 
@@ -60,15 +58,15 @@ def device_history():
                 },
                 "target": {
                     "name": "T-456",
-                }
+                },
             },
             {
                 "created_at": {
                     "datetime": "2020-07-29 11:45:17",
                 },
                 "target": None,
-            }
-        ]
+            },
+        ],
     }
 
 
@@ -85,20 +83,12 @@ def serial_response():
                 "id": 0,
                 "asset_tag": "SMP-ABC123",
                 "serial": "S13SF2M112",
-                "model": {
-                    "name": "Samsung Galaxy A40"
-                },
-                "status_label": {
-                    "status_meta": "deployed"
-                },
-                "manufacturer": {
-                    "name": "Samsung"
-                },
-                "location": {
-                    "name": "Newcastle"
-                },
-                "checkout_counter": 1
+                "model": {"name": "Samsung Galaxy A40"},
+                "status_label": {"status_meta": "deployed"},
+                "manufacturer": {"name": "Samsung"},
+                "location": {"name": "Newcastle"},
+                "checkout_counter": 1,
             }
-        ]
+        ],
     }
     yield response

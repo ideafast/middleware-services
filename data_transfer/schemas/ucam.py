@@ -1,6 +1,6 @@
-
-from datetime import datetime
 from dataclasses import dataclass
+from datetime import datetime
+from typing import List
 
 
 @dataclass
@@ -10,10 +10,11 @@ class Payload:
     Creates consistency between how Records are used
 
     Current return values from UCAM DB:
-        SubjectID, Deviations, DeviceID, 
-        VTTGeneratedParticipantID, StartDate, 
+        SubjectID, Deviations, DeviceID,
+        VTTGeneratedParticipantID, StartDate,
         EndDate, SubjectGroup
     """
+
     patient_id: str
     disease: str
 
@@ -44,5 +45,6 @@ class PatientRecord:
     """
     Simplifies accessing Devices a Patient used.
     """
+
     patient: Patient
-    devices: [Device]
+    devices: List[Device]

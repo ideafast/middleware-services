@@ -13,7 +13,7 @@ please make sure this is installed via pyenv, e.g.
 
 Once done, you can install dependencies for this project via:
 
-    poetry install
+    poetry install --no-dev
 
 To setup a virtual environment with your local pyenv version run:
 
@@ -26,6 +26,11 @@ Then add relevant local/live values and credentials.
 
 ## Local Development
 
+For development, install additional dependencies through
+
+    poetry install
+    poetry run pre-commit install
+
 When developing the consumer API run:
 
     poetry run consumer
@@ -33,6 +38,22 @@ When developing the consumer API run:
 When developing the data transfer jobs run:
 
     poetry run dtransfer
+
+
+[Nox](https://nox.thea.codes/) is used for automation and standardisation of tests, type hints, automatic code formatting, and linting. Any contribution needs to pass these tests before creating a Pull Request.
+
+Run linting and tests
+
+    poetry run nox -r
+
+Or individual checks via
+
+    poetry run nox -rs tests
+    poetry run nox -rs mypy
+    poetry run nox -rs isort
+    poetry run nox -rs lint
+    poetry run nox -rs black
+
 
 ### Deploying
 

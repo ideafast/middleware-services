@@ -1,11 +1,10 @@
-from .config import config
-from .routers import auth, devices, inventory, support
-from .utils.general import CustomResponse
-from .utils.errors import CustomException, custom_error_handler, http_error_handler
-
 from fastapi import FastAPI
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from .config import config
+from .routers import auth, devices, inventory, support
+from .utils.errors import CustomException, custom_error_handler, http_error_handler
+from .utils.general import CustomResponse
 
 consumer = FastAPI(default_response_class=CustomResponse)
 
