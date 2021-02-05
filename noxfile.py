@@ -6,7 +6,7 @@ from nox.sessions import Session
 
 package = "session", "data_transfer"
 nox.options.sessions = "black", "lint", "mypy", "tests", "isort"
-locations = "consumer", "data_transfer", "tests", "noxfile.py"
+locations = "consumer", "data_transfer", "tests", "noxfile.py", "cli.py"
 
 
 def install_with_constraints(session: Session, *args: str, **kwargs: Any) -> None:

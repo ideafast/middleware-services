@@ -18,7 +18,7 @@ def get_bucket(creds: dict) -> Bucket:
     )
 
     s3 = session.resource("s3")
-    bucket = s3.Bucket(creds["bucket_name"])
+    bucket: Bucket = s3.Bucket(creds["bucket_name"])
 
     return bucket
 
