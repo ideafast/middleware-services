@@ -10,6 +10,8 @@ class CustomException(Exception):
         raise CustomException(errors=["INVALID_TOKEN"], status_code=401)
     """
 
+    __slots__ = ["errors", "status_code"]
+
     def __init__(self, errors: list, status_code: int = 400):
         self.errors = errors
         self.status_code = status_code

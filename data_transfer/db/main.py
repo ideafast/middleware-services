@@ -1,6 +1,7 @@
+from typing import List
+
 from bson import ObjectId
 from pymongo import MongoClient
-from typing import List
 
 from data_transfer.config import config
 from data_transfer.schemas.record import Record

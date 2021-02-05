@@ -1,5 +1,6 @@
+from typing import Any, Optional
+
 import requests
-from typing import Optional, Any
 
 from data_transfer.config import config
 

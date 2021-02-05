@@ -1,6 +1,7 @@
 # See: https://snipe-it.readme.io/reference
+from typing import Dict, Optional
+
 from fastapi import APIRouter
-from typing import Optional, Dict, List, Any
 
 from consumer.schemas.device import Device
 from consumer.schemas.patient import PatientDevice
@@ -40,7 +41,7 @@ async def device_by_serial(serial: str) -> Optional[Device]:
     # Note: multiple devices may exist with same serial,
     # e.g. DRMDAX2S4 and DRM-DAX2S4. As such, sort by use.
     # TODO: typing throws as `rows` is not promised to be a `SupportsLessThan` Iterable
-    sorted_rows = sorted(rows, key=lambda k: k["checkout_counter"], reverse=True) # type: ignore
+    sorted_rows = sorted(rows, key=lambda k: k["checkout_counter"], reverse=True)  # type: ignore
     return serialize_device(sorted_rows[0]) if len(sorted_rows) > 0 else None
 
 

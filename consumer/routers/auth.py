@@ -1,5 +1,6 @@
-from fastapi import APIRouter
 from typing import Any
+
+from fastapi import APIRouter
 
 from consumer.schemas.token import VerifyToken
 from consumer.utils.general import dataFromJson

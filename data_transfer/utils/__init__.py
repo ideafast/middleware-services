@@ -4,7 +4,7 @@ from datetime import datetime
 from enum import Enum
 from functools import lru_cache
 from pathlib import Path
-from typing import List, Any
+from typing import Any, List
 
 
 class DeviceType(Enum):

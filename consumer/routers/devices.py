@@ -1,4 +1,5 @@
 from typing import Any
+
 from fastapi import APIRouter
 
 from consumer.utils.general import dataFromJson

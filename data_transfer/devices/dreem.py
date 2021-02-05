@@ -1,6 +1,7 @@
 from pathlib import Path
-import requests
 from typing import Tuple
+
+import requests
 
 from data_transfer import utils
 from data_transfer.config import config

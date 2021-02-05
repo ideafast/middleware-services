@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, List
+from typing import List, Optional
 
 from data_transfer.config import config
 from data_transfer.schemas.ucam import Device, Patient, PatientRecord, Payload
@@ -107,4 +107,3 @@ def record_by_wear_period(
             return record
 
     return None
-    
