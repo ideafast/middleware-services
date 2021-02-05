@@ -69,9 +69,7 @@ def lint(session: Session) -> None:
 @nox.session(python=["3.8"])
 def tests(session: Session) -> None:
     """Setup for automated testing with pytest"""
-    from cli import run_command
-
-    run_command("pytest")
+    session.run("poetry", "run", "pytest", "-vs")
 
     # NOTE: Old and perhaps proper approach below. But issues prevent it to be ran on
     # all dev's machines. Needs further investigation. Definitely a local issue.
