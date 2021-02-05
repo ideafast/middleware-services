@@ -1,8 +1,10 @@
+from typing import List
+
 from data_transfer.devices.vttsma import Vttsma
 from data_transfer.schemas.record import Record
 
 
-def batch_metadata() -> [Record]:
+def batch_metadata() -> None:
     """
     VTT exports the patient data weekly in an S3 bucket
 

@@ -1,4 +1,6 @@
 from pathlib import Path
+import requests
+from typing import Tuple
 
 from data_transfer import utils
 from data_transfer.config import config
@@ -16,7 +18,7 @@ class Dreem:
         self.study_site = study_site
         self.user_id, self.session = self.authenticate()
 
-    def authenticate(self):
+    def authenticate(self) -> Tuple[str, requests.Session]:
         """
         Authenticate once when object created to share session between requests
         """
@@ -59,9 +61,9 @@ class Dreem:
             # Useful for historical data, but (TODO) should be replaced with UCAM API.
             history = inventory.device_history(device_id)[patient_id]
 
-            start_wear = utils.format_weartime(history["checkout"])
+            start_wear = utils.format_weartime(history["checkout"], "inventory")
             # NOTE: if device not returned the current day is used.
-            end_wear = utils.format_weartime(history["checkin"])
+            end_wear = utils.format_weartime(history["checkin"], "inventory")
             record = Record(
                 # NOTE: id is a unique uuid used to GET raw data from Dreem
                 filename=item["id"],

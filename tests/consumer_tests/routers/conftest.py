@@ -71,7 +71,7 @@ def device_history():
 
 
 @pytest.fixture(scope="function")
-def serial_response():
+def serial_response() -> Generator:
     """
     Mock data for external inventory (snipe-it) endpoint: /byserial/
     This is only a subset of a response that is used in the middleware.

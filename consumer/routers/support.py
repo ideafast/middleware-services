@@ -10,7 +10,7 @@ headers = {"Authorization": f"Bearer {config.support_token}"}
 
 
 @router.get("/users")
-async def users():
+async def users() -> list:
     get_users_response = requests.get(
         f"{config.support_base_url}users", headers=headers
     )

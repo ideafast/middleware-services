@@ -8,7 +8,7 @@ from data_transfer.tasks import vttsma as vttsma_tasks
 from data_transfer.utils import DeviceType
 
 
-def dreem_dag(study_site) -> None:
+def dreem_dag(study_site: str) -> None:
     """
     Directed acyclic graph (DAG) representing dreem data pipeline:
 

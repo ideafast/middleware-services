@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List
 
 import boto3
 from mypy_boto3_s3.service_resource import Bucket
@@ -22,7 +23,7 @@ def get_bucket(creds: dict) -> Bucket:
     return bucket
 
 
-def get_list(bucket: Bucket) -> [dict]:
+def get_list(bucket: Bucket) -> List[dict]:
     """
     GET all records (metadata) from the AWS S3 bucket
 

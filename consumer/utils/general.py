@@ -1,5 +1,5 @@
 import json
-import typing
+from typing import Any
 
 from fastapi import Response
 
@@ -7,7 +7,7 @@ from fastapi import Response
 class CustomResponse(Response):
     media_type = "application/json"
 
-    def envelope(self, content: typing.Any) -> dict:
+    def envelope(self, content: Any) -> dict:
         # Only when an HTTP/CustomException is thrown content is {errors: []}
         is_errors = isinstance(content, dict) and "errors" in content
         errors = content["errors"] if is_errors else []
@@ -19,7 +19,7 @@ class CustomResponse(Response):
             },
         }
 
-    def render(self, content: typing.Any) -> bytes:
+    def render(self, content: Any) -> bytes:
         return json.dumps(
             self.envelope(content),
             ensure_ascii=False,
@@ -29,7 +29,7 @@ class CustomResponse(Response):
         ).encode("utf-8")
 
 
-def dataFromJson(name: str):
+def dataFromJson(name: str) -> Any:
     fname = f"./consumer/mock-data/{name}.json"
     with open(fname) as content:
         data = json.load(content)

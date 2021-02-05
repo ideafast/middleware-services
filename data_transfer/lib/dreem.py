@@ -7,7 +7,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple, List
 
 import requests
 
@@ -30,7 +30,7 @@ class DreemFileDownload:
 args = DreemFileDownload()
 
 
-def get_token(creds: dict) -> (str, str):
+def get_token(creds: dict) -> Tuple[str, str]:
     """
     Generates a JWT token with the credentials for API access
     """
@@ -50,7 +50,7 @@ def get_session(token: str) -> requests.Session:
     return session
 
 
-def get_restricted_list(session: requests.Session, user_id: str) -> [dict]:
+def get_restricted_list(session: requests.Session, user_id: str) -> List[dict]:
     """
     GET all records (metadata) associated with a restricted account (e.g. study site)
     """
@@ -61,9 +61,9 @@ def get_restricted_list(session: requests.Session, user_id: str) -> [dict]:
         response = session.get(url)
         # TODO: catch/log exception
         response.raise_for_status()
-        response = response.json()
-        url = response["next"]
-        results.extend(response["results"])
+        result: dict = response.json()
+        url = result["next"]
+        results.extend(result["results"])
     return results
 
 
@@ -77,11 +77,11 @@ def download_file(session: requests.Session, record_id: str) -> bool:
     response = session.get(url)
     # TODO: catch/log exception
     response.raise_for_status()
-    response = response.json()
+    result: dict = response.json()
 
     # Used to lookup the download URL
     key = "url" if file_type == "raw" else "data_url"
-    file_url = response[key]
+    file_url = result[key]
 
     # NOTE: file_url may be empty if a file is unavailable:
     # (1): file is on dreem headband but not uploaded
@@ -127,7 +127,7 @@ def __key_by_value(filename: Path, needle: str) -> Optional[str]:
     data = read_csv_from_cache(filename)
     for item in data:
         if needle == item["hash"]:
-            return item["value"]
+            return str(item["value"])
     return None
 
 
@@ -146,7 +146,7 @@ def __download_file(url: str, record_id: str) -> None:
                 output_file.write(chunk)
 
 
-def __build_url(file_type: str, record_id: str) -> (str, str):
+def __build_url(file_type: str, record_id: str) -> str:
     """
     Build URL based on file info. This varied by filetype, e.g., raw/EDF/H5.
     """

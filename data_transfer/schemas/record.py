@@ -27,7 +27,7 @@ class Record(BaseModel):
     is_uploaded: Optional[bool] = False
 
     @validator("id")
-    def validate_id(self, id):
+    def validate_id(self: Record, id: str) -> ObjectId:
         """
         Skip validation and cast to ObjectID.
         Skipping as this is created by DB.

@@ -4,6 +4,7 @@ from datetime import datetime
 from enum import Enum
 from functools import lru_cache
 from pathlib import Path
+from typing import List, Any
 
 
 class DeviceType(Enum):
@@ -28,7 +29,7 @@ def format_weartime(period: str, type: str) -> datetime:
 
 
 @lru_cache(maxsize=None)
-def read_csv_from_cache(path: Path) -> [dict]:
+def read_csv_from_cache(path: Path) -> List[dict]:
     """
     Load full CSV into memory for quick lookup
     """
@@ -37,7 +38,7 @@ def read_csv_from_cache(path: Path) -> [dict]:
     return data
 
 
-def read_json(filepath: Path) -> json:
+def read_json(filepath: Path) -> Any:
     with open(filepath, "r") as f:
         data = f.read()
     return json.loads(data)

@@ -1,12 +1,12 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from data_transfer.config import config
 from data_transfer.schemas.ucam import Device, Patient, PatientRecord, Payload
 from data_transfer.utils import format_weartime, read_csv_from_cache
 
 
-def __get_patients() -> [Payload]:
+def __get_patients() -> List[Payload]:
     """
     All records from the UCAM DB.
 
@@ -31,7 +31,7 @@ def __get_patients() -> [Payload]:
     return [__create_record(d) for d in read_csv_from_cache(config.ucam_data)]
 
 
-def __serialise_records(patient_records: [Payload]) -> Optional[PatientRecord]:
+def __serialise_records(patient_records: List[Payload]) -> Optional[PatientRecord]:
     """
     All records from the UCAM DB.
 
@@ -85,7 +85,7 @@ def record_by_vtt(vtt_hash: str) -> Optional[PatientRecord]:
     return __serialise_records(patient_records)
 
 
-def device_history(device_id: str) -> [Payload]:
+def device_history(device_id: str) -> List[Payload]:
     """
     A device may be worn by many patients. This returns such history.
     """
@@ -105,3 +105,6 @@ def record_by_wear_period(
         within_end_period = record.start_wear <= end_wear <= record.end_wear
         if within_start_period and within_end_period:
             return record
+
+    return None
+    

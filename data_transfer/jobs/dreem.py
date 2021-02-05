@@ -2,7 +2,7 @@ from data_transfer.devices.dreem import Dreem
 from data_transfer.schemas.record import Record
 
 
-def batch_metadata(study_site: str) -> [Record]:
+def batch_metadata(study_site: str) -> None:
     """
     Dreem's API offers a single request that returns all known data records per study site.
 

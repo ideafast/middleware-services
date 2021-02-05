@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from mypy_boto3_s3.service_resource import Bucket
+
 from data_transfer import utils
 from data_transfer.config import config
 from data_transfer.db import all_filenames, create_record, read_record, update_record
@@ -9,13 +11,13 @@ from data_transfer.services import ucam
 
 
 class Vttsma:
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Set up a session to the s3 bucket to use in multiple steps
         """
         self.bucket = self.authenticate()
 
-    def authenticate(self):
+    def authenticate(self) -> Bucket:
         """
         Authenticate once when object created to share session between requests
         """
@@ -65,13 +67,13 @@ class Vttsma:
         for item in unknown_records:
 
             if patient_record := ucam.record_by_vtt(item["id"]):
-                device_used = [
+                devices_used = [
                     r for r in patient_record.devices if r.vttsma_id == item["id"]
                 ]
 
                 # Assuming that only one device (phone) is used for the VTT SMA
                 # TODO: re-evaluate once data from Newcastle is present on S3
-                device_used = device_used[0]
+                device_used = devices_used[0]
 
                 record = Record(
                     filename=device_used.vttsma_id,  # NOTE: id is the hashedID provided by VTT
