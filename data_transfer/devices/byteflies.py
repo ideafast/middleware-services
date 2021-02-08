@@ -41,7 +41,7 @@ class Byteflies:
         NOTE/TODO: will run as BATCH job.
         """
         # Note: includes metadata for ALL data records, therefore we must filter them
-        all_records = byteflies_api.get_restricted_list(self.session)
+        all_records = byteflies_api.get_list(self.session)
 
         # Only add records that are not known in the DB based on stored filename
         # i.e. (ID and filename in dreem)

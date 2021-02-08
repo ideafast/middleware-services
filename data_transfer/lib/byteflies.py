@@ -1,6 +1,7 @@
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 import requests
 
@@ -62,21 +63,24 @@ def get_session(token: str) -> requests.Session:
     return session
 
 
-def get_restricted_list(session: requests.Session) -> List[dict]:
+def get_list(session: requests.Session) -> List[dict]:
     """
-    GET all records (metadata) associated with a restricted account (e.g. study site)
+    GET all records (metadata) across study sites ('groups' in ByteFlies API)
+    NOTE: undocumented, but we can query with start and end dates. Actually,
+    we have to - as the server throws an error when the result is too large (i.e. 4 months)
     """
-    url = f"{config.dreem_api_url}/dreem/algorythm/restricted_list/record/"
-    results = []
+    today = datetime.today().replace(hour=23, minute=59)
+    last_week = today - timedelta(days=8)  # add one day overlap of data if ran weekly
+    begin = str(int(last_week.timestamp()))
+    end = str(int(today.timestamp()))
 
-    while url:
-        response = session.get(url)
-        # TODO: catch/log exception
-        response.raise_for_status()
-        result: dict = response.json()
-        url = result["next"]
-        results.extend(result["results"])
-    return results
+    groups = __get_groups(session)
+    for group in groups:
+        recordings = __get_recordings_by_group(session, group, begin, end)
+        print(recordings)
+        break  # skip after one group for testing
+
+    return []
 
 
 def download_file(session: requests.Session, record_id: str) -> bool:
@@ -130,6 +134,41 @@ def patient_id_by_user(uuid: str) -> Optional[str]:
             email = f"{email[0]}-{email[1:]}"
     # TODO: what if personal email used (e.g., in CVS)?
     return email
+
+
+def __get_response(session: requests.Session, url: str) -> Any:
+    """Wrapper method to execute a GET request"""
+    response = session.get(url)
+    # TODO: catch/log exception
+    response.raise_for_status()
+    return response.json()
+
+
+def __get_groups(session: requests.Session) -> List[str]:
+    """Returns the list of Groups associated with a User Account"""
+    groups = __get_response(session, f"{config.byteflies_api_url}/groups/")
+    group_ids = [g["groupId"] for g in groups]
+    return group_ids
+
+
+def __get_recordings_by_group(
+    session: requests.Session, group_id: str, begin_date: str, end_date: str
+) -> Any:
+    """Returns the list of Recordings associated to a Group"""
+    return __get_response(
+        session,
+        f"{config.byteflies_api_url}/groups/{group_id}/recordings?begin={begin_date}&end={end_date}",
+    )
+
+
+def __get_recording_by_id(
+    session: requests.Session, group_id: str, recording_id: str
+) -> Any:
+    """Returns he details of a particular Recording"""
+    return __get_response(
+        session,
+        f"{config.byteflies_api_url}/groups/{group_id}/recordings/{recording_id}/",
+    )
 
 
 def __key_by_value(filename: Path, needle: str) -> Optional[str]:
