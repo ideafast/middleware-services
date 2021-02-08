@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Tuple
 
 import requests
 
@@ -12,27 +11,29 @@ from data_transfer.services import inventory
 
 
 class Byteflies:
-    def __init__(self, study_site: str):
+    def __init__(self) -> None:
         """
-        Use study_site name to build auth as there are multiple sites/credentials.
+        Authenticate with AWS cognito to access ByteFlies resources
         """
-        self.study_site = study_site
-        self.user_id, self.session = self.authenticate()
+        self.session = self.authenticate()
 
-    def authenticate(self) -> Tuple[str, requests.Session]:
+    def authenticate(self) -> requests.Session:
         """
         Authenticate once when object created to share session between requests
         """
-        # credentials = config.byteflies[self.study_site]
-        credentials = dict(creds=("username", "password"))
-        token, user_id = byteflies_api.get_token(credentials)
+        credentials = dict(
+            username=config.byteflies_username,
+            password=config.byteflies_password,
+            client_id=config.byteflies_aws_client_id,
+        )
+        token = byteflies_api.get_token(credentials)
         session = byteflies_api.get_session(token)
-        return user_id, session
+        return session
 
     def download_metadata(self) -> None:
         """
         Before downloading raw data we need to know which files to download.
-        Dreem provided a range of metadata (including a report) per data record.
+        Byteflies stored data per study site - which we can iterate for metadata.
 
         This method downloads and stores the metadata as file, and stores most
         relevant metadata as a Record in the database in preparation for next stages.
@@ -40,7 +41,7 @@ class Byteflies:
         NOTE/TODO: will run as BATCH job.
         """
         # Note: includes metadata for ALL data records, therefore we must filter them
-        all_records = byteflies_api.get_restricted_list(self.session, self.user_id)
+        all_records = byteflies_api.get_restricted_list(self.session)
 
         # Only add records that are not known in the DB based on stored filename
         # i.e. (ID and filename in dreem)

@@ -1,7 +1,7 @@
 from data_transfer.devices.byteflies import Byteflies
 
 
-def batch_metadata(study_site: str) -> None:
+def batch_metadata() -> None:
     """
     Dreem's API offers a single request that returns all known data records per study site.
 
@@ -10,5 +10,5 @@ def batch_metadata(study_site: str) -> None:
     NOTE/TODO: this cron batch should be run daily at lunchtime:
         i.e. when most patients have finished sleep.
     """
-    byteflies = Byteflies(study_site)
+    byteflies = Byteflies()
     byteflies.download_metadata()

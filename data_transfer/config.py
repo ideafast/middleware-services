@@ -29,11 +29,11 @@ class Settings(BaseSettings):
     support_token: str
 
     # BYTEFLIES
-    # byteflies_cognito_username: str
-    # byteflies_cognito_password: str
-    # byteflies_cognito_client_id: str
-    # byteflies_cognito_url: str
-    # byteflies_base_url: str
+    byteflies_api_url: str
+    byteflies_username: str
+    byteflies_password: str
+    byteflies_aws_client_id: str
+    byteflies_aws_auth_url: str
 
     # VTTSMA
     vttsma_aws_accesskey: str

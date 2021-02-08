@@ -63,7 +63,7 @@ def vttsma_dag() -> None:
     shared_jobs.batch_upload_data()
 
 
-def byteflies_dag(study_site: str) -> None:
+def byteflies_dag() -> None:
     """
     Directed acyclic graph (DAG) representing dreem data pipeline:
 
@@ -75,13 +75,13 @@ def byteflies_dag(study_site: str) -> None:
 
     NOTE/TODO: this method simulates the pipeline.
     """
-    byteflies_jobs.batch_metadata(study_site)
+    byteflies_jobs.batch_metadata()
 
     # NOTE: simulates initiation of tasks upon metadata download
     # TODO: in practice the tasks should be invoked within the batch job.
     for record in records_not_downloaded(DeviceType.BTF):
         # Each task should be idempotent. Returned values feeds subsequent task
-        mongoid = byteflies_tasks.task_download_data(study_site, record.id)
+        mongoid = byteflies_tasks.task_download_data(record.id)
         mongoid = byteflies_tasks.task_preprocess_data(mongoid)
         # Data is finalised and moved to a folder in /uploading/
         shared_tasks.task_prepare_data(DeviceType.BTF, mongoid)
@@ -93,4 +93,4 @@ def byteflies_dag(study_site: str) -> None:
 if __name__ == "__main__":
     # dreem_dag("munster")
     # vttsma_dag()
-    byteflies_dag("munster")
+    byteflies_dag()

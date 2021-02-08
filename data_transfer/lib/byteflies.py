@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 import requests
 
@@ -25,15 +25,32 @@ class BytefliesFileDownload:
 args = BytefliesFileDownload()
 
 
-def get_token(creds: dict) -> Tuple[str, str]:
+def get_token(creds: dict) -> str:
     """
-    Generates a JWT token with the credentials for API access
+    Generates a AWS Cognito IdToken for API access
+    # NOTE: generally expires in 60 minutes
+    # TODO: establish token refreshing depending on \
+        frequency/length of DAG
     """
-    res = requests.post(f"{config.dreem_login_url}/token/", auth=creds)
+    res = requests.post(
+        f"{config.byteflies_aws_auth_url}",
+        headers={
+            "X-Amz-Target": "AWSCognitoIdentityProviderService.InitiateAuth",
+            "Content-Type": "application/x-amz-json-1.1",
+        },
+        json={
+            "ClientId": f"{creds['client_id']}",
+            "AuthFlow": "USER_PASSWORD_AUTH",
+            "AuthParameters": {
+                "USERNAME": f"{creds['username']}",
+                "PASSWORD": f"{creds['password']}",
+            },
+        },
+    )
     #  TODO: catch/log exception
     res.raise_for_status()
     resp = res.json()
-    return (resp["token"], resp["user_id"])
+    return str(resp["AuthenticationResult"]["IdToken"])
 
 
 def get_session(token: str) -> requests.Session:
@@ -41,15 +58,15 @@ def get_session(token: str) -> requests.Session:
     Builds a requests session object with the required header
     """
     session = requests.Session()
-    session.headers.update({"Authorization": f"Bearer {token}"})
+    session.headers.update({"Authorization": f"{token}"})
     return session
 
 
-def get_restricted_list(session: requests.Session, user_id: str) -> List[dict]:
+def get_restricted_list(session: requests.Session) -> List[dict]:
     """
     GET all records (metadata) associated with a restricted account (e.g. study site)
     """
-    url = f"{config.dreem_api_url}/dreem/algorythm/restricted_list/{user_id}/record/"
+    url = f"{config.dreem_api_url}/dreem/algorythm/restricted_list/record/"
     results = []
 
     while url:
