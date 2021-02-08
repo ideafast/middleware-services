@@ -15,24 +15,35 @@ root_path = Path(__file__).parent.parent
 class Settings(BaseSettings):
     database_uri: str
 
-    dreem_users: Path = root_path / "ideafast-users-full.csv"
-    dreem_devices: Path = root_path / "ideafast-devices-full.csv"
-
+    # UCAM
     ucam_data: Path = root_path / "ucam_db.csv"
 
+    # LOCAL
     storage_vol: Path = root_path / "data/input"
     upload_folder: Path = root_path / "data/uploading"
 
+    # IDEAFAST
     inventory_api: str
 
     support_base_url: str
     support_token: str
 
-    # NOTE: VTT does not differentiate between study sites
+    # BYTEFLIES
+    # byteflies_cognito_username: str
+    # byteflies_cognito_password: str
+    # byteflies_cognito_client_id: str
+    # byteflies_cognito_url: str
+    # byteflies_base_url: str
+
+    # VTTSMA
     vttsma_aws_accesskey: str
     vttsma_aws_secret_accesskey: str
     vttsma_aws_bucket_name: str
     vttsma_global_device_id: str
+
+    # DREEM
+    dreem_users: Path = root_path / "ideafast-users-full.csv"
+    dreem_devices: Path = root_path / "ideafast-devices-full.csv"
 
     dreem_login_url: str
     dreem_api_url: str
