@@ -1,5 +1,6 @@
 import csv
 import json
+import re
 from datetime import datetime, timedelta
 from enum import Enum
 from functools import lru_cache
@@ -76,32 +77,30 @@ def validate_and_format_patient_id(ideafast_id: str) -> Union[bool, str]:
     Returns boolean if validate with corrected formatting
     """
 
+    def __get_remainder(string: str, factor: int) -> int:
+        character_set = "ACDEFGHJKNPQRSTVXYZ2345679"
+        total = 0
+
+        # reverse iteration
+        for char in string[::-1]:
+            try:
+                code_point = character_set.index(char)
+            except (IndexError, ValueError):
+                return True  # True != 0
+            addend = factor * code_point
+            factor = 1 if factor == 2 else 2
+            addend = floor(addend / len(character_set)) + (addend % len(character_set))
+            total += addend
+
+        return total % len(character_set)
+
     if type(ideafast_id) is str:
         id_without_punc = re.sub(r"[^\w]", "", ideafast_id)
-        #  TODO: remove spaces if present
 
         if len(id_without_punc) == 7:
             study_site = id_without_punc[0]
             idgen = id_without_punc[1:]
             remainder = __get_remainder(idgen, 1)
-            return f"{study_site}{idgen}" if remainder == 0 else False
+            return (remainder == 0, f"{study_site}{idgen}")
 
-    return False
-
-
-def __get_remainder(string: str, factor: int) -> int:
-    character_set = "ACDEFGHJKNPQRSTVXYZ2345679"
-    total = 0
-
-    # reverse iteration
-    for char in string[::-1]:
-        try:
-            code_point = character_set.index(char)
-        except (IndexError, ValueError):
-            return True  # True != 0
-        addend = factor * code_point
-        factor = 1 if factor == 2 else 2
-        addend = floor(addend / len(character_set)) + (addend % len(character_set))
-        total += addend
-
-    return total % len(character_set)
+    return (False, ideafast_id)
