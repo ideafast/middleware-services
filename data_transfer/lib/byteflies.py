@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, List, Optional
 
@@ -63,22 +62,17 @@ def get_session(token: str) -> requests.Session:
     return session
 
 
-def get_list(session: requests.Session) -> List[dict]:
+def get_list(session: requests.Session, from_date: str, to_date: str) -> List[dict]:
     """
     GET all records (metadata) across study sites ('groups' in ByteFlies API)
     NOTE: undocumented, but we can query with start and end dates. Actually,
     we have to - as the server throws an error when the result is too large (i.e. 4 months)
     """
-    today = datetime.today().replace(hour=23, minute=59)
-    last_week = today - timedelta(days=8)  # add one day overlap of data if ran weekly
-    begin = str(int(last_week.timestamp()))
-    end = str(int(today.timestamp()))
-
     groups = __get_groups(session)
     for group in groups:
-        recordings = __get_recordings_by_group(session, group, begin, end)
+        recordings = __get_recordings_by_group(session, group, from_date, to_date)
         print(recordings)
-        break  # skip after one group for testing
+        break  # NOTE: skip after one group for testing
 
     return []
 

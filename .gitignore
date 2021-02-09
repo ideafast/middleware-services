@@ -8,7 +8,7 @@ __pycache__
 /data/*
 ideafast-*-full.csv
 *.json
-ucam_db.csv
+ucam_db*.csv
 **/.DS_Store
 
 # mypy

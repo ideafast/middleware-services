@@ -1,7 +1,7 @@
 from data_transfer.devices.byteflies import Byteflies
 
 
-def batch_metadata() -> None:
+def batch_metadata(from_date: str, to_date: str) -> None:
     """
     Dreem's API offers a single request that returns all known data records per study site.
 
@@ -11,4 +11,4 @@ def batch_metadata() -> None:
         i.e. when most patients have finished sleep.
     """
     byteflies = Byteflies()
-    byteflies.download_metadata()
+    byteflies.download_metadata(from_date, to_date)

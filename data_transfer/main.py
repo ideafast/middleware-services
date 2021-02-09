@@ -9,7 +9,7 @@ from data_transfer.tasks import byteflies as byteflies_tasks
 from data_transfer.tasks import dreem as dreem_tasks
 from data_transfer.tasks import shared as shared_tasks
 from data_transfer.tasks import vttsma as vttsma_tasks
-from data_transfer.utils import DeviceType
+from data_transfer.utils import DeviceType, get_period_by_days
 
 fileConfig("logging.ini")
 
@@ -75,7 +75,12 @@ def byteflies_dag() -> None:
 
     NOTE/TODO: this method simulates the pipeline.
     """
-    byteflies_jobs.batch_metadata()
+
+    # TODO: ensure that we get the End of Day as intended based on automation schedule
+    # TODO: should we ensure overlap with previous run? How often do we run this DAG?
+    # TODO: perhaps pull this one abstraction higher (into the init of this DAG?)
+    data_period = get_period_by_days(datetime.today(), 8)
+    byteflies_jobs.batch_metadata(*data_period)
 
     # NOTE: simulates initiation of tasks upon metadata download
     # TODO: in practice the tasks should be invoked within the batch job.

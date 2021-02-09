@@ -30,7 +30,7 @@ class Byteflies:
         session = byteflies_api.get_session(token)
         return session
 
-    def download_metadata(self) -> None:
+    def download_metadata(self, from_date: str, to_date: str) -> None:
         """
         Before downloading raw data we need to know which files to download.
         Byteflies stored data per study site - which we can iterate for metadata.
@@ -41,7 +41,7 @@ class Byteflies:
         NOTE/TODO: will run as BATCH job.
         """
         # Note: includes metadata for ALL data records, therefore we must filter them
-        all_records = byteflies_api.get_list(self.session)
+        all_records = byteflies_api.get_list(self.session, from_date, to_date)
 
         # Only add records that are not known in the DB based on stored filename
         # i.e. (ID and filename in dreem)

@@ -1,12 +1,11 @@
 import csv
 import json
-import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import Enum
 from functools import lru_cache
 from math import floor
 from pathlib import Path
-from typing import Any, List, Union
+from typing import Any, List, Tuple
 
 
 class DeviceType(Enum):
@@ -28,6 +27,14 @@ FORMATS = {"ucam": "%d/%m/%Y", "inventory": "%Y-%m-%d %H:%M:%S"}
 
 def format_weartime(period: str, type: str) -> datetime:
     return datetime.strptime(period, FORMATS[type])
+
+
+def get_period_by_days(start: datetime, days: int) -> Tuple[str, str]:
+    end_date = start.replace(hour=23, minute=59)
+    from_date = end_date - timedelta(days=days)
+    begin = str(int(from_date.timestamp()))
+    end = str(int(end_date.timestamp()))
+    return (begin, end)
 
 
 @lru_cache(maxsize=None)
