@@ -32,30 +32,7 @@ class Byteflies:
     def download_metadata(self, from_date: str, to_date: str) -> None:
         """
         Before downloading raw data we need to know which files to download.
-<<<<<<< HEAD
         Byteflies offers an API which we can query for a given time period
-=======
-        Byteflies offers an API which we can query for a given time period:
-        /groups/{groupId}/recordings?begin={begin_date}&end={end_date}
-        It returns a list or recordings (see API docs), with most relevant data:
-
-        {
-            "id": "...",            # uid of the Recording
-            "groupId": "...",       # uid of the group (i.e. study site)
-            "patient": "...",       # a patient identifier. Data shows missing and irregular typed ids
-            "signals": [            # a list of signal 'objects' containing recordings
-                {
-                    "id": "...",       # uid of the signal
-                    "type": "...",     # type of signals, e.g. ACC, EEG, ECG, GYR ...
-                    "quality": "FAIL", # Quality is PASS, CHECK or FAIL
-                    "rawData": "https://.." # a url location of the signal data
-                },
-                ...
-            "startDate": 1612439696.583213, # fractional unix timestamp of the start of the recording
-            "duration": 32335.190131348,    # fractional unix timestamp of the duration of the recording
-            "uploadDate": 1612523536.755,   # fractional unix timestamp of the date of upload
-        }
->>>>>>> 8d542fe... rebase master
         ...
 
         NOTE/TODO: will run as BATCH job.

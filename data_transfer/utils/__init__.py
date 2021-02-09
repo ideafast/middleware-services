@@ -115,4 +115,4 @@ def validate_and_format_patient_id(ideafast_id: str) -> Union[bool, str]:
             remainder = __get_remainder(idgen, 1)
             return f"{study_site}{idgen}" if remainder == 0 else False
 
-    return (False, ideafast_id)
+    return False
