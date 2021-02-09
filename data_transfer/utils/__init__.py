@@ -6,7 +6,7 @@ from enum import Enum
 from functools import lru_cache
 from math import floor
 from pathlib import Path
-from typing import Any, List, Tuple
+from typing import Any, List, Tuple, Union
 
 
 class DeviceType(Enum):
@@ -27,15 +27,27 @@ FORMATS = {"ucam": "%d/%m/%Y", "inventory": "%Y-%m-%d %H:%M:%S"}
 
 
 def format_weartime(period: str, type: str) -> datetime:
+    """create a datetime object from a specifically formated string"""
     return datetime.strptime(period, FORMATS[type])
 
 
+def format_weartime_from_timestamp(period: int) -> datetime:
+    """create a datetime object from a timestamp"""
+    return datetime.fromtimestamp(period)
+
+
 def get_period_by_days(start: datetime, days: int) -> Tuple[str, str]:
+    """return two timestamps based on a startdate and duration"""
     end_date = start.replace(hour=23, minute=59)
     from_date = end_date - timedelta(days=days)
     begin = str(int(from_date.timestamp()))
     end = str(int(end_date.timestamp()))
     return (begin, end)
+
+
+def get_endwear_by_seconds(start: datetime, duration: int) -> datetime:
+    """return timestamps based on a startdate and duration"""
+    return start + timedelta(seconds=duration)
 
 
 @lru_cache(maxsize=None)
@@ -101,6 +113,6 @@ def validate_and_format_patient_id(ideafast_id: str) -> Union[bool, str]:
             study_site = id_without_punc[0]
             idgen = id_without_punc[1:]
             remainder = __get_remainder(idgen, 1)
-            return (remainder == 0, f"{study_site}{idgen}")
+            return f"{study_site}{idgen}" if remainder == 0 else False
 
-    return (False, ideafast_id)
+    return False

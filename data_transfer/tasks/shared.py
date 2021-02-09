@@ -6,6 +6,7 @@ FILE_TYPES = {
     # Possibly move this to utils or embed with the enums
     "DRM": ".h5",
     "SMA": ".zip",
+    "BTF": ".csv",
 }
 
 
@@ -21,6 +22,7 @@ def task_prepare_data(device_type: DeviceType, mongo_id: str) -> None:
     record = read_record(mongo_id)
 
     # DMP requires no dashes in IDs or dates
+    # NOTE: could replace this with ID validator/formatter in utils
     patient_id = record.patient_id.replace("-", "")
     device_id = record.device_id.replace("-", "")
     # DMP requires wear period format as: 2020/12/01

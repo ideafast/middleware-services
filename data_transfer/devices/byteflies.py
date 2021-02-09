@@ -7,7 +7,7 @@ from data_transfer.config import config
 from data_transfer.db import all_filenames, create_record, read_record, update_record
 from data_transfer.lib import byteflies as byteflies_api
 from data_transfer.schemas.record import Record
-from data_transfer.services import inventory
+from data_transfer.utils import validate_and_format_patient_id
 
 
 class Byteflies:
@@ -68,36 +68,34 @@ class Byteflies:
         # Aim: construct valid record (metadata) and add to DB
         for item in unknown_records:
 
-            device_serial = byteflies_api.serial_by_device(item["device"])
-            device_id = inventory.device_id_by_serial(device_serial)
+            # TODO: integration with UCAM? (Although they don't store byteflies IDs?)
+            if patient_id := validate_and_format_patient_id(item["patient"]):
 
-            # NOTE: lookup Patient ID by email: if None (e.g. personal email used), then use inventory
-            patient_id = byteflies_api.patient_id_by_user(
-                item["user"]
-            ) or inventory.patient_id_by_device_id(device_id)
+                # NOTE: currently taken from ByteFlies data - not inventory/UCAM
+                start_wear = utils.format_weartime_from_timestamp(item["startDate"])
+                end_wear = utils.get_endwear_by_seconds(start_wear, item["duration"])
 
-            # NOTE: using inventory to determine intended wear time period.
-            # Useful for historical data, but (TODO) should be replaced with UCAM API.
-            history = inventory.device_history(device_id)[patient_id]
+                record = Record(
+                    filename=item["id"],
+                    device_type=utils.DeviceType.BTF.name,
+                    device_id=item[
+                        "dotId"
+                    ],  # TODO: replace/lookup with IDEAFAST device ID
+                    patient_id=patient_id,
+                    start_wear=start_wear,
+                    end_wear=end_wear,
+                )
 
-            start_wear = utils.format_weartime(history["checkout"], "inventory")
-            # NOTE: if device not returned the current day is used.
-            end_wear = utils.format_weartime(history["checkin"], "inventory")
-            record = Record(
-                # NOTE: id is a unique uuid used to GET raw data from Dreem
-                filename=item["id"],
-                device_type=utils.DeviceType.DRM.name,
-                device_id=device_id,
-                patient_id=patient_id,
-                start_wear=start_wear,
-                end_wear=end_wear,
-            )
+                create_record(record)
 
-            create_record(record)
+                path = Path(config.storage_vol / f"{record.filename}-meta.json")
+                # Store metadata from memory to file
+                utils.write_json(path, item)
 
-            path = Path(config.storage_vol / f"{record.filename}-meta.json")
-            # Store metadata from memory to file
-            utils.write_json(path, item)
+            else:
+                # throw / log here
+                print(f"invalid patient ID: {item['patient']}")
+                pass
 
     def download_file(self, mongo_id: str) -> None:
         """
