@@ -69,12 +69,13 @@ def get_list(session: requests.Session, from_date: str, to_date: str) -> List[di
     we have to - as the server throws an error when the result is too large (i.e. 4 months)
     """
     groups = __get_groups(session)
-    for group in groups:
-        recordings = __get_recordings_by_group(session, group, from_date, to_date)
-        print(recordings)
-        break  # NOTE: skip after one group for testing
+    results: List[dict] = []
 
-    return []
+    for group in groups:
+        recordings: dict = __get_recordings_by_group(session, group, from_date, to_date)
+        results.extend(recordings)
+
+    return results
 
 
 def download_file(session: requests.Session, record_id: str) -> bool:

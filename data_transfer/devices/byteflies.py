@@ -33,10 +33,27 @@ class Byteflies:
     def download_metadata(self, from_date: str, to_date: str) -> None:
         """
         Before downloading raw data we need to know which files to download.
-        Byteflies stored data per study site - which we can iterate for metadata.
+        Byteflies offers an API which we can query for a given time period:
+        /groups/{groupId}/recordings?begin={begin_date}&end={end_date}
+        It returns a list or recordings (see API docs), with most relevant data:
 
-        This method downloads and stores the metadata as file, and stores most
-        relevant metadata as a Record in the database in preparation for next stages.
+        {
+            "id": "...",            # uid of the Recording
+            "groupId": "...",       # uid of the group (i.e. study site)
+            "patient": "...",       # a patient identifier. Data shows missing and irregular typed ids
+            "signals": [            # a list of signal 'objects' containing recordings
+                {
+                    "id": "...",       # uid of the signal
+                    "type": "...",     # type of signals, e.g. ACC, EEG, ECG, GYR ...
+                    "quality": "FAIL", # Quality is PASS, CHECK or FAIL
+                    "rawData": "https://.." # a url location of the signal data
+                },
+                ...
+            "startDate": 1612439696.583213, # fractional unix timestamp of the start of the recording
+            "duration": 32335.190131348,    # fractional unix timestamp of the duration of the recording
+            "uploadDate": 1612523536.755,   # fractional unix timestamp of the date of upload
+        }
+        ...
 
         NOTE/TODO: will run as BATCH job.
         """
@@ -44,7 +61,6 @@ class Byteflies:
         all_records = byteflies_api.get_list(self.session, from_date, to_date)
 
         # Only add records that are not known in the DB based on stored filename
-        # i.e. (ID and filename in dreem)
         unknown_records = [
             r for r in all_records if r["id"] not in set(all_filenames())
         ]
