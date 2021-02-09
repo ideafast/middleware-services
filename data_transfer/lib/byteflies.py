@@ -64,7 +64,7 @@ def get_list(session: requests.Session, from_date: str, to_date: str) -> List[di
     results: List[dict] = []
 
     for group in groups:
-        recordings = __get_recordings_by_group(session, group, from_date, to_date)
+        recordings: dict = __get_recordings_by_group(session, group, from_date, to_date)
         results.extend(recordings)
 
     return results
