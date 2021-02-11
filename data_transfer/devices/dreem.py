@@ -1,3 +1,7 @@
+import json
+import time  # temporary ...
+from dataclasses import asdict
+from datetime import datetime
 from pathlib import Path
 from typing import Tuple
 
@@ -7,18 +11,9 @@ from data_transfer import utils
 from data_transfer.config import config
 from data_transfer.db import all_filenames, create_record, read_record, update_record
 from data_transfer.lib import dreem as dreem_api
-from data_transfer.services import inventory, ucam
 from data_transfer.schemas.record import Record
-from data_transfer.db import create_record, \
-    read_record, update_record, all_filenames
-from data_transfer import utils
+from data_transfer.services import inventory, ucam
 
-from pathlib import Path
-from datetime import datetime
-from dataclasses import asdict
-import json
-
-import time # temporary ...
 
 class Dreem:
     def __init__(self, study_site: str):
@@ -47,11 +42,8 @@ class Dreem:
 
         NOTE/TODO: will run as BATCH job.
         """
-        # Note: includes metadata for ALL data records, therefore we must filter them 
-        # all_records = dreem_api.get_restricted_list(self.session, self.user_id)
-
-        # utils.write_json("./newcastle-yo.json", all_records)
-        all_records = utils.read_json("./kiel.json")
+        # Note: includes metadata for ALL data records, therefore we must filter them
+        all_records = dreem_api.get_restricted_list(self.session, self.user_id)
 
         # Only add records that are not known in the DB based on stored filename
         # i.e. (ID and filename in dreem)
@@ -59,93 +51,87 @@ class Dreem:
             r for r in all_records if r["id"] not in set(all_filenames())
         ]
 
-        unknown_records = unknown_records[0:1]
-
         for item in unknown_records:
-            device_serial = dreem_api.serial_by_device(item['device'])
+            # ??
+            device_serial = dreem_api.serial_by_device(item["device"])
 
-            # This may not exist in our CSV/mocked endpoint
-            # e.g., if Dreem send a device replacement. 
+            # Serial may not exist in lookup, e.g., if Dreem send a device replacement.
             if not device_serial:
-                print (f"Unknown Device: {item['device']} with Record ID {item['id']}")
+                print(f"Unknown Device: {item['device']} with Record ID {item['id']}")
                 # Move onto next record: skips logic below to simplify error handling
                 continue
 
-            patient_id = dreem_api.patient_id_by_user(item['user'])
-
-            # Note: this start_time and duration
-            unix_start = item['report']['start_time']
-            dreem_start = datetime.fromtimestamp(unix_start)
-            dreem_end = datetime.fromtimestamp(unix_start + item['report']['duration'])
-
             # reset on each loop
             record = None
-            filename = item['id']
-            device_type = utils.DeviceType.DRM.name
+            # When the recording took place
+            dreem_start = datetime.fromtimestamp(item["report"]["start_time"])
+            dreem_end = datetime.fromtimestamp(item["report"]["stop_time"])
+
+            # 1. Determine PatientID with associated email.
+            # NOTE: PatientID is encoded in email so there is a 1-2-1 mapping.
+            patient_id = dreem_api.patient_id_by_user(item["user"])
+
+            # NOTE: a personal email may be used or (historically) a shared email.
+            if not patient_id:
+                # 2. Determine PatientID by wear period of this unique device
+                # NOTE: devices are unique therefore
+                device_id = inventory.device_id_by_serial(device_serial)
+
+                record = ucam.record_by_wear_period(device_id, dreem_start, dreem_end)
+                # TODO: we might instead
+                patient_id = record.patient_id if record else patient_id
+                time.sleep(2.5)
+                # 3. Determine PatientID by wear period in inventory.
+                if not patient_id:
+                    # NOTE: potential alternative could be to perform lookup in UCAM based on device histories
+                    # e.g., since we know DeviceID above
+                    history_record = inventory.patient_id_by_device_id(
+                        device_id, dreem_start, dreem_end
+                    )
+                    patient_id = (
+                        history_record["patient_id"] if history_record else None
+                    )
+                    time.sleep(2.5)
+
+            patient_id = patient_id.replace("-", "") if patient_id else patient_id
 
             if patient_id and (ucam_entry := ucam.get_record(patient_id)):
-                dreem_devices = [d for d in ucam_entry.devices if device_type in d.device_id]
+                dreem_devices = [
+                    d for d in ucam_entry.devices if device_type in d.device_id
+                ]
 
                 # Best-case: only one device was worn and UCAM knows it
                 if len(dreem_devices) == 1:
                     record = Record(**dreem_devices[0])
-                
                 # Edge-case: multiple dreem headbands used, e.g., if one broke.
                 elif len(dreem_devices) > 1:
                     # Determine usage based on weartime
-                    _record = ucam.record_by_wear_period_in_list(dreem_devices, dreem_start, dreem_end)
+                    _record = ucam.record_by_wear_period_in_list(
+                        dreem_devices, dreem_start, dreem_end
+                    )
                     _record = Record(**asdict(_record))
-                    continue
-                # Worst-case: UCAM record exists for this patient, but not this device.
-                # e.g. the clinician may have forgotten to add Dreem to UCAM
-                # NOTE: could remove this and let the ELSE below resolve it?
+                # Edge-case: UCAM record does not exist
+                # e.g. clinician may have forgotten to add Dreem to UCAM
+                #  NOTE: could remove this and let the ELSE below resolve it?
                 elif len(dreem_devices) == 0:
+                    # TODO: this is rare condition, so notify us?
                     # Why do this over inventory? More reliable ...
                     device_id = inventory.device_id_by_serial(device_serial)
                     devices = [d for d in ucam_entry.devices]
                     _record = Record(
-                        device_id=inventory.device_id_by_serial(device_serial),
-                        start_wear=min([d.start_wear for d in devices]),
-                        end_wear=max([d.end_wear for d in devices])
+                        patient_id=patient_id,
+                        device_id=device_id,
+                        # TODO: is this assumption too great?
+                        start_wear=dreem_start,
+                        end_wear=dreem_end,
                     )
-            # We cannot determine Patient ID from Dreem UUID, 
-            # e.g., an alternative email address was associated with the raw data.
-            # This is primarily for historical data and extreme edge-cases.
+            # We cannot determine Patient ID from Dreem UUID, or the Device ID from wear period
             else:
-                device_id = inventory.device_id_by_serial(device_serial)
+                # TODO: log relevant data
+                pass
 
-                # NOTE: alternatively, we might do this before UCAM to lookup patient ID,
-                # then use UCAM to pull out correct info? Saves a call to inventory (else logic above)
-                history_record = inventory.patient_id_by_device_id(device_id, dreem_start, dreem_end)
-
-                if not history_record:
-                    # Similar to above, if no record then skip logic below
-                    continue
-
-                checkin = history_record['checkin'] or datetime.now().strftime(utils.FORMATS['inventory'])
-
-                start_wear = utils.format_weartime(history_record['checkout'], 'inventory')
-                end_wear = utils.format_weartime(checkin, 'inventory')
-                patient_id = history_record['patient_id']
-                # Particuarly given we should use the weartime here 
-                if patient_id:
-                    ucam_record = ucam.get_record(patient_id)
-                    device_in_ucam = [d for d in ucam_record.devices if d.id == device_id]
-                    if len(device_in_ucam) == 1:
-                        dev = device_in_ucam[0]
-                        start_wear, end_wear = dev[0].start_wear, dev[0].end_wear
-
-            time.sleep(5)
-            continue
-
-            if None in [patient_id, device_id, start_wear, end_wear]:
-                # TODO: email us as these are required attributes
-                continue
-
-            record.filename = filename
-            record.device_type = device_type
-
-            create_record(record)
+            record.filename = item["id"]
+            record.device_type = utils.DeviceType.DRM.name
 
             path = Path(config.storage_vol / f"{record.filename}-meta.json")
             # Store metadata from memory to file
@@ -160,7 +146,7 @@ class Dreem:
         NOTE/TODO: is run as a task.
         """
         record = read_record(mongo_id)
-        print (f"Downloading ... {record}")
+        print(f"Downloading ... {record}")
         # TODO: decorate or/and override this method via ENV such that local (empty)
         # file is written to emulate procedure?
         is_downloaded_success = dreem_api.download_file(self.session, record.filename)
