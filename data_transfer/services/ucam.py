@@ -74,6 +74,16 @@ def get_record(patient_id: str) -> Optional[PatientRecord]:
     return __serialise_records(patient_records)
 
 
+def records_by_device(device_type: str) -> Optional[PatientRecord]:
+    """
+    Return all patient record per device.
+
+    GET /deviceID/     
+    """
+    patient_records = [r for r in __get_patients() if r.device_id[0:len(device_type)] == device_type]
+    return __serialise_records(patient_records)
+
+
 def record_by_vtt(vtt_hash: str) -> Optional[PatientRecord]:
     """
     Return a patient record based on then Hashed ID provided by VTT
