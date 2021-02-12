@@ -5,7 +5,7 @@ from data_transfer.jobs import vttsma as vttsma_jobs
 from data_transfer.tasks import dreem as dreem_tasks
 from data_transfer.tasks import shared as shared_tasks
 from data_transfer.tasks import vttsma as vttsma_tasks
-from data_transfer.utils import DeviceType
+from data_transfer.utils import DeviceType, validate_and_format_patient_id
 
 
 def dreem_dag(study_site: str) -> None:
@@ -59,4 +59,5 @@ def vttsma_dag() -> None:
 
 if __name__ == "__main__":
     # dreem_dag("munster")
-    vttsma_dag()
+    # vttsma_dag()
+    print(validate_and_format_patient_id("K-FDDRKCX5NSJS9QR"))
