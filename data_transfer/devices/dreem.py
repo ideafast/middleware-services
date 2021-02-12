@@ -51,39 +51,42 @@ class Dreem:
         ]
 
         for item in unknown_records:
-            device_serial = dreem_api.serial_by_device(item["device"])
+            # Pull out most relevant metadata from the Response item:
+            dreem_device_id = item["device"]
+            dreem_user_id = item["user"]
+            dreem_id = item["id"]
+            # When the recording took place
+            dreem_start = datetime.fromtimestamp(item["report"]["start_time"])
+            dreem_end = datetime.fromtimestamp(item["report"]["stop_time"])
+
+            # There is be a 1-2-1 mapping between IDs and serials via CSV lookup.
+            device_serial = dreem_api.serial_by_device(dreem_device_id)
 
             # Serial may not exist in lookup, e.g., if Dreem send a device replacement.
             if not device_serial:
-                print(f"Unknown Device: {item['device']} with Record ID {item['id']}")
+                print(f"Unknown Device: {dreem_device_id} with Record ID {dreem_id}")
                 # Move onto next record: skips logic below to simplify error handling
                 continue
 
             # Records are created in each loop, so reset before use.
             record = None
             # Used to filter UCAM devices and assign to type to record
-            device_type = utils.DeviceType.DRM.name
-
-            # When the recording took place
-            dreem_start = datetime.fromtimestamp(item["report"]["start_time"])
-            dreem_end = datetime.fromtimestamp(item["report"]["stop_time"])
+            dtype = utils.DeviceType.DRM.name
 
             patient_id = (
                 # NOTE: PatientID is encoded in email so there is a 1-2-1 mapping.
-                dreem_api.patient_id_by_user(item["user"])
+                dreem_api.patient_id_by_user(dreem_user_id)
                 or self.__patient_id_from_ucam(device_serial, dreem_start, dreem_end)
                 or self.__patient_id_from_inventory(
                     device_serial, dreem_start, dreem_end
                 )
             )
 
-            # May contain a hyphen whereas UCAM does not
+            # Reformat to mirror UCAM/DMP.
             patient_id = patient_id.replace("-", "") if patient_id else patient_id
 
             if patient_id and (ucam_entry := ucam.get_record(patient_id)):
-                dreem_devices = [
-                    d for d in ucam_entry.devices if device_type in d.device_id
-                ]
+                dreem_devices = [d for d in ucam_entry.devices if dtype in d.device_id]
 
                 # Best-case: only one device was worn and UCAM knows it
                 if len(dreem_devices) == 1:
@@ -95,25 +98,30 @@ class Dreem:
                         dreem_devices, dreem_start, dreem_end
                     )
                     _record = Record(**asdict(_record))
-                # Edge-case: device not logged as with patient.
+                # Edge-case: device not logged with patient in UCAM
                 else:
-                    # NOTE: UCAM is source of truth and not inventory,
-                    # so we cannot depend on it for this association
-                    # TODO: log relevant data or/and email notify WP3.
+                    print(
+                        f"""Record not in UCAM.
+                        Device ID: {dreem_device_id},
+                        Dreem ID: {dreem_id},
+                        User ID: {dreem_user_id}"""
+                    )
                     continue
             else:
-                # Patient or/and Device ID cannot be determined
-                # TODO: log relevant data
+                print(f"Metadata cannot be determined for: {dreem_device_id}")
                 continue
 
-            record.filename = item["id"]
-            record.device_type = device_type
+            record.filename = dreem_id
+            record.device_type = dtype
 
             create_record(record)
+            print(f"Record Created: {record}")
 
             path = Path(config.storage_vol / f"{record.filename}-meta.json")
             # Store metadata from memory to file
             utils.write_json(path, item)
+
+            print(f"Metadata saved to: {path}")
 
     def __patient_id_from_ucam(
         self, device_serial: str, dreem_start: datetime, dreem_end: datetime
