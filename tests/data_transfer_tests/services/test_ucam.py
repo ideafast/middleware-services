@@ -17,7 +17,7 @@ def test_get_record_none(mock_data: None) -> None:
 
 def test_get_vtt_sma_hash(mock_data: None) -> None:
     record = ucam.get_record("K-DEF456")
-    records = [r for r in record.devices if r.id == "NULL"]
+    records = [r for r in record.devices if r.device_id == "NULL"]
 
     result = records[0].vttsma_id
 

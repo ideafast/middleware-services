@@ -100,7 +100,7 @@ def record_by_wear_period(
     """
     device_wear_periods = device_history(device_id)
 
-    def up_t(d):
+    def up_t(d: datetime) -> datetime:
         return d.replace(hour=0, minute=0, second=0)
 
     for record in device_wear_periods:
@@ -114,10 +114,11 @@ def record_by_wear_period(
         within_end_period = drm_start_wear <= end_wear <= drm_end_wear
         if within_start_period and within_end_period:
             return record
+    return None
 
 
 def record_by_wear_period_in_list(
-    devices: [Device], start_wear: datetime, end_wear: datetime
+    devices: List[Device], start_wear: datetime, end_wear: datetime
 ) -> Optional[Payload]:
     """
     If data was created on a certain period then it belongs to an individual patient.

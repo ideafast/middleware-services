@@ -2,7 +2,7 @@ import time  # temporary ...
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Tuple
+from typing import Optional, Tuple
 
 import requests
 
@@ -115,11 +115,11 @@ class Dreem:
             # Store metadata from memory to file
             utils.write_json(path, item)
 
-    def __patient_id_from_ucam(self, device_serial, dreem_start, dreem_end):
+    def __patient_id_from_ucam(
+        self, device_serial: str, dreem_start: datetime, dreem_end: datetime
+    ) -> Optional[str]:
         """
-        Determine PatientID by wear period of this unique device
-
-        Devices are unique therefore
+        Determine PatientID by wear period of device in UCAM.
         """
         # NOTE/TODO: given this is a 1-1 mapping, why not use a local CSV?
         device_id = inventory.device_id_by_serial(device_serial)
@@ -128,11 +128,11 @@ class Dreem:
         time.sleep(2.5)
         return record.patient_id if record else None
 
-    def __patient_id_from_inventory(self, device_serial, dreem_start, dreem_end):
+    def __patient_id_from_inventory(
+        self, device_serial: str, dreem_start: datetime, dreem_end: datetime
+    ) -> Optional[str]:
         """
         Determine PatientID by wear period in inventory.
-        NOTE: potential alternative could be to perform lookup in UCAM based on device histories
-        e.g., since we know DeviceID above
         """
         device_id = inventory.device_id_by_serial(device_serial)
         record = inventory.patient_id_by_device_id(device_id, dreem_start, dreem_end)

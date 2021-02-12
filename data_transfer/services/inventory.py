@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
 import requests
 
@@ -22,10 +22,10 @@ def device_history(device_id: str) -> Any:
 
 def patient_id_by_device_id(
     device_id: str, start_wear: datetime, end_wear: datetime
-) -> dict:
+) -> Optional[Any]:
     device_wears = [i for i in device_history(device_id).values()]
 
-    def up_t(d):
+    def up_t(d: datetime) -> datetime:
         return d.replace(hour=0, minute=0, second=0)
 
     for record in device_wears:
