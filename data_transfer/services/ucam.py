@@ -53,8 +53,8 @@ def __serialise_records(patient_records: List[Payload]) -> Optional[PatientRecor
         Convenient method to only store Device-specific metadata.
         """
         return Device(
-            device_id=device.device_id, 
-            vttsma_id=device.vttsma_id, 
+            device_id=device.device_id,
+            vttsma_id=device.vttsma_id,
             devitations=device.devitations,
             start_wear=device.start_wear,
             end_wear=device.end_wear,
@@ -71,16 +71,6 @@ def get_record(patient_id: str) -> Optional[PatientRecord]:
     GET /patients/<patient_id>/
     """
     patient_records = [r for r in __get_patients() if r.patient_id == patient_id]
-    return __serialise_records(patient_records)
-
-
-def records_by_device(device_type: str) -> Optional[PatientRecord]:
-    """
-    Return all patient record per device.
-
-    GET /deviceID/     
-    """
-    patient_records = [r for r in __get_patients() if r.device_id[0:len(device_type)] == device_type]
     return __serialise_records(patient_records)
 
 
@@ -110,19 +100,31 @@ def record_by_wear_period(
     """
     device_wear_periods = device_history(device_id)
 
+    def up_t(d):
+        return d.replace(hour=0, minute=0, second=0)
+
     for record in device_wear_periods:
-        within_start_period = start_wear >= record.start_wear <= record.end_wear
-        within_end_period = record.start_wear <= end_wear <= record.end_wear
+
+        start_wear = up_t(start_wear)
+        drm_start_wear = up_t(record.start_wear)
+        drm_end_wear = up_t(record.end_wear)
+        end_wear = up_t(end_wear)
+
+        within_start_period = drm_start_wear <= start_wear <= drm_end_wear
+        within_end_period = drm_start_wear <= end_wear <= drm_end_wear
         if within_start_period and within_end_period:
             return record
 
 
-def record_by_wear_period_in_list(devices: [Device], start_wear: datetime, end_wear: datetime) -> Optional[Payload]:
+def record_by_wear_period_in_list(
+    devices: [Device], start_wear: datetime, end_wear: datetime
+) -> Optional[Payload]:
     """
     If data was created on a certain period then it belongs to an individual patient.
     """
+    print(len(devices), start_wear, end_wear)
     for record in devices:
-        within_start_period = start_wear >= record.start_wear <= record.end_wear
+        within_start_period = record.start_wear <= start_wear <= record.end_wear
         within_end_period = record.start_wear <= end_wear <= record.end_wear
         if within_start_period and within_end_period:
             return record

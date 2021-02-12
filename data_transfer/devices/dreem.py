@@ -148,9 +148,6 @@ class Dreem:
         NOTE/TODO: is run as a task.
         """
         record = read_record(mongo_id)
-        print(f"Downloading ... {record}")
-        # TODO: decorate or/and override this method via ENV such that local (empty)
-        # file is written to emulate procedure?
         is_downloaded_success = dreem_api.download_file(self.session, record.filename)
         if is_downloaded_success:
             record.is_downloaded = is_downloaded_success
