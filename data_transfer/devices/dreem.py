@@ -1,4 +1,3 @@
-import json
 import time  # temporary ...
 from dataclasses import asdict
 from datetime import datetime
@@ -52,7 +51,6 @@ class Dreem:
         ]
 
         for item in unknown_records:
-            # ??
             device_serial = dreem_api.serial_by_device(item["device"])
 
             # Serial may not exist in lookup, e.g., if Dreem send a device replacement.
@@ -61,38 +59,25 @@ class Dreem:
                 # Move onto next record: skips logic below to simplify error handling
                 continue
 
-            # reset on each loop
+            # Records are created in each loop, so reset before use.
             record = None
+            # Used to filter UCAM devices and assign to type to record
+            device_type = utils.DeviceType.DRM.name
+
             # When the recording took place
             dreem_start = datetime.fromtimestamp(item["report"]["start_time"])
             dreem_end = datetime.fromtimestamp(item["report"]["stop_time"])
 
-            # 1. Determine PatientID with associated email.
-            # NOTE: PatientID is encoded in email so there is a 1-2-1 mapping.
-            patient_id = dreem_api.patient_id_by_user(item["user"])
+            patient_id = (
+                # NOTE: PatientID is encoded in email so there is a 1-2-1 mapping.
+                dreem_api.patient_id_by_user(item["user"])
+                or self.__patient_id_from_ucam(device_serial, dreem_start, dreem_end)
+                or self.__patient_id_from_inventory(
+                    device_serial, dreem_start, dreem_end
+                )
+            )
 
-            # NOTE: a personal email may be used or (historically) a shared email.
-            if not patient_id:
-                # 2. Determine PatientID by wear period of this unique device
-                # NOTE: devices are unique therefore
-                device_id = inventory.device_id_by_serial(device_serial)
-
-                record = ucam.record_by_wear_period(device_id, dreem_start, dreem_end)
-                # TODO: we might instead
-                patient_id = record.patient_id if record else patient_id
-                time.sleep(2.5)
-                # 3. Determine PatientID by wear period in inventory.
-                if not patient_id:
-                    # NOTE: potential alternative could be to perform lookup in UCAM based on device histories
-                    # e.g., since we know DeviceID above
-                    history_record = inventory.patient_id_by_device_id(
-                        device_id, dreem_start, dreem_end
-                    )
-                    patient_id = (
-                        history_record["patient_id"] if history_record else None
-                    )
-                    time.sleep(2.5)
-
+            # May contain a hyphen whereas UCAM does not
             patient_id = patient_id.replace("-", "") if patient_id else patient_id
 
             if patient_id and (ucam_entry := ucam.get_record(patient_id)):
@@ -110,32 +95,49 @@ class Dreem:
                         dreem_devices, dreem_start, dreem_end
                     )
                     _record = Record(**asdict(_record))
-                # Edge-case: UCAM record does not exist
-                # e.g. clinician may have forgotten to add Dreem to UCAM
-                #  NOTE: could remove this and let the ELSE below resolve it?
-                elif len(dreem_devices) == 0:
-                    # TODO: this is rare condition, so notify us?
-                    # Why do this over inventory? More reliable ...
-                    device_id = inventory.device_id_by_serial(device_serial)
-                    devices = [d for d in ucam_entry.devices]
-                    _record = Record(
-                        patient_id=patient_id,
-                        device_id=device_id,
-                        # TODO: is this assumption too great?
-                        start_wear=dreem_start,
-                        end_wear=dreem_end,
-                    )
-            # We cannot determine Patient ID from Dreem UUID, or the Device ID from wear period
+                # Edge-case: device not logged as with patient.
+                else:
+                    # NOTE: UCAM is source of truth and not inventory,
+                    # so we cannot depend on it for this association
+                    # TODO: log relevant data or/and email notify WP3.
+                    continue
             else:
+                # Patient or/and Device ID cannot be determined
                 # TODO: log relevant data
-                pass
+                continue
 
             record.filename = item["id"]
-            record.device_type = utils.DeviceType.DRM.name
+            record.device_type = device_type
+
+            create_record(record)
 
             path = Path(config.storage_vol / f"{record.filename}-meta.json")
             # Store metadata from memory to file
             utils.write_json(path, item)
+
+    def __patient_id_from_ucam(self, device_serial, dreem_start, dreem_end):
+        """
+        Determine PatientID by wear period of this unique device
+
+        Devices are unique therefore
+        """
+        # NOTE/TODO: given this is a 1-1 mapping, why not use a local CSV?
+        device_id = inventory.device_id_by_serial(device_serial)
+        record = ucam.record_by_wear_period(device_id, dreem_start, dreem_end)
+        # TODO: inventory has small rate limit.
+        time.sleep(2.5)
+        return record.patient_id if record else None
+
+    def __patient_id_from_inventory(self, device_serial, dreem_start, dreem_end):
+        """
+        Determine PatientID by wear period in inventory.
+        NOTE: potential alternative could be to perform lookup in UCAM based on device histories
+        e.g., since we know DeviceID above
+        """
+        device_id = inventory.device_id_by_serial(device_serial)
+        record = inventory.patient_id_by_device_id(device_id, dreem_start, dreem_end)
+        time.sleep(2.5)
+        return record.get("patient_id", None) if record else None
 
     def download_file(self, mongo_id: str) -> None:
         """
