@@ -100,14 +100,13 @@ class Dreem:
 
                 # Best-case: only one device was worn and UCAM knows it
                 if len(dreem_devices) == 1:
-                    record = Record(**dreem_devices[0])
+                    device_record = dreem_devices[0]
                 # Edge-case: multiple dreem headbands used, e.g., if one broke.
                 elif len(dreem_devices) > 1:
-                    # Determine usage based on weartime
-                    _record = ucam.record_by_wear_period_in_list(
+                    # Determine usage based on weartime as it exists in UCAM
+                    device_record = ucam.record_by_wear_period_in_list(
                         dreem_devices, recording.start, recording.end
                     )
-                    _record = Record(**asdict(_record))
                 # Edge-case: device not logged with patient in UCAM
                 else:
                     print(f"Metadata cannot be determined for:\n    {recording}")
@@ -116,17 +115,22 @@ class Dreem:
                 print(f"Metadata cannot be determined for:\n    {recording}")
                 continue
 
-            record.filename = recording.id
-            record.device_type = dtype
+            # At this point we have a _record (Device) representing most metadata.
+            record = Record(
+                filename=recording.id,
+                device_type=dtype,
+                patient_id=patient_id,
+                **asdict(device_record),
+            )
 
             create_record(record)
-            print(f"Record Created: {record}")
+            print(f"Record Created:\n   {record}")
 
             path = Path(config.storage_vol / f"{record.filename}-meta.json")
             # Store metadata from memory to file
             utils.write_json(path, item)
 
-            print(f"Metadata saved to: {path}")
+            print(f"Metadata saved to: {path}\n")
 
     def recording_metadata(self, recording: dict) -> DreemRecording:
         """
