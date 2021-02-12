@@ -62,6 +62,7 @@ class Dreem:
         unknown_records = [
             r for r in all_records if r["id"] not in set(all_filenames())
         ]
+        known, unknown = 0, 0
 
         for item in unknown_records:
             # Pulls out the most relevant metadata for this recording
@@ -96,6 +97,7 @@ class Dreem:
             patient_id = patient_id.replace("-", "") if patient_id else patient_id
 
             if patient_id and (ucam_entry := ucam.get_record(patient_id)):
+                known += 1
                 dreem_devices = [d for d in ucam_entry.devices if dtype in d.device_id]
 
                 # Best-case: only one device was worn and UCAM knows it
@@ -112,6 +114,7 @@ class Dreem:
                     print(f"Metadata cannot be determined for:\n    {recording}")
                     continue
             else:
+                unknown += 1
                 print(f"Metadata cannot be determined for:\n    {recording}")
                 continue
 
@@ -130,6 +133,7 @@ class Dreem:
             utils.write_json(path, item)
 
             print(f"Metadata saved to: {path}\n")
+        print(f"{known} records created and {unknown} NOT this session.")
 
     def __recording_metadata(self, recording: dict) -> DreemRecording:
         """
