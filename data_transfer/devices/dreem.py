@@ -65,7 +65,7 @@ class Dreem:
 
         for item in unknown_records:
             # Pulls out the most relevant metadata for this recording
-            recording = self.recording_metadata(item)
+            recording = self.__recording_metadata(item)
 
             # There is be a 1-2-1 mapping between IDs and serials via CSV lookup.
             device_serial = dreem_api.serial_by_device(recording.device_id)
@@ -115,7 +115,6 @@ class Dreem:
                 print(f"Metadata cannot be determined for:\n    {recording}")
                 continue
 
-            # At this point we have a _record (Device) representing most metadata.
             record = Record(
                 filename=recording.id,
                 device_type=dtype,
@@ -132,7 +131,7 @@ class Dreem:
 
             print(f"Metadata saved to: {path}\n")
 
-    def recording_metadata(self, recording: dict) -> DreemRecording:
+    def __recording_metadata(self, recording: dict) -> DreemRecording:
         """
         Maps data from Dreem response to class to simplify access/logging.
         """
