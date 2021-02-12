@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, List
@@ -63,16 +64,43 @@ def get_session(token: str) -> requests.Session:
 
 def get_list(session: requests.Session, from_date: str, to_date: str) -> List[dict]:
     """
-    GET all records (metadata) across study sites ('groups' in ByteFlies API)
-    NOTE: undocumented, but we can query with start and end dates. Actually,
-    we have to - as the server throws an error when the result is too large (i.e. 4 months)
+    GET all records (metadata) across study sites, or 'groups' in ByteFlies API
     """
     groups = __get_groups(session)
     results: List[dict] = []
 
     for group in groups:
-        recordings: dict = __get_recordings_by_group(session, group, from_date, to_date)
-        results.extend(recordings)
+        recordings = __get_recordings_by_group(session, group, from_date, to_date)
+        # each recording requires an API request to detail download links
+        # NOTE/TODO: download links are valid for 10 minutes only.
+        for recording in recordings:
+            recording_details: dict = __get_recording_by_id(
+                session, group, recording["id"]
+            )
+
+            template = json.loads(json.dumps(recording_details))
+            del template["signals"]
+
+            for signal in recording_details["signals"]:
+
+                for algorithm in signal["algorithms"]:
+                    record = json.loads(json.dumps(template))
+                    record["algorithm"] = algorithm
+                    record[
+                        "id"
+                    ] = f"{record['id']}_signal_{signal['id']}_algorithm_{algorithm['id']}"
+                    record["download_url"] = __get_algorithm_by_id(
+                        session, group, recording["id"], algorithm["id"]
+                    )
+                    del record["uri"]
+                    results.append(record)
+
+                record = json.loads(json.dumps(template))
+                record["signal"] = signal
+                record["id"] = f"{record['id']}_signal_{signal['id']}"
+                record["download_url"] = signal["rawData"]
+                del record["rawData"]
+                results.append(record)
 
     return results
 
@@ -94,7 +122,7 @@ def __get_response(session: requests.Session, url: str) -> Any:
 
 
 def __get_groups(session: requests.Session) -> List[str]:
-    """Returns the list of Groups associated with a User Account"""
+    """Returns the list of groupIds associated with a User Account"""
     groups = __get_response(session, f"{config.byteflies_api_url}/groups/")
     group_ids = [g["groupId"] for g in groups]
     return group_ids
@@ -113,10 +141,21 @@ def __get_recordings_by_group(
 def __get_recording_by_id(
     session: requests.Session, group_id: str, recording_id: str
 ) -> Any:
-    """Returns he details of a particular Recording"""
+    """Returns the details of a particular Recording"""
     return __get_response(
         session,
         f"{config.byteflies_api_url}/groups/{group_id}/recordings/{recording_id}/",
+    )
+
+
+def __get_algorithm_by_id(
+    session: requests.Session, group_id: str, recording_id: str, algorithm_id: str
+) -> Any:
+    """Returns the details of a particular Recording"""
+    return __get_response(
+        session,
+        f"{config.byteflies_api_url}/groups/{group_id} \
+        /recordings/{recording_id}/algorithms/{algorithm_id}",
     )
 
 
