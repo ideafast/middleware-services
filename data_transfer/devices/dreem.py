@@ -1,5 +1,5 @@
 import time  # temporary ...
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Tuple
@@ -12,6 +12,19 @@ from data_transfer.db import all_filenames, create_record, read_record, update_r
 from data_transfer.lib import dreem as dreem_api
 from data_transfer.schemas.record import Record
 from data_transfer.services import inventory, ucam
+
+
+@dataclass
+class DreemRecording:
+    """
+    Stores most relevant metadata for readable lookup.
+    """
+
+    id: str
+    device_id: str
+    user_id: str
+    start: datetime
+    end: datetime
 
 
 class Dreem:
@@ -51,34 +64,31 @@ class Dreem:
         ]
 
         for item in unknown_records:
-            # Pull out most relevant metadata from the Response item:
-            dreem_device_id = item["device"]
-            dreem_user_id = item["user"]
-            dreem_id = item["id"]
-            # When the recording took place
-            dreem_start = datetime.fromtimestamp(item["report"]["start_time"])
-            dreem_end = datetime.fromtimestamp(item["report"]["stop_time"])
+            # Pulls out the most relevant metadata for this recording
+            recording = self.recording_metadata(item)
 
             # There is be a 1-2-1 mapping between IDs and serials via CSV lookup.
-            device_serial = dreem_api.serial_by_device(dreem_device_id)
+            device_serial = dreem_api.serial_by_device(recording.device_id)
 
             # Serial may not exist in lookup, e.g., if Dreem send a device replacement.
             if not device_serial:
-                print(f"Unknown Device: {dreem_device_id} with Record ID {dreem_id}")
+                print(f"Unknown Device:\n   {recording}")
                 # Move onto next record: skips logic below to simplify error handling
                 continue
 
-            # Records are created in each loop, so reset before use.
+            # Record before use in next loop iteration
             record = None
             # Used to filter UCAM devices and assign to type to record
             dtype = utils.DeviceType.DRM.name
 
             patient_id = (
                 # NOTE: PatientID is encoded in email so there is a 1-2-1 mapping.
-                dreem_api.patient_id_by_user(dreem_user_id)
-                or self.__patient_id_from_ucam(device_serial, dreem_start, dreem_end)
+                dreem_api.patient_id_by_user(recording.user_id)
+                or self.__patient_id_from_ucam(
+                    device_serial, recording.start, recording.end
+                )
                 or self.__patient_id_from_inventory(
-                    device_serial, dreem_start, dreem_end
+                    device_serial, recording.start, recording.end
                 )
             )
 
@@ -95,23 +105,18 @@ class Dreem:
                 elif len(dreem_devices) > 1:
                     # Determine usage based on weartime
                     _record = ucam.record_by_wear_period_in_list(
-                        dreem_devices, dreem_start, dreem_end
+                        dreem_devices, recording.start, recording.end
                     )
                     _record = Record(**asdict(_record))
                 # Edge-case: device not logged with patient in UCAM
                 else:
-                    print(
-                        f"""Record not in UCAM.
-                        Device ID: {dreem_device_id},
-                        Dreem ID: {dreem_id},
-                        User ID: {dreem_user_id}"""
-                    )
+                    print(f"Metadata cannot be determined for:\n    {recording}")
                     continue
             else:
-                print(f"Metadata cannot be determined for: {dreem_device_id}")
+                print(f"Metadata cannot be determined for:\n    {recording}")
                 continue
 
-            record.filename = dreem_id
+            record.filename = recording.id
             record.device_type = dtype
 
             create_record(record)
@@ -122,6 +127,19 @@ class Dreem:
             utils.write_json(path, item)
 
             print(f"Metadata saved to: {path}")
+
+    def recording_metadata(self, recording: dict) -> DreemRecording:
+        """
+        Maps data from Dreem response to class to simplify access/logging.
+        """
+        id = recording["id"]
+        device_id = recording["device"]
+        user_id = recording["user"]
+        # When the recording took place
+        start = datetime.fromtimestamp(recording["report"]["start_time"])
+        end = datetime.fromtimestamp(recording["report"]["stop_time"])
+
+        return DreemRecording(*(id, device_id, user_id, start, end))
 
     def __patient_id_from_ucam(
         self, device_serial: str, dreem_start: datetime, dreem_end: datetime
