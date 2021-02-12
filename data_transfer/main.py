@@ -82,8 +82,6 @@ def byteflies_dag() -> None:
     data_period = get_period_by_days(datetime.today(), 3)  # NOTE: one day for testing
     byteflies_jobs.batch_metadata(*data_period)
 
-    # NOTE: simulates initiation of tasks upon metadata download
-    # TODO: in practice the tasks should be invoked within the batch job.
     for record in records_not_downloaded(DeviceType.BTF):
         # Each task should be idempotent. Returned values feeds subsequent task
         mongoid = byteflies_tasks.task_download_data(record.id)

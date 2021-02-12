@@ -12,7 +12,7 @@ def task_download_data(mongoid: str) -> str:
 
 def task_preprocess_data(mongoid: str) -> str:
     """
-    Preprocessing tasks on dreem data.
+    Preprocessing tasks on byteflies data.
     """
     record = read_record(mongoid)
     record.is_processed = True

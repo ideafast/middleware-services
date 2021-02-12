@@ -17,6 +17,7 @@ class Record(BaseModel):
     patient_id: str
     start_wear: datetime
     end_wear: datetime
+    meta: dict  # meta data relevant to individual device pipelines
 
     vttsma_export_date: Optional[str]
 

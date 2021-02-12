@@ -1,7 +1,6 @@
-import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, List
+from typing import Any, List, Tuple
 
 import requests
 
@@ -13,12 +12,7 @@ class BytefliesFileDownload:
     """Use as CLI arguments for Dreem's library."""
 
     directory: Path = config.storage_vol
-    # TODO: do we want H5, H5 + EDF, or raw/H5/EDF
-    # EDF is a cleaned/reduced H5 file while raw is primarly
-    # for internal dreem use.
-
-    #  TODO: adapt for Byteflies
-    ftype: str = "h5"
+    ftype: str = "csv"
 
 
 # Define location and filetype to download
@@ -64,53 +58,46 @@ def get_session(token: str) -> requests.Session:
 
 def get_list(session: requests.Session, from_date: str, to_date: str) -> List[dict]:
     """
-    GET all records (metadata) across study sites, or 'groups' in ByteFlies API
+    GET a list of records (metadata) across study sites, or 'groups' in ByteFlies API
     """
     groups = __get_groups(session)
     results: List[dict] = []
 
     for group in groups:
         recordings = __get_recordings_by_group(session, group, from_date, to_date)
-        # each recording requires an API request to detail download links
-        # NOTE/TODO: download links are valid for 10 minutes only.
-        for recording in recordings:
-            recording_details: dict = __get_recording_by_id(
-                session, group, recording["id"]
-            )
-
-            template = json.loads(json.dumps(recording_details))
-            del template["signals"]
-
-            for signal in recording_details["signals"]:
-
-                for algorithm in signal["algorithms"]:
-                    record = json.loads(json.dumps(template))
-                    record["algorithm"] = algorithm
-                    record[
-                        "id"
-                    ] = f"{record['id']}_signal_{signal['id']}_algorithm_{algorithm['id']}"
-                    record["download_url"] = __get_algorithm_by_id(
-                        session, group, recording["id"], algorithm["id"]
-                    )
-                    del record["uri"]
-                    results.append(record)
-
-                record = json.loads(json.dumps(template))
-                record["signal"] = signal
-                record["id"] = f"{record['id']}_signal_{signal['id']}"
-                record["download_url"] = signal["rawData"]
-                del record["rawData"]
-                results.append(record)
+        results.extend(recordings)
 
     return results
 
 
-def download_file(session: requests.Session, record_id: str) -> bool:
+def download_file(
+    session: requests.Session, record_id: str, meta: dict
+) -> Tuple[bool, Any]:
     """
-    GET specified file based on known record
-    TODO: retrieve all BTF signals if present.
+    GET all signals and post processed files ('algorithms') based on
+    the known recording. Due to expiring download links, API requests
+    are performed just before actual file download.
     """
-    return True
+
+    recording_details: dict = __get_recording_by_id(
+        session, meta["group_id"], record_id
+    )
+
+    download_list: List[tuple] = []  # (record_id, download_url)
+
+    for signal in recording_details["signals"]:
+        download_list.append((signal["id"], signal["rawData"]))
+
+        for algorithm in signal["algorithms"]:
+            url = __get_algorithm_uri_by_id(
+                session, meta["group_id"], record_id, algorithm["id"]
+            )
+            download_list.append((algorithm["id"], url))
+
+    for download in download_list:
+        __download_file(download[1], download[0])
+
+    return (True, recording_details)
 
 
 def __get_response(session: requests.Session, url: str) -> Any:
@@ -148,19 +135,26 @@ def __get_recording_by_id(
     )
 
 
-def __get_algorithm_by_id(
+def __get_algorithm_uri_by_id(
     session: requests.Session, group_id: str, recording_id: str, algorithm_id: str
-) -> Any:
+) -> str:
     """Returns the details of a particular Recording"""
-    return __get_response(
+    payload = __get_response(
         session,
-        f"{config.byteflies_api_url}/groups/{group_id} \
-        /recordings/{recording_id}/algorithms/{algorithm_id}",
+        f"{config.byteflies_api_url}/groups/{group_id}"
+        f"/recordings/{recording_id}/algorithms/{algorithm_id}",
     )
+    return str(payload["uri"])
 
 
 def __download_file(url: str, record_id: str) -> None:
     """
     Builds the target filename and starts downloading the file to disk
     """
-    pass
+    file_path = Path(config.storage_vol) / f"{record_id}.{args.ftype}"
+    response = requests.get(url, stream=True)
+
+    with open(file_path, "wb") as output_file:
+        for chunk in response.iter_content(chunk_size=1024):
+            if chunk:
+                output_file.write(chunk)
