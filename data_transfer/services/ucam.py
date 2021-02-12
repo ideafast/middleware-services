@@ -98,23 +98,9 @@ def record_by_wear_period(
     """
     If data was created on a certain period then it belongs to an individual patient.
     """
-    device_wear_periods = device_history(device_id)
+    records = device_history(device_id)
 
-    def up_t(d: datetime) -> datetime:
-        return d.replace(hour=0, minute=0, second=0)
-
-    for record in device_wear_periods:
-
-        start_wear = up_t(start_wear)
-        drm_start_wear = up_t(record.start_wear)
-        drm_end_wear = up_t(record.end_wear)
-        end_wear = up_t(end_wear)
-
-        within_start_period = drm_start_wear <= start_wear <= drm_end_wear
-        within_end_period = drm_start_wear <= end_wear <= drm_end_wear
-        if within_start_period and within_end_period:
-            return record
-    return None
+    return __record_in_wear_period(records, start_wear, end_wear)
 
 
 def record_by_wear_period_in_list(
@@ -123,10 +109,34 @@ def record_by_wear_period_in_list(
     """
     If data was created on a certain period then it belongs to an individual patient.
     """
-    print(len(devices), start_wear, end_wear)
-    for record in devices:
-        within_start_period = record.start_wear <= start_wear <= record.end_wear
-        within_end_period = record.start_wear <= end_wear <= record.end_wear
+    return __record_in_wear_period(devices, start_wear, end_wear)
+
+
+def __record_in_wear_period(
+    records: List, start_wear: datetime, end_wear: datetime
+) -> Optional[Payload]:
+    """
+    Shared method given the logic is the same above
+    """
+
+    def up_t(d: datetime) -> datetime:
+        """
+        Replaces day time with zero for comparison by day.
+        """
+        return d.replace(hour=0, minute=0, second=0)
+
+    start_wear = up_t(start_wear)
+    end_wear = up_t(end_wear)
+
+    for record in records:
+        # While we could compare records to the second, this caused some issues, e.g.,
+        # when a record was created on the day for testing but not checked out until afterwards.
+        drm_start_wear = up_t(record.start_wear)
+        drm_end_wear = up_t(record.end_wear)
+
+        within_start_period = drm_start_wear <= start_wear <= drm_end_wear
+        within_end_period = drm_start_wear <= end_wear <= drm_end_wear
+
         if within_start_period and within_end_period:
             return record
     return None
