@@ -13,10 +13,10 @@ class Record(BaseModel):
     id: Optional[Any] = Field(alias="_id")
     filename: str
     device_type: str
-    device_id: Optional[str]
-    patient_id: Optional[str]
-    start_wear: Optional[datetime]
-    end_wear: Optional[datetime]
+    device_id: str
+    patient_id: str
+    start_wear: datetime
+    end_wear: datetime
 
     vttsma_export_date: Optional[str]
 
