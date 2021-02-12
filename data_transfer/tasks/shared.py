@@ -40,12 +40,34 @@ def task_prepare_data(device_type: DeviceType, mongo_id: str) -> None:
     if not destination.exists():
         destination.mkdir()
 
-    for extension in [FILE_TYPES[device_type.name], "-meta.json"]:
-        fname = f"{record.filename}{extension}"
+    if device_type is not DeviceType.BTF:
+        for extension in [FILE_TYPES[device_type.name], "-meta.json"]:
+            fname = f"{record.filename}{extension}"
+
+            old_path = data_input / fname
+            new_path = destination / fname
+
+            old_path.rename(new_path)
+            record.is_prepared = True
+            update_record(record)
+    else:
+        # BTF only has the metadata file named after the filename, and needs
+        # additional logic to pull in other files
+
+        fname = f"{record.filename}-meta.json"
 
         old_path = data_input / fname
         new_path = destination / fname
 
         old_path.rename(new_path)
+
+        for linked_file in record.meta["linked_files"]:
+            fname = f"{linked_file}{FILE_TYPES[device_type.name]}"
+
+            old_path = data_input / fname
+            new_path = destination / fname
+
+            old_path.rename(new_path)
+
         record.is_prepared = True
         update_record(record)

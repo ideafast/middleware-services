@@ -89,6 +89,8 @@ def byteflies_dag() -> None:
         # Data is finalised and moved to a folder in /uploading/
         shared_tasks.task_prepare_data(DeviceType.BTF, mongoid)
 
+        break  # NOTE: SKIP AFTER ONE FOR TESTING
+
     # All said folders FOR ALL DEVICES are uploaded once per day
     shared_jobs.batch_upload_data()
 

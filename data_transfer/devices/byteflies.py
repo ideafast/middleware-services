@@ -78,7 +78,7 @@ class Byteflies:
         NOTE/TODO: is run as a task.
         """
         record = read_record(mongo_id)
-        is_downloaded_success, metadata = byteflies_api.download_file(
+        is_downloaded_success, metadata, linked_files = byteflies_api.download_file(
             self.session, record.filename, record.meta
         )
 
@@ -89,5 +89,6 @@ class Byteflies:
             utils.write_json(path, metadata)
 
             record.is_downloaded = is_downloaded_success
+            record.meta["linked_files"] = linked_files
             update_record(record)
         # TODO: otherwise re-start task to try again

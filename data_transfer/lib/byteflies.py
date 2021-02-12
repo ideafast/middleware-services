@@ -72,32 +72,32 @@ def get_list(session: requests.Session, from_date: str, to_date: str) -> List[di
 
 def download_file(
     session: requests.Session, record_id: str, meta: dict
-) -> Tuple[bool, Any]:
+) -> Tuple[bool, Any, List[str]]:
     """
-    GET all signals and post processed files ('algorithms') based on
-    the known recording. Due to expiring download links, API requests
-    are performed just before actual file download.
+    Download all files associated with one ByteFlies recording.
+    Also returns the contents for the -meta.json file, as well as
+    a list of the downloaded filenames for packaging in future steps
     """
 
     recording_details: dict = __get_recording_by_id(
         session, meta["group_id"], record_id
     )
 
-    download_list: List[tuple] = []  # (record_id, download_url)
+    download_list: dict = {}  # { record_id : download_url }
 
     for signal in recording_details["signals"]:
-        download_list.append((signal["id"], signal["rawData"]))
+        download_list.update({signal["id"]: signal["rawData"]})
 
         for algorithm in signal["algorithms"]:
             url = __get_algorithm_uri_by_id(
                 session, meta["group_id"], record_id, algorithm["id"]
             )
-            download_list.append((algorithm["id"], url))
+            download_list.update({algorithm["id"]: url})
 
-    for download in download_list:
-        __download_file(download[1], download[0])
+    for download_id in download_list:
+        __download_file(download_list[download_id], download_id)
 
-    return (True, recording_details)
+    return (True, recording_details, list(download_list.keys()))
 
 
 def __get_response(session: requests.Session, url: str) -> Any:
