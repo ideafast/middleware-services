@@ -66,7 +66,7 @@ async def device_history(device_id: str) -> Dict[str, PatientDevice]:
     # ID required for activity endpoint is only returned by serial endpoint.
     device = await device_by_id(device_id)
     params = {"item_id": device.id, "item_type": "asset"}
-    res = await inventory.response("reports/activity", str(params))
+    res = await inventory.response("reports/activity", params)
 
     history: Dict[str, PatientDevice] = dict()
 
