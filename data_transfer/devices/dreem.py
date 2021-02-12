@@ -168,8 +168,8 @@ class Dreem:
         Determine PatientID by wear period in inventory.
         """
         device_id = inventory.device_id_by_serial(device_serial)
-        record = inventory.patient_id_by_device_id(device_id, dreem_start, dreem_end)
         time.sleep(2.5)
+        record = inventory.record_by_device_id(device_id, dreem_start, dreem_end)
         return record.get("patient_id", None) if record else None
 
     def download_file(self, mongo_id: str) -> None:

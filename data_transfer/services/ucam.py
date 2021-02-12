@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from data_transfer.config import config
 from data_transfer.schemas.ucam import Device, Patient, PatientRecord, Payload
-from data_transfer.utils import format_weartime, read_csv_from_cache
+from data_transfer.utils import format_weartime, normalise_day, read_csv_from_cache
 
 
 def __get_patients() -> List[Payload]:
@@ -118,21 +118,14 @@ def __record_in_wear_period(
     """
     Shared method given the logic is the same above
     """
-
-    def up_t(d: datetime) -> datetime:
-        """
-        Replaces day time with zero for comparison by day.
-        """
-        return d.replace(hour=0, minute=0, second=0)
-
-    start_wear = up_t(start_wear)
-    end_wear = up_t(end_wear)
+    start_wear = normalise_day(start_wear)
+    end_wear = normalise_day(end_wear)
 
     for record in records:
         # While we could compare records to the second, this caused some issues, e.g.,
         # when a record was created on the day for testing but not checked out until afterwards.
-        drm_start_wear = up_t(record.start_wear)
-        drm_end_wear = up_t(record.end_wear)
+        drm_start_wear = normalise_day(record.start_wear)
+        drm_end_wear = normalise_day(record.end_wear)
 
         within_start_period = drm_start_wear <= start_wear <= drm_end_wear
         within_end_period = drm_start_wear <= end_wear <= drm_end_wear
