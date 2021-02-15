@@ -4,23 +4,27 @@ from pathlib import Path
 
 import pandas as pd
 
-# These must be stored locally
 cantab = pd.read_csv("data/cantab.csv")
 thinkfast = pd.read_csv("data/thinkfast.csv")
 
 patient_id_cell = "IDEA-FAST Participant ID"
 device_id = "TFAP6RJG3"
 
+# NOTE: cell names in both CSVs
 start = "Visit Start (Local)"
 end = "Visit End (Local)"
 
+# NOTE: converted to upper as some Patient IDs are lowercase in thinkfast.csv
 thinkfast[patient_id_cell] = thinkfast[patient_id_cell].str.upper()
-thinkfast[start] = thinkfast[start].str.upper()
 
 
-def zip_and_rm(dmp_name: Path) -> None:
-    shutil.make_archive(str(dmp_name), "zip", dmp_name)
-    shutil.rmtree(dmp_name.with_suffix(""))
+def zip_and_rm(dmp_path: Path) -> None:
+    shutil.make_archive(str(dmp_path), "zip", dmp_path)
+    shutil.rmtree(dmp_path.with_suffix(""))
+
+
+def dmp_time(as_str: str) -> str:
+    return datetime.strptime(as_str, "%Y.%m.%d %H:%M:%S").strftime("%Y%m%d")
 
 
 for _, row in cantab.iterrows():
@@ -33,30 +37,18 @@ for _, row in cantab.iterrows():
 
     if pd.isnull(_start) or pd.isnull(_end):
         print(f"{pid} has no ThinkFast records.")
-
-        __start = datetime.strptime(row[start], "%Y.%m.%d %H:%M:%S").strftime("%Y%m%d")
-        __end = datetime.strptime(row[end], "%Y.%m.%d %H:%M:%S").strftime("%Y%m%d")
-
-        dmp_name = Path(f"{pid}-{device_id}-{__start}-{__end}")
-
-        if not dmp_name.exists():
-            dmp_name.mkdir()
-
-        row.to_csv(f"./{dmp_name}/cantab.csv")
-
-        zip_and_rm(dmp_name)
-        # Do not run code below and instead skip to next record
-        continue
-
-    _start = datetime.strptime(_start, "%Y.%m.%d %H:%M:%S").strftime("%Y%m%d")
-    _end = datetime.strptime(_end, "%Y.%m.%d %H:%M:%S").strftime("%Y%m%d")
+        _start, _end = dmp_time(row[start]), dmp_time(row[end])
+    else:
+        _start, _end = dmp_time(_start), dmp_time(_end)
 
     dmp_name = Path(f"{pid}-{device_id}-{_start}-{_end}")
 
     if not dmp_name.exists():
         dmp_name.mkdir()
 
-    _thinkfast.to_csv(f"./{dmp_name}/thinkfast.csv")
     row.to_csv(f"./{dmp_name}/cantab.csv")
+
+    if not pd.isnull(_start) or not pd.isnull(_end):
+        _thinkfast.to_csv(f"./{dmp_name}/thinkfast.csv")
 
     zip_and_rm(dmp_name)
