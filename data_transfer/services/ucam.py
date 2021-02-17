@@ -116,7 +116,7 @@ def __record_in_wear_period(
     records: List, start_wear: datetime, end_wear: datetime
 ) -> Optional[Payload]:
     """
-    Shared method given the logic is the same above
+    Filters records for a specific record in a given wear period.
     """
     start_wear = normalise_day(start_wear)
     end_wear = normalise_day(end_wear)
@@ -124,11 +124,11 @@ def __record_in_wear_period(
     for record in records:
         # While we could compare records to the second, this caused some issues, e.g.,
         # when a record was created on the day for testing but not checked out until afterwards.
-        drm_start_wear = normalise_day(record.start_wear)
-        drm_end_wear = normalise_day(record.end_wear)
+        record_start_wear = normalise_day(record.start_wear)
+        record_end_wear = normalise_day(record.end_wear)
 
-        within_start_period = drm_start_wear <= start_wear <= drm_end_wear
-        within_end_period = drm_start_wear <= end_wear <= drm_end_wear
+        within_start_period = record_start_wear <= start_wear <= record_end_wear
+        within_end_period = record_start_wear <= end_wear <= record_end_wear
 
         if within_start_period and within_end_period:
             return record

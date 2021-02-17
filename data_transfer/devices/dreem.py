@@ -34,6 +34,8 @@ class Dreem:
         """
         self.study_site = study_site
         self.user_id, self.session = self.authenticate()
+        # Used to filter UCAM devices and assign to type to record
+        self.dtype = utils.DeviceType.DRM.name
 
     def authenticate(self) -> Tuple[str, requests.Session]:
         """
@@ -77,11 +79,6 @@ class Dreem:
                 # Move onto next record: skips logic below to simplify error handling
                 continue
 
-            # Record before use in next loop iteration
-            record = None
-            # Used to filter UCAM devices and assign to type to record
-            dtype = utils.DeviceType.DRM.name
-
             patient_id = (
                 # NOTE: PatientID is encoded in email so there is a 1-2-1 mapping.
                 dreem_api.patient_id_by_user(recording.user_id)
@@ -98,7 +95,9 @@ class Dreem:
 
             if patient_id and (ucam_entry := ucam.get_record(patient_id)):
                 known += 1
-                dreem_devices = [d for d in ucam_entry.devices if dtype in d.device_id]
+                dreem_devices = [
+                    d for d in ucam_entry.devices if self.dtype in d.device_id
+                ]
 
                 # Best-case: only one device was worn and UCAM knows it
                 if len(dreem_devices) == 1:
@@ -120,7 +119,7 @@ class Dreem:
 
             record = Record(
                 filename=recording.id,
-                device_type=dtype,
+                device_type=self.dtype,
                 patient_id=patient_id,
                 **asdict(device_record),
             )
@@ -158,7 +157,7 @@ class Dreem:
         device_id = inventory.device_id_by_serial(device_serial)
         record = ucam.record_by_wear_period(device_id, dreem_start, dreem_end)
         # TODO: inventory has small rate limit.
-        time.sleep(2.5)
+        time.sleep(4)
         return record.patient_id if record else None
 
     def __patient_id_from_inventory(
@@ -168,8 +167,8 @@ class Dreem:
         Determine PatientID by wear period in inventory.
         """
         device_id = inventory.device_id_by_serial(device_serial)
-        time.sleep(2.5)
         record = inventory.record_by_device_id(device_id, dreem_start, dreem_end)
+        time.sleep(4)
         return record.get("patient_id", None) if record else None
 
     def download_file(self, mongo_id: str) -> None:
