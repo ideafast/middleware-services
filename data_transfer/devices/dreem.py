@@ -35,7 +35,7 @@ class Dreem:
         self.study_site = study_site
         self.user_id, self.session = self.authenticate()
         # Used to filter UCAM devices and assign to type to record
-        self.dtype = utils.DeviceType.DRM.name
+        self.device_type = utils.DeviceType.DRM.name
 
     def authenticate(self) -> Tuple[str, requests.Session]:
         """
@@ -96,7 +96,7 @@ class Dreem:
             if patient_id and (ucam_entry := ucam.get_record(patient_id)):
                 known += 1
                 dreem_devices = [
-                    d for d in ucam_entry.devices if self.dtype in d.device_id
+                    d for d in ucam_entry.devices if self.device_type in d.device_id
                 ]
 
                 # Best-case: only one device was worn and UCAM knows it
@@ -119,7 +119,7 @@ class Dreem:
 
             record = Record(
                 filename=recording.id,
-                device_type=self.dtype,
+                device_type=self.device_type,
                 patient_id=patient_id,
                 **asdict(device_record),
             )
