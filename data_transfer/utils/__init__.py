@@ -107,7 +107,7 @@ def validate_and_format_patient_id(ideafast_id: str) -> Union[bool, str]:
         return total % len(character_set)
 
     if type(ideafast_id) is str:
-        id_without_punc = re.sub(r"[^\w]", "", ideafast_id)
+        id_without_punc = re.sub(r"[^\w]|_", "", ideafast_id)
 
         if len(id_without_punc) == 7:
             study_site = id_without_punc[0]
