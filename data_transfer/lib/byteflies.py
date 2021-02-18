@@ -1,10 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-<<<<<<< HEAD
 from typing import Any, List, Tuple
-=======
-from typing import Any, List
->>>>>>> 3453462... byteflies records created per BTF recording
 
 import requests
 
@@ -139,7 +135,6 @@ def __get_recording_by_id(
     )
 
 
-<<<<<<< HEAD
 def __get_algorithm_uri_by_id(
     session: requests.Session, group_id: str, recording_id: str, algorithm_id: str
 ) -> str:
@@ -152,13 +147,10 @@ def __get_algorithm_uri_by_id(
     return str(payload["uri"])
 
 
-=======
->>>>>>> 3453462... byteflies records created per BTF recording
 def __download_file(url: str, record_id: str) -> None:
     """
     Builds the target filename and starts downloading the file to disk
     """
-<<<<<<< HEAD
     file_path = Path(config.storage_vol) / f"{record_id}.{args.ftype}"
     response = requests.get(url, stream=True)
 
@@ -166,6 +158,3 @@ def __download_file(url: str, record_id: str) -> None:
         for chunk in response.iter_content(chunk_size=1024):
             if chunk:
                 output_file.write(chunk)
-=======
-    pass
->>>>>>> 3453462... byteflies records created per BTF recording
