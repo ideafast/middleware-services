@@ -1,7 +1,9 @@
+from datetime import datetime
 from typing import Any, Optional
 
 import requests
 
+from data_transfer import utils
 from data_transfer.config import config
 
 
@@ -9,7 +11,7 @@ def device_id_by_serial(serial: str) -> str:
     # TODO: there is a rate limit on the inventory!
     response = requests.get(f"{config.inventory_api}device/byserial/{serial}")
     # TODO: validation
-    return str(response.json()["data"]["device_id"])
+    return response.json()["data"]["device_id"]
 
 
 def device_history(device_id: str) -> Any:
@@ -18,14 +20,27 @@ def device_history(device_id: str) -> Any:
     return response.json()["data"]
 
 
-def patient_id_by_device_id(device_id: str) -> Optional[str]:
-    values = [i for i in device_history(device_id).values()]
+def record_by_device_id(
+    device_id: str, start_wear: datetime, end_wear: datetime
+) -> Optional[Any]:
+    device_wears = [i for i in device_history(device_id).values()]
 
-    if len(values) == 1:
-        return str(values[0]["patient_id"])
-    else:
-        # this means that there are multiple devices in the history, e.g.
-        # that multiple users may have used the same device. Therefore,
-        # we also need to pass in the wear time range and filter by it.
-        # TODO: check which device is within wear time range
-        return None
+    start_wear = utils.normalise_day(start_wear)
+    end_wear = utils.normalise_day(end_wear)
+
+    for record in device_wears:
+        inventory_start_wear = utils.format_weartime(record["checkout"], "inventory")
+        checkin = record["checkin"] or datetime.now().strftime(
+            utils.FORMATS["inventory"]
+        )
+        inventory_end_wear = utils.format_weartime(checkin, "inventory")
+
+        inventory_start_wear = utils.normalise_day(inventory_start_wear)
+        inventory_end_wear = utils.normalise_day(inventory_end_wear)
+
+        within_start_period = inventory_start_wear <= start_wear <= inventory_end_wear
+        within_end_period = inventory_start_wear <= end_wear <= inventory_end_wear
+
+        if within_start_period and within_end_period:
+            return record
+    return None
