@@ -16,7 +16,13 @@ def test_invalid() -> None:
 
 
 def test_punctuation() -> None:
-    result = validate_and_format_patient_id("K- NXYP6F .")
+    result = validate_and_format_patient_id("K-NXYP6F.")
+
+    assert result == "KNXYP6F"
+
+
+def test_tabs_spaces() -> None:
+    result = validate_and_format_patient_id("K-N XYP6\tF ")
 
     assert result == "KNXYP6F"
 
