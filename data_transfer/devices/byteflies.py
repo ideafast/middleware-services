@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+from datetime import datetime
+from enum import Enum
 from pathlib import Path
 
 import requests
@@ -7,6 +10,28 @@ from data_transfer.config import config
 from data_transfer.db import all_filenames, create_record, read_record, update_record
 from data_transfer.lib import byteflies as byteflies_api
 from data_transfer.schemas.record import Record
+
+
+@dataclass
+class BytefliesRecording:
+    """
+    Stores most relevant metadata for readable lookup.
+    """
+
+    # reduces memory by locking the number of fields
+    __slots__ = ["id", "dock_id", "dot_id", "patient_id", "start", "end", "signal_type"]
+
+    class RecordingType(Enum):
+        signal = 1
+        algorithm = 2
+
+    id: str
+    dock_id: str
+    dot_id: str
+    patient_id: str
+    start: datetime
+    end: datetime
+    signal_type: RecordingType
 
 
 class Byteflies:
@@ -47,20 +72,19 @@ class Byteflies:
 
         # Aim: construct valid record (metadata) and add to DB
         for item in unknown_records:
+            # Pulls out the most relevant metadata for this recording
+            recording = self.__recording_metadata(item)
 
             # TODO: validate and lookup patientID, e.g.
             # if patient_id := validate_and_format_patient_id(item["patient"]):
 
-            start_wear = utils.format_weartime_from_timestamp(item["startDate"])
-            end_wear = utils.get_endwear_by_seconds(start_wear, item["duration"])
-
             record = Record(
-                filename=item["id"],
+                filename=recording.id,
                 device_type=utils.DeviceType.BTF.name,
                 device_id=item["dotId"],  # TODO: lookup with IDEAFAST device ID
                 patient_id=item["patient"],  # TODO: lookup with IDEAFAST patient ID
-                start_wear=start_wear,
-                end_wear=end_wear,
+                start_wear=recording.start,
+                end_wear=recording.end,
                 meta=dict(group_id=item["groupId"]),
             )
 
@@ -92,3 +116,28 @@ class Byteflies:
             record.meta["linked_files"] = linked_files
             update_record(record)
         # TODO: otherwise re-start task to try again
+
+    def __recording_metadata(self, recording: dict) -> BytefliesRecording:
+        """
+        Maps data from ByteFlies response to class to simplify access/logging.
+        """
+
+        start_recording = utils.format_weartime_from_timestamp(recording["startDate"])
+        end_recording = utils.get_endwear_by_seconds(
+            start_recording, recording["duration"]
+        )
+        signal_type = (
+            BytefliesRecording.RecordingType.algorithm
+            if recording["algorithm"]
+            else BytefliesRecording.RecordingType.signal
+        )
+
+        return BytefliesRecording(
+            recording["id"],
+            recording["dockName"],
+            recording["dotId"],
+            recording["patient"],
+            start_recording,
+            end_recording,
+            signal_type,
+        )
