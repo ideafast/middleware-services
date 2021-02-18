@@ -51,6 +51,13 @@ def write_json(filepath: Path, data: dict) -> None:
         json.dump(data, f, indent=4)
 
 
+def normalise_day(_datetime: datetime) -> datetime:
+    """
+    Replaces day time with zero for comparison by day.
+    """
+    return _datetime.replace(hour=0, minute=0, second=0)
+
+
 def validate_and_format_patient_id(ideafast_id: str) -> Union[bool, str]:
     """
     Validate a (messy) IDEAFAST id, based on ideafast/ideafast-idgen
