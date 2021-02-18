@@ -47,3 +47,10 @@ def read_json(filepath: Path) -> Any:
 def write_json(filepath: Path, data: dict) -> None:
     with open(filepath, "w") as f:
         json.dump(data, f, indent=4)
+
+
+def normalise_day(_datetime: datetime) -> datetime:
+    """
+    Replaces day time with zero for comparison by day.
+    """
+    return _datetime.replace(hour=0, minute=0, second=0)

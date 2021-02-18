@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from data_transfer.config import config
 from data_transfer.schemas.ucam import Device, Patient, PatientRecord, Payload
-from data_transfer.utils import format_weartime, read_csv_from_cache
+from data_transfer.utils import format_weartime, normalise_day, read_csv_from_cache
 
 
 def __get_patients() -> List[Payload]:
@@ -53,7 +53,7 @@ def __serialise_records(patient_records: List[Payload]) -> Optional[PatientRecor
         Convenient method to only store Device-specific metadata.
         """
         return Device(
-            id=device.device_id,
+            device_id=device.device_id,
             vttsma_id=device.vttsma_id,
             devitations=device.devitations,
             start_wear=device.start_wear,
@@ -98,12 +98,38 @@ def record_by_wear_period(
     """
     If data was created on a certain period then it belongs to an individual patient.
     """
-    device_wear_periods = device_history(device_id)
+    records = device_history(device_id)
 
-    for record in device_wear_periods:
-        within_start_period = start_wear >= record.start_wear <= record.end_wear
-        within_end_period = record.start_wear <= end_wear <= record.end_wear
+    return __record_in_wear_period(records, start_wear, end_wear)
+
+
+def record_by_wear_period_in_list(
+    devices: List[Device], start_wear: datetime, end_wear: datetime
+) -> Optional[Payload]:
+    """
+    If data was created on a certain period then it belongs to an individual patient.
+    """
+    return __record_in_wear_period(devices, start_wear, end_wear)
+
+
+def __record_in_wear_period(
+    records: List, start_wear: datetime, end_wear: datetime
+) -> Optional[Payload]:
+    """
+    Filters records for a specific record in a given wear period.
+    """
+    start_wear = normalise_day(start_wear)
+    end_wear = normalise_day(end_wear)
+
+    for record in records:
+        # While we could compare records to the second, this caused some issues, e.g.,
+        # when a record was created on the day for testing but not checked out until afterwards.
+        record_start_wear = normalise_day(record.start_wear)
+        record_end_wear = normalise_day(record.end_wear)
+
+        within_start_period = record_start_wear <= start_wear <= record_end_wear
+        within_end_period = record_start_wear <= end_wear <= record_end_wear
+
         if within_start_period and within_end_period:
             return record
-
     return None

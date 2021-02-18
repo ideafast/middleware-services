@@ -27,7 +27,7 @@ class Payload:
 
 @dataclass
 class Device:
-    id: str
+    device_id: str
     vttsma_id: str
     devitations: str
     start_wear: datetime
