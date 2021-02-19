@@ -1,3 +1,4 @@
+import json
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -6,6 +7,7 @@ from typing import Any, List, Tuple
 import requests
 
 from data_transfer.config import config
+from data_transfer.utils import DeviceType, uid_to_hash
 
 
 @dataclass
@@ -61,6 +63,24 @@ def get_list(session: requests.Session, from_date: str, to_date: str) -> List[di
     """
     GET a list of records (metadata) across study sites, or 'groups' in ByteFlies API
     """
+
+    @dataclass
+    class __metadata_copy:
+        """Generator for deepcopying a BTF json object"""
+
+        jsondump: str
+
+        def get(self, signal_id: str, algorithm_id: str = "") -> Any:
+            copy = json.loads(self.jsondump)
+            copy["IDEAFAST"] = {
+                "hash": uid_to_hash(
+                    f"{copy['id']}/{signal_id}/{algorithm_id}", DeviceType.BTF
+                ),
+                "signal_id": signal_id,
+                "algorithm_id": algorithm_id,
+            }
+            return copy
+
     groups = __get_groups(session)
     results: List[dict] = []
 
@@ -73,7 +93,14 @@ def get_list(session: requests.Session, from_date: str, to_date: str) -> List[di
             recording_details: dict = __get_recording_by_id(
                 session, group, recording["id"]
             )
-            results.extend(recording_details)
+
+            template = __metadata_copy(json.dumps(recording_details))
+
+            for signal in recording_details["signals"]:
+                results.append(template.get(signal["id"]))
+
+                for algorithm in signal["algorithms"]:
+                    results.append(template.get(signal["id"], algorithm["id"]))
 
     return results
 
@@ -86,6 +113,9 @@ def download_file(
     Also returns the contents for the -meta.json file, as well as
     a list of the downloaded filenames for packaging in future steps
     """
+
+    # NOTE: Download folder is always /PATIENT_ID/DEVICE_ID
+    # WEARTIME are calculated once prepped for upload
 
     recording_details: dict = __get_recording_by_id(
         session, meta["group_id"], record_id

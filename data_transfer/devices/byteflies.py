@@ -7,7 +7,7 @@ import requests
 
 from data_transfer import utils
 from data_transfer.config import config
-from data_transfer.db import all_filenames, create_record, read_record, update_record
+from data_transfer.db import all_hashes, create_record, read_record, update_record
 from data_transfer.lib import byteflies as byteflies_api
 from data_transfer.schemas.record import Record
 
@@ -74,11 +74,13 @@ class Byteflies:
         NOTE/TODO: will run as BATCH job.
         """
         # Note: includes metadata for ALL data records, therefore we must filter them
-        all_records = byteflies_api.get_list(self.session, from_date, to_date)
+        # all_records = byteflies_api.get_list(self.session, from_date, to_date)
+        # utils.write_json("./byteflies.json", all_records)
+        all_records = utils.read_json(Path("./byteflies.json"))
 
         # Only add records that are not known in the DB based on stored filename
         unknown_records = [
-            r for r in all_records if r["id"] not in set(all_filenames())
+            r for r in all_records if r["IDEAFAST"]["hash"] not in set(all_hashes())
         ]
 
         # Aim: construct valid record (metadata) and add to DB
@@ -88,14 +90,16 @@ class Byteflies:
 
             # if not resolved_patient_id := validate_and_format_patient_id(recording.patient_id):
             #     pass
-            resolved_patient_id = None
+            resolved_patient_id = ""
 
             # if not resolved_device_id := None   # TODO: lookup with IDEAFAST device ID
             #     pass
-            resolved_device_id = None
+            resolved_device_id = ""
 
             record = Record(
-                filename=recording.recording_id,
+                # can relate to a single download file or a group of files
+                hash=item["IDEAFAST"]["hash"],
+                manufacturer_ref=recording.recording_id,
                 device_type=self.device_type,
                 device_id=resolved_device_id,
                 patient_id=resolved_patient_id,
@@ -145,8 +149,22 @@ class Byteflies:
         end_recording = utils.get_endwear_by_seconds(
             start_recording, recording["duration"]
         )
-
-        algorithm_id = recording["algorithm"]["id"] if recording["algorithm"] else None
+        signal: dict = next(
+            (
+                s
+                for s in recording["signals"]
+                if s["id"] == recording["IDEAFAST"]["signal_id"]
+            ),
+            None,
+        )
+        algorithm_id: str = next(
+            (
+                a["id"]
+                for a in signal["algorithms"]
+                if a["id"] == recording["IDEAFAST"]["algorithm_id"]
+            ),
+            None,
+        )
 
         return BytefliesRecording(
             recording["id"],
@@ -154,7 +172,7 @@ class Byteflies:
             recording["dockName"],
             recording["dotId"],
             recording["patient"],
-            recording["signal"]["id"],
+            signal["id"],
             algorithm_id,
             start_recording,
             end_recording,

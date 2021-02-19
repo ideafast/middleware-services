@@ -8,7 +8,7 @@ import requests
 
 from data_transfer import utils
 from data_transfer.config import config
-from data_transfer.db import all_filenames, create_record, read_record, update_record
+from data_transfer.db import all_hashes, create_record, read_record, update_record
 from data_transfer.lib import dreem as dreem_api
 from data_transfer.schemas.record import Record
 from data_transfer.services import inventory, ucam
@@ -61,9 +61,7 @@ class Dreem:
 
         # Only add records that are not known in the DB based on stored filename
         # i.e. (ID and filename in dreem)
-        unknown_records = [
-            r for r in all_records if r["id"] not in set(all_filenames())
-        ]
+        unknown_records = [r for r in all_records if r["id"] not in set(all_hashes())]
         known, unknown = 0, 0
 
         for item in unknown_records:

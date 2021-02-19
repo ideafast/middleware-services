@@ -11,7 +11,11 @@ class Record(BaseModel):
     """
 
     id: Optional[Any] = Field(alias="_id")
-    filename: str
+
+    # used to diff new downloads with history stored in MongoDB
+    hash: str
+    # e.g. Dreem/Byteflies recording id, or VTT patient folder name
+    manufacturer_ref: str
     device_type: str
     device_id: str
     patient_id: str

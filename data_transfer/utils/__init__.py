@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import json
 import re
 from datetime import datetime, timedelta
@@ -116,3 +117,12 @@ def validate_and_format_patient_id(ideafast_id: str) -> Union[bool, str]:
             return f"{study_site}{idgen}" if remainder == 0 else False
 
     return False
+
+
+def uid_to_hash(input: str, device_type: DeviceType) -> str:
+    result = hashlib.sha256()
+    # deviceType is used as a salt and to improve uniqueness across
+    # devices (i.e. Dreem uid != Byteflies uid)
+    result.update(device_type.name.encode("utf-8"))
+    result.update(input.encode("utf-8"))
+    return result.hexdigest()

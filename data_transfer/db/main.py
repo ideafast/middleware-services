@@ -32,8 +32,8 @@ def update_record(record: Record) -> None:
     )
 
 
-def all_filenames() -> List[str]:
-    return [doc["filename"] for doc in _db.records.find()]
+def all_hashes() -> List[str]:
+    return [doc["hash"] for doc in _db.records.find()]
 
 
 def records_not_downloaded(device_type: DeviceType) -> List[Record]:

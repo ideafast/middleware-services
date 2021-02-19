@@ -4,7 +4,7 @@ from mypy_boto3_s3.service_resource import Bucket
 
 from data_transfer import utils
 from data_transfer.config import config
-from data_transfer.db import all_filenames, create_record, read_record, update_record
+from data_transfer.db import all_hashes, create_record, read_record, update_record
 from data_transfer.lib import vttsma as vttsma_api
 from data_transfer.schemas.record import Record
 from data_transfer.services import ucam
@@ -59,9 +59,7 @@ class Vttsma:
         all_records = vttsma_api.get_list(self.bucket)
 
         # Only add records that are not known in the DB based on stored filename (id = VTT hash id)
-        unknown_records = [
-            r for r in all_records if r["id"] not in set(all_filenames())
-        ]
+        unknown_records = [r for r in all_records if r["id"] not in set(all_hashes())]
 
         # Aim: construct valid record (metadata) and add to DB
         for item in unknown_records:
