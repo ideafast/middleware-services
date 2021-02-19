@@ -2,7 +2,7 @@ import json
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, List, Tuple
+from typing import Any, List
 
 import requests
 
@@ -106,36 +106,30 @@ def get_list(session: requests.Session, from_date: str, to_date: str) -> List[di
 
 
 def download_file(
-    session: requests.Session, record_id: str, meta: dict
-) -> Tuple[bool, Any, List[str]]:
+    download_folder: str,
+    session: requests.Session,
+    group_id: str,
+    recording_id: str,
+    signal_id: str,
+    algorithm_id: str = "",
+) -> bool:
     """
     Download all files associated with one ByteFlies recording.
-    Also returns the contents for the -meta.json file, as well as
-    a list of the downloaded filenames for packaging in future steps
     """
-
-    # NOTE: Download folder is always /PATIENT_ID/DEVICE_ID
-    # WEARTIME are calculated once prepped for upload
-
-    recording_details: dict = __get_recording_by_id(
-        session, meta["group_id"], record_id
+    details: dict = __get_recording_by_id(session, group_id, recording_id)
+    signal: dict = next((s for s in details["signals"] if s["id"] == signal_id), None)
+    url, filename = (
+        (signal["rawData"], signal_id)
+        if not algorithm_id
+        else (
+            __get_algorithm_uri_by_id(session, group_id, recording_id, algorithm_id),
+            algorithm_id,
+        )
     )
 
-    download_list: dict = {}  # { record_id : download_url }
-
-    for signal in recording_details["signals"]:
-        download_list.update({signal["id"]: signal["rawData"]})
-
-        for algorithm in signal["algorithms"]:
-            url = __get_algorithm_uri_by_id(
-                session, meta["group_id"], record_id, algorithm["id"]
-            )
-            download_list.update({algorithm["id"]: url})
-
-    for download_id in download_list:
-        __download_file(download_list[download_id], download_id)
-
-    return (True, recording_details, list(download_list.keys()))
+    # TODO: for now, assumes that this method never throws ...
+    __download_file(download_folder, url, filename)
+    return True
 
 
 def __get_response(session: requests.Session, url: str) -> Any:
@@ -143,9 +137,9 @@ def __get_response(session: requests.Session, url: str) -> Any:
     Wrapper method to execute a GET request. Gives a second
     break to avoid 429 / 502 TooManyRequests (as advised)
     """
-    response = session.get(url)
     # TODO: manage ByteFlies API requests through other means than time.sleep
     time.sleep(1)
+    response = session.get(url)
     if code := response.status_code != 200:
         # when too many requests, we expect 429 or 502
         if code != 429 or code != 502:
@@ -197,11 +191,15 @@ def __get_algorithm_uri_by_id(
     return str(payload["uri"])
 
 
-def __download_file(url: str, record_id: str) -> None:
+def __download_file(download_folder: str, url: str, filename: str) -> None:
     """
     Builds the target filename and starts downloading the file to disk
+    NOTE: Download folder is always /PATIENT_ID/DEVICE_ID
     """
-    file_path = Path(config.storage_vol) / f"{record_id}.{args.ftype}"
+    folder = Path(config.storage_vol) / download_folder
+    if not folder.exists():
+        folder.mkdir(parents=True, exist_ok=True)
+    file_path = folder / f"{filename}.{args.ftype}"
     response = requests.get(url, stream=True)
 
     with open(file_path, "wb") as output_file:

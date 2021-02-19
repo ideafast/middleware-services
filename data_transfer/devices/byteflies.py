@@ -90,11 +90,11 @@ class Byteflies:
 
             # if not resolved_patient_id := validate_and_format_patient_id(recording.patient_id):
             #     pass
-            resolved_patient_id = ""
+            resolved_patient_id = "testing123"
 
             # if not resolved_device_id := None   # TODO: lookup with IDEAFAST device ID
             #     pass
-            resolved_device_id = ""
+            resolved_device_id = "testing456"
 
             record = Record(
                 # can relate to a single download file or a group of files
@@ -107,15 +107,19 @@ class Byteflies:
                 end_wear=recording.end,
                 meta=dict(
                     group_id=recording.group_id,
+                    recording_id=recording.recording_id,
                     signal_id=recording.signal_id,
                     algorithm_id=recording.algorithm_id,
                 ),
             )
 
             create_record(record)
+            print(f"Record Created:\n   {record}")
 
-            # NOTE: compared to other devices, ByteFlies metadata is retrieved in
-            # the download stage - and a -meta.json file is created there.
+            path = Path(config.storage_vol / f"{record.manufacturer_ref}-meta.json")
+            utils.write_json(path, item)
+
+            print(f"Metadata saved to: {path}\n")
 
     def download_file(self, mongo_id: str) -> None:
         """
@@ -126,20 +130,14 @@ class Byteflies:
         NOTE/TODO: is run as a task.
         """
         record = read_record(mongo_id)
-        is_downloaded_success, metadata, linked_files = byteflies_api.download_file(
-            self.session, record.filename, record.meta
+        download_folder = f"{record.patient_id}/{record.device_id}"
+        is_downloaded_success = byteflies_api.download_file(
+            download_folder, self.session, **record.meta
         )
 
         if is_downloaded_success:
-
-            # Store metadata from memory to file
-            path = Path(config.storage_vol / f"{record.filename}-meta.json")
-            utils.write_json(path, metadata)
-
             record.is_downloaded = is_downloaded_success
-            record.meta["linked_files"] = linked_files
             update_record(record)
-        # TODO: otherwise re-start task to try again
 
     def __recording_metadata(self, recording: dict) -> BytefliesRecording:
         """
