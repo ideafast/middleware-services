@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     byteflies_aws_client_id: str
     byteflies_aws_auth_url: str
 
+    byteflies_devices = root_path / "ideafast-byteflies-devices-full.csv"
+
     # VTTSMA
     vttsma_aws_accesskey: str
     vttsma_aws_secret_accesskey: str

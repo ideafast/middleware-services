@@ -2,12 +2,12 @@ import json
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, List
+from typing import Any, List, Optional
 
 import requests
 
 from data_transfer.config import config
-from data_transfer.utils import DeviceType, uid_to_hash
+from data_transfer.utils import DeviceType, read_csv_from_cache, uid_to_hash
 
 
 @dataclass
@@ -130,6 +130,25 @@ def download_file(
     # TODO: for now, assumes that this method never throws ...
     __download_file(download_folder, url, filename)
     return True
+
+
+def serial_by_device(uuid: str) -> Optional[str]:
+    """
+    Lookup Device ID by dreem headband serial
+    """
+    serial = __key_by_value(config.byteflies_devices, uuid)
+    return serial
+
+
+def __key_by_value(filename: Path, needle: str) -> Optional[str]:
+    """
+    Helper method to find key in CSV by value (needle)
+    """
+    data = read_csv_from_cache(filename)
+    for item in data:
+        if needle == item["Serial"]:
+            return str(item["Asset Tag"])
+    return None
 
 
 def __get_response(session: requests.Session, url: str) -> Any:

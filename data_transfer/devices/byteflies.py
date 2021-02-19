@@ -88,13 +88,14 @@ class Byteflies:
             # Pulls out the most relevant metadata for this recording
             recording = self.__recording_metadata(item)
 
-            # if not resolved_patient_id := validate_and_format_patient_id(recording.patient_id):
-            #     pass
-            resolved_patient_id = "testing123"
+            # if byteflies payload does not have a (valid) patientID
+            resolved_patient_id = (
+                utils.validate_and_format_patient_id(recording.patient_id) or None
+            )
 
             # if not resolved_device_id := None   # TODO: lookup with IDEAFAST device ID
             #     pass
-            resolved_device_id = "testing456"
+            resolved_device_id = byteflies_api.serial_by_device(recording.dot_id)
 
             record = Record(
                 # can relate to a single download file or a group of files
@@ -116,6 +117,7 @@ class Byteflies:
             create_record(record)
             print(f"Record Created:\n   {record}")
 
+            del item["IDEAFAST"]  # remove generated temporary metadata
             path = Path(config.storage_vol / f"{record.manufacturer_ref}-meta.json")
             utils.write_json(path, item)
 
@@ -138,6 +140,8 @@ class Byteflies:
         if is_downloaded_success:
             record.is_downloaded = is_downloaded_success
             update_record(record)
+
+            print(f"Downloaded file for:\n   {record}")
 
     def __recording_metadata(self, recording: dict) -> BytefliesRecording:
         """

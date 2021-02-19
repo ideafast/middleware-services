@@ -87,10 +87,10 @@ def byteflies_dag() -> None:
         mongoid = byteflies_tasks.task_download_data(record.id)
         mongoid = byteflies_tasks.task_preprocess_data(mongoid)
         # Data is finalised and moved to a folder in /uploading/
-        # shared_tasks.task_prepare_data(DeviceType.BTF, mongoid)
+        shared_tasks.task_prepare_data(DeviceType.BTF, mongoid)
 
     # All said folders FOR ALL DEVICES are uploaded once per day
-    # shared_jobs.batch_upload_data()
+    shared_jobs.batch_upload_data()
 
 
 if __name__ == "__main__":
