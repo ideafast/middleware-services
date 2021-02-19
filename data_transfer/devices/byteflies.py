@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum
 from pathlib import Path
+from typing import Union
 
 import requests
 
@@ -19,19 +19,29 @@ class BytefliesRecording:
     """
 
     # reduces memory by locking the number of fields
-    __slots__ = ["id", "dock_id", "dot_id", "patient_id", "start", "end", "signal_type"]
+    __slots__ = [
+        "recording_id",
+        "group_id",
+        "dock_id",
+        "dot_id",
+        "patient_id",
+        "signal_id",
+        "algorithm_id",
+        "start",
+        "end",
+    ]
 
-    class RecordingType(Enum):
-        signal = 1
-        algorithm = 2
-
-    id: str
+    recording_id: str
+    group_id: str
     dock_id: str
     dot_id: str
     patient_id: str
+    signal_id: str
+
+    algorithm_id: Union[str, None]
+
     start: datetime
     end: datetime
-    signal_type: RecordingType
 
 
 class Byteflies:
@@ -40,6 +50,7 @@ class Byteflies:
         Authenticate with AWS cognito to access ByteFlies resources
         """
         self.session = self.authenticate()
+        self.device_type = utils.DeviceType.BTF.name
 
     def authenticate(self) -> requests.Session:
         """
@@ -75,17 +86,26 @@ class Byteflies:
             # Pulls out the most relevant metadata for this recording
             recording = self.__recording_metadata(item)
 
-            # TODO: validate and lookup patientID, e.g.
-            # if patient_id := validate_and_format_patient_id(item["patient"]):
+            # if not resolved_patient_id := validate_and_format_patient_id(recording.patient_id):
+            #     pass
+            resolved_patient_id = None
+
+            # if not resolved_device_id := None   # TODO: lookup with IDEAFAST device ID
+            #     pass
+            resolved_device_id = None
 
             record = Record(
-                filename=recording.id,
-                device_type=utils.DeviceType.BTF.name,
-                device_id=item["dotId"],  # TODO: lookup with IDEAFAST device ID
-                patient_id=item["patient"],  # TODO: lookup with IDEAFAST patient ID
+                filename=recording.recording_id,
+                device_type=self.device_type,
+                device_id=resolved_device_id,
+                patient_id=resolved_patient_id,
                 start_wear=recording.start,
                 end_wear=recording.end,
-                meta=dict(group_id=item["groupId"]),
+                meta=dict(
+                    group_id=recording.group_id,
+                    signal_id=recording.signal_id,
+                    algorithm_id=recording.algorithm_id,
+                ),
             )
 
             create_record(record)
@@ -121,23 +141,21 @@ class Byteflies:
         """
         Maps data from ByteFlies response to class to simplify access/logging.
         """
-
         start_recording = utils.format_weartime_from_timestamp(recording["startDate"])
         end_recording = utils.get_endwear_by_seconds(
             start_recording, recording["duration"]
         )
-        signal_type = (
-            BytefliesRecording.RecordingType.algorithm
-            if recording["algorithm"]
-            else BytefliesRecording.RecordingType.signal
-        )
+
+        algorithm_id = recording["algorithm"]["id"] if recording["algorithm"] else None
 
         return BytefliesRecording(
             recording["id"],
+            recording["groupId"],
             recording["dockName"],
             recording["dotId"],
             recording["patient"],
+            recording["signal"]["id"],
+            algorithm_id,
             start_recording,
             end_recording,
-            signal_type,
         )

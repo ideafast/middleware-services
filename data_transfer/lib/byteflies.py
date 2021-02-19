@@ -1,3 +1,4 @@
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, List, Tuple
@@ -65,7 +66,14 @@ def get_list(session: requests.Session, from_date: str, to_date: str) -> List[di
 
     for group in groups:
         recordings: dict = __get_recordings_by_group(session, group, from_date, to_date)
-        results.extend(recordings)
+
+        # query each recording to retrieve total number of files to download
+        # this will be done again in download file to get a temporary download link
+        for recording in recordings:
+            recording_details: dict = __get_recording_by_id(
+                session, group, recording["id"]
+            )
+            results.extend(recording_details)
 
     return results
 
@@ -101,10 +109,22 @@ def download_file(
 
 
 def __get_response(session: requests.Session, url: str) -> Any:
-    """Wrapper method to execute a GET request"""
+    """
+    Wrapper method to execute a GET request. Gives a second
+    break to avoid 429 / 502 TooManyRequests (as advised)
+    """
     response = session.get(url)
-    # TODO: catch/log exception
-    response.raise_for_status()
+    # TODO: manage ByteFlies API requests through other means than time.sleep
+    time.sleep(1)
+    if code := response.status_code != 200:
+        # when too many requests, we expect 429 or 502
+        if code != 429 or code != 502:
+            # TODO: catch/log exception
+            response.raise_for_status()
+        else:
+            # wait and retry soon-ish
+            pass
+
     return response.json()
 
 
