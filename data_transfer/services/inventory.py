@@ -1,4 +1,6 @@
+import time
 from datetime import datetime
+from functools import lru_cache
 from typing import Any, Optional
 
 import requests
@@ -20,10 +22,20 @@ def device_history(device_id: str) -> Any:
     return response.json()["data"]
 
 
+@lru_cache
 def record_by_device_id(
     device_id: str, start_wear: datetime, end_wear: datetime
 ) -> Optional[Any]:
+    """
+    Retreive history of a given device_id, and compute whether this particular
+    time period was present in that history. If true, return that patient_id.
+    NOTE: Cached method to reduce api calls when downloading multiple files for
+    a single data recording
+    """
     device_wears = [i for i in device_history(device_id).values()]
+
+    # TODO: inventory has small rate limit.
+    time.sleep(4)
 
     start_wear = utils.normalise_day(start_wear)
     end_wear = utils.normalise_day(end_wear)

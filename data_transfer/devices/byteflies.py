@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
 
 import requests
 
@@ -10,6 +10,7 @@ from data_transfer.config import config
 from data_transfer.db import all_hashes, create_record, read_record, update_record
 from data_transfer.lib import byteflies as byteflies_api
 from data_transfer.schemas.record import Record
+from data_transfer.services import inventory, ucam
 
 
 @dataclass
@@ -83,19 +84,35 @@ class Byteflies:
             r for r in all_records if r["IDEAFAST"]["hash"] not in set(all_hashes())
         ]
 
-        # Aim: construct valid record (metadata) and add to DB
         for item in unknown_records:
             # Pulls out the most relevant metadata for this recording
             recording = self.__recording_metadata(item)
 
-            # if byteflies payload does not have a (valid) patientID
-            resolved_patient_id = (
-                utils.validate_and_format_patient_id(recording.patient_id) or None
+            # NOTE: lookup in .csv export from inventory TODO: translate to inventory api
+            if not (
+                resolved_device_id := byteflies_api.serial_by_device(recording.dot_id)
+            ):
+                print(f"Unknown Device:\n   {recording}")
+                continue  # Err: SKIP RECORD
+
+            # saving resolved patient_id back in recording for logging
+            recording.patient_id = (
+                recording.patient_id  # very sporadically the record has a patient_id already
+                or self.__patient_id_from_ucam(
+                    resolved_device_id, recording.start, recording.end
+                )
+                or self.__patient_id_from_inventory(
+                    resolved_device_id, recording.start, recording.end
+                )
             )
 
-            # if not resolved_device_id := None   # TODO: lookup with IDEAFAST device ID
-            #     pass
-            resolved_device_id = byteflies_api.serial_by_device(recording.dot_id)
+            if not (
+                resolved_patient_id := utils.validate_and_format_patient_id(
+                    recording.patient_id
+                )
+            ):
+                print(f"Unknown Patient:\n   {recording}")
+                continue  # Err: SKIP RECORD
 
             record = Record(
                 # can relate to a single download file or a group of files
@@ -118,6 +135,8 @@ class Byteflies:
             print(f"Record Created:\n   {record}")
 
             del item["IDEAFAST"]  # remove generated temporary metadata
+            # NOTE: this gets overwritten for each to-download file = most recent version
+            # Could argue to pass if already exists (= oldest version)
             path = Path(config.storage_vol / f"{record.manufacturer_ref}-meta.json")
             utils.write_json(path, item)
 
@@ -179,3 +198,25 @@ class Byteflies:
             start_recording,
             end_recording,
         )
+
+    def __patient_id_from_ucam(
+        self, device_id: str, start: datetime, end: datetime
+    ) -> Optional[str]:
+        """
+        Determine PatientID by wear period of device in UCAM.
+        """
+        record = ucam.record_by_wear_period(device_id, start, end)
+        if record:
+            print("found in UCAM")
+        return record.patient_id if record else None
+
+    def __patient_id_from_inventory(
+        self, device_id: str, start: datetime, end: datetime
+    ) -> Optional[str]:
+        """
+        Determine PatientID by wear period in inventory.
+        """
+        record = inventory.record_by_device_id(device_id, start, end)
+        if record:
+            print("found in Inventory")
+        return record.get("patient_id", None) if record else None

@@ -16,5 +16,6 @@ def task_preprocess_data(mongoid: str) -> str:
     """
     record = read_record(mongoid)
     record.is_processed = True
+    print(f"Pre-processed file for:\n   {record}")
     update_record(record)
     return mongoid

@@ -90,25 +90,9 @@ def validate_and_format_patient_id(ideafast_id: str) -> Union[bool, str]:
     Returns boolean if validate with corrected formatting
     """
 
-    def __get_remainder(string: str, factor: int) -> int:
-        character_set = "ACDEFGHJKNPQRSTVXYZ2345679"
-        total = 0
-
-        # reverse iteration
-        for char in string[::-1]:
-            try:
-                code_point = character_set.index(char)
-            except (IndexError, ValueError):
-                return True  # True != 0
-            addend = factor * code_point
-            factor = 1 if factor == 2 else 2
-            addend = floor(addend / len(character_set)) + (addend % len(character_set))
-            total += addend
-
-        return total % len(character_set)
-
     if type(ideafast_id) is str:
-        id_without_punc = re.sub(r"[^\w]|_", "", ideafast_id)
+        id_without_punc = re.sub(r"[^\w]", "", ideafast_id)
+        #  TODO: remove spaces if present
 
         if len(id_without_punc) == 7:
             study_site = id_without_punc[0]
@@ -117,6 +101,24 @@ def validate_and_format_patient_id(ideafast_id: str) -> Union[bool, str]:
             return f"{study_site}{idgen}" if remainder == 0 else False
 
     return False
+
+
+def __get_remainder(string: str, factor: int) -> int:
+    character_set = "ACDEFGHJKNPQRSTVXYZ2345679"
+    total = 0
+
+    # reverse iteration
+    for char in string[::-1]:
+        try:
+            code_point = character_set.index(char)
+        except (IndexError, ValueError):
+            return True  # True != 0
+        addend = factor * code_point
+        factor = 1 if factor == 2 else 2
+        addend = floor(addend / len(character_set)) + (addend % len(character_set))
+        total += addend
+
+    return total % len(character_set)
 
 
 def uid_to_hash(input: str, device_type: DeviceType) -> str:

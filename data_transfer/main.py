@@ -79,7 +79,7 @@ def byteflies_dag() -> None:
     # TODO: ensure that we get the End of Day as intended based on automation schedule
     # TODO: should we ensure overlap with previous run? How often do we run this DAG?
     # TODO: perhaps pull this one abstraction higher (into the init of this DAG?)
-    data_period = get_period_by_days(datetime.today(), 3)  # NOTE: one day for testing
+    data_period = get_period_by_days(datetime.today(), 2)  # NOTE: two days for testing
     byteflies_jobs.batch_metadata(*data_period)
 
     for record in records_not_downloaded(DeviceType.BTF):
