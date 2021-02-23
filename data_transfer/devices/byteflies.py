@@ -94,6 +94,8 @@ class Byteflies:
             ):
                 print(f"Unknown Device:\n   {recording}")
                 continue  # Err: SKIP RECORD
+            else:
+                resolved_device_id = utils.format_id_device(resolved_device_id)
 
             # saving resolved patient_id back in recording for logging
             recording.patient_id = (
@@ -107,9 +109,7 @@ class Byteflies:
             )
 
             if not (
-                resolved_patient_id := utils.validate_and_format_patient_id(
-                    recording.patient_id
-                )
+                resolved_patient_id := utils.format_id_patient(recording.patient_id)
             ):
                 print(f"Unknown Patient:\n   {recording}")
                 continue  # Err: SKIP RECORD

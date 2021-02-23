@@ -7,7 +7,7 @@ from enum import Enum
 from functools import lru_cache
 from math import floor
 from pathlib import Path
-from typing import Any, List, Tuple, Union
+from typing import Any, List, Optional, Tuple
 
 
 class DeviceType(Enum):
@@ -84,23 +84,32 @@ def normalise_day(_datetime: datetime) -> datetime:
     return _datetime.replace(hour=0, minute=0, second=0)
 
 
-def validate_and_format_patient_id(ideafast_id: str) -> Union[bool, str]:
-    """
-    Validate a (messy) IDEAFAST id, based on ideafast/ideafast-idgen
-    Returns boolean if validate with corrected formatting
-    """
+def format_id_patient(patient_id: str) -> Optional[str]:
+    """Validate and formats patient id s """
+    return __format_id_ideafast(patient_id, 1)
 
+
+def format_id_device(device_id: str) -> Optional[str]:
+    """Validate and formats device id s """
+    # 4 chars prefix, to retain the "-"
+    return __format_id_ideafast(device_id, 4)
+
+
+def __format_id_ideafast(ideafast_id: str, prefix_length: int) -> Optional[str]:
+    """
+    Validate a and formats a (messy) patient or device IDEAFAST id based on
+    ideafast/ideafast-idgen. Returns boolean if validate with corrected formatting
+    """
     if type(ideafast_id) is str:
-        id_without_punc = re.sub(r"[^\w]", "", ideafast_id)
-        #  TODO: remove spaces if present
+        prefix = ideafast_id[:prefix_length]
+        stripped_id = ideafast_id[prefix_length:]
+        id_to_check = re.sub(r"[^\w]|_", "", stripped_id)
 
-        if len(id_without_punc) == 7:
-            study_site = id_without_punc[0]
-            idgen = id_without_punc[1:]
-            remainder = __get_remainder(idgen, 1)
-            return f"{study_site}{idgen}" if remainder == 0 else False
+        if len(id_to_check) == 6:
+            remainder = __get_remainder(id_to_check, 1)
+            return f"{prefix}{id_to_check}" if remainder == 0 else None
 
-    return False
+    return None
 
 
 def __get_remainder(string: str, factor: int) -> int:

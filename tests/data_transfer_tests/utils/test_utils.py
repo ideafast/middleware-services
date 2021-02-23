@@ -1,34 +1,69 @@
 import pytest
 
-from data_transfer.utils import __get_remainder, validate_and_format_patient_id
+from data_transfer.utils import (
+    __format_id_ideafast,
+    __get_remainder,
+    format_id_device,
+    format_id_patient,
+)
 
 
-def test_valid() -> None:
-    result = validate_and_format_patient_id("KNXYP6F")
+def test_patient_valid() -> None:
+    result = format_id_patient("KNXYP6F")
 
     assert result == "KNXYP6F"
 
 
+def test_device_valid() -> None:
+    result = format_id_device("ABC-FYCRXH")
+
+    assert result == "ABC-FYCRXH"
+
+
+def test_device_ideafast_valid_no_prefix() -> None:
+    result = __format_id_ideafast("FYCRXH", 0)
+
+    assert result == "FYCRXH"
+
+
+def test_device_ideafast_valid() -> None:
+    result = __format_id_ideafast("ABC-FYCRXH", 4)
+
+    assert result == "ABC-FYCRXH"
+
+
+def test_device_ideafast_invalid() -> None:
+    result = __format_id_ideafast("FYCRXW", 1)
+
+    assert result is False
+
+
 def test_invalid() -> None:
-    result = validate_and_format_patient_id("K-NXYP6G")
+    result = format_id_patient("K-NXYP6G")
 
     assert result is False
 
 
 def test_punctuation() -> None:
-    result = validate_and_format_patient_id("K-NXYP6F.")
+    result = format_id_patient("K-NXYP6F.")
 
     assert result == "KNXYP6F"
 
 
 def test_tabs_spaces() -> None:
-    result = validate_and_format_patient_id("K-N XYP6\tF ")
+    result = format_id_patient("K-N XYP6\tF ")
 
     assert result == "KNXYP6F"
 
 
-def test_length() -> None:
-    result = validate_and_format_patient_id("K-NXYP6FF")
+def test_length_patient() -> None:
+    result = format_id_patient("K-NXYP6FF")
+
+    assert result is False
+
+
+def test_length_device() -> None:
+    result = format_id_device("K-NXYP6FF")
 
     assert result is False
 
