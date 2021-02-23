@@ -161,7 +161,7 @@ def __get_response(session: requests.Session, url: str) -> Any:
     response = session.get(url)
     if code := response.status_code != 200:
         # when too many requests, we expect 429 or 502
-        if code != 429 or code != 502:
+        if code != 429 and code != 502:
             # TODO: catch/log exception
             response.raise_for_status()
         else:
