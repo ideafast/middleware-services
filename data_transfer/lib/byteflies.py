@@ -12,7 +12,7 @@ from data_transfer.utils import DeviceType, read_csv_from_cache, uid_to_hash
 
 @dataclass
 class BytefliesFileDownload:
-    """Use as CLI arguments for Dreem's library."""
+    """Use as CLI arguments for ByteFlies' library."""
 
     directory: Path = config.storage_vol
     ftype: str = "csv"
@@ -134,7 +134,7 @@ def download_file(
 
 def serial_by_device(uuid: str) -> Optional[str]:
     """
-    Lookup Device ID by dreem headband serial
+    Lookup Device ID by ByteFlies dot.id
     """
     serial = __key_by_value(config.byteflies_devices, uuid)
     return serial
