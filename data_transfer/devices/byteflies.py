@@ -66,7 +66,9 @@ class Byteflies:
         session = byteflies_api.get_session(token)
         return session
 
-    def download_metadata(self, from_date: str, to_date: str) -> None:
+    def download_metadata(
+        self, from_date: str, to_date: str, study_site: utils.StudySite
+    ) -> None:
         """
         Before downloading raw data we need to know which files to download.
         Byteflies offers an API which we can query for a given time period
@@ -75,9 +77,11 @@ class Byteflies:
         NOTE/TODO: will run as BATCH job.
         """
         # Note: includes metadata for ALL data records, therefore we must filter them
-        # all_records = byteflies_api.get_list(self.session, from_date, to_date)
+        all_records = byteflies_api.get_list(
+            self.session, config.byteflies_group_ids[study_site], from_date, to_date
+        )
         # utils.write_json("./byteflies.json", all_records)
-        all_records = utils.read_json(Path("./byteflies.json"))
+        # all_records = utils.read_json(Path("./byteflies.json"))
 
         # Only add records that are not known in the DB based on stored filename
         unknown_records = [

@@ -24,6 +24,13 @@ class DeviceType(Enum):
     YSM = 11  # ZKOne YOLI
 
 
+class StudySite(Enum):
+    Newcastle = 1
+    Kiel = 2
+    Muenster = 3  # i.e. Münster
+    Rotterdam = 4  # i.e. Erasmus
+
+
 FORMATS = {"ucam": "%d/%m/%Y", "inventory": "%Y-%m-%d %H:%M:%S"}
 
 

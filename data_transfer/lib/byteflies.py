@@ -59,7 +59,9 @@ def get_session(token: str) -> requests.Session:
     return session
 
 
-def get_list(session: requests.Session, from_date: str, to_date: str) -> List[dict]:
+def get_list(
+    session: requests.Session, studysite_id: str, from_date: str, to_date: str
+) -> List[dict]:
     """
     GET a list of records (metadata) across study sites, or 'groups' in ByteFlies API
     """
@@ -81,26 +83,26 @@ def get_list(session: requests.Session, from_date: str, to_date: str) -> List[di
             }
             return copy
 
-    groups = __get_groups(session)
     results: List[dict] = []
 
-    for group in groups:
-        recordings: dict = __get_recordings_by_group(session, group, from_date, to_date)
+    recordings: dict = __get_recordings_by_group(
+        session, studysite_id, from_date, to_date
+    )
 
-        # query each recording to retrieve total number of files to download
-        # this will be done again in download file to get a temporary download link
-        for recording in recordings:
-            recording_details: dict = __get_recording_by_id(
-                session, group, recording["id"]
-            )
+    # query each recording to retrieve total number of files to download
+    # this will be done again in download file to get a temporary download link
+    for recording in recordings:
+        recording_details: dict = __get_recording_by_id(
+            session, studysite_id, recording["id"]
+        )
 
-            template = __metadata_copy(json.dumps(recording_details))
+        template = __metadata_copy(json.dumps(recording_details))
 
-            for signal in recording_details["signals"]:
-                results.append(template.get(signal["id"]))
+        for signal in recording_details["signals"]:
+            results.append(template.get(signal["id"]))
 
-                for algorithm in signal["algorithms"]:
-                    results.append(template.get(signal["id"], algorithm["id"]))
+            for algorithm in signal["algorithms"]:
+                results.append(template.get(signal["id"], algorithm["id"]))
 
     return results
 
@@ -108,7 +110,7 @@ def get_list(session: requests.Session, from_date: str, to_date: str) -> List[di
 def download_file(
     download_folder: str,
     session: requests.Session,
-    group_id: str,
+    studysite_id: str,
     recording_id: str,
     signal_id: str,
     algorithm_id: str = "",
@@ -116,13 +118,15 @@ def download_file(
     """
     Download all files associated with one ByteFlies recording.
     """
-    details: dict = __get_recording_by_id(session, group_id, recording_id)
+    details: dict = __get_recording_by_id(session, studysite_id, recording_id)
     signal: dict = next((s for s in details["signals"] if s["id"] == signal_id), None)
     url, filename = (
         (signal["rawData"], signal_id)
         if not algorithm_id
         else (
-            __get_algorithm_uri_by_id(session, group_id, recording_id, algorithm_id),
+            __get_algorithm_uri_by_id(
+                session, studysite_id, recording_id, algorithm_id
+            ),
             algorithm_id,
         )
     )
@@ -172,39 +176,43 @@ def __get_response(session: requests.Session, url: str) -> Any:
 
 
 def __get_groups(session: requests.Session) -> List[str]:
-    """Returns the list of groupIds associated with a User Account"""
+    """
+    Returns the list of groupIds associated with a User Account.
+    NOTE: groupIds are hardcoded, so this method is here for posterity
+    """
     groups = __get_response(session, f"{config.byteflies_api_url}/groups/")
     group_ids = [g["groupId"] for g in groups]
     return group_ids
 
 
 def __get_recordings_by_group(
-    session: requests.Session, group_id: str, begin_date: str, end_date: str
+    session: requests.Session, studysite_id: str, begin_date: str, end_date: str
 ) -> Any:
     """Returns the list of Recordings associated to a Group"""
     return __get_response(
         session,
-        f"{config.byteflies_api_url}/groups/{group_id}/recordings?begin={begin_date}&end={end_date}",
+        f"{config.byteflies_api_url}/groups/{studysite_id}"
+        f"/recordings?begin={begin_date}&end={end_date}",
     )
 
 
 def __get_recording_by_id(
-    session: requests.Session, group_id: str, recording_id: str
+    session: requests.Session, studysite_id: str, recording_id: str
 ) -> Any:
     """Returns the details of a particular Recording"""
     return __get_response(
         session,
-        f"{config.byteflies_api_url}/groups/{group_id}/recordings/{recording_id}/",
+        f"{config.byteflies_api_url}/groups/{studysite_id}/recordings/{recording_id}/",
     )
 
 
 def __get_algorithm_uri_by_id(
-    session: requests.Session, group_id: str, recording_id: str, algorithm_id: str
+    session: requests.Session, studysite_id: str, recording_id: str, algorithm_id: str
 ) -> str:
     """Returns the details of a particular Recording"""
     payload = __get_response(
         session,
-        f"{config.byteflies_api_url}/groups/{group_id}"
+        f"{config.byteflies_api_url}/groups/{studysite_id}"
         f"/recordings/{recording_id}/algorithms/{algorithm_id}",
     )
     return str(payload["uri"])

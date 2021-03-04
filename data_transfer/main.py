@@ -8,7 +8,7 @@ from data_transfer.jobs import vttsma as vttsma_jobs
 from data_transfer.tasks import byteflies as byteflies_tasks
 from data_transfer.tasks import dreem as dreem_tasks
 from data_transfer.tasks import vttsma as vttsma_tasks
-from data_transfer.utils import DeviceType, get_period_by_days
+from data_transfer.utils import DeviceType, StudySite, get_period_by_days
 
 fileConfig("logging.ini")
 
@@ -62,7 +62,7 @@ def vttsma_dag() -> None:
     shared_jobs.batch_upload_data()
 
 
-def byteflies_dag() -> None:
+def byteflies_dag(study_site: StudySite) -> None:
     """
     Directed acyclic graph (DAG) representing dreem data pipeline:
 
@@ -78,8 +78,8 @@ def byteflies_dag() -> None:
     # TODO: ensure that we get the End of Day as intended based on automation schedule
     # TODO: should we ensure overlap with previous run? How often do we run this DAG?
     # TODO: perhaps pull this one abstraction higher (into the init of this DAG?)
-    data_period = get_period_by_days(datetime.today(), 2)  # NOTE: one day for testing
-    byteflies_jobs.batch_metadata(*data_period)
+    data_period = get_period_by_days(datetime.today(), 1)  # NOTE: two days for testing
+    byteflies_jobs.batch_metadata(*data_period, study_site)
 
     for record in records_not_downloaded(DeviceType.BTF):
         # Each task should be idempotent. Returned values feeds subsequent task
@@ -95,4 +95,4 @@ def byteflies_dag() -> None:
 if __name__ == "__main__":
     # dreem_dag("munster")
     # vttsma_dag()
-    byteflies_dag()
+    byteflies_dag(StudySite.Kiel)

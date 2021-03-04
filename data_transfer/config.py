@@ -5,6 +5,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 from pydantic import BaseSettings
 
+from data_transfer.utils import StudySite
+
 load_dotenv(".dtransfer.env")
 
 
@@ -34,6 +36,14 @@ class Settings(BaseSettings):
     byteflies_password: str
     byteflies_aws_client_id: str
     byteflies_aws_auth_url: str
+
+    # NOTE: Is this the best place to store this?...
+    byteflies_group_ids: dict = {
+        StudySite.Kiel: "ba92eb10-74d8-11ea-9162-a946985733fd",
+        StudySite.Rotterdam: "8c5ed850-b789-11ea-870a-c3400b84381c",
+        StudySite.Newcastle: "2f5e6630-4c03-11ea-9f2d-0949ce20b25c",
+        StudySite.Muenster: "aa3f7660-ba2a-11ea-bb28-b3fd87020c94",
+    }
 
     byteflies_devices = root_path / "ideafast-byteflies-devices-full.csv"
 
