@@ -1,17 +1,12 @@
-from dataclasses import dataclass
-from pathlib import Path
-from typing import List
-
 from data_transfer.config import config
 from data_transfer.db import (
-    get_records_in_folder,
     min_max_data_wear_times,
     record_by_filename,
-    unfinished_folders,
+    records_not_uploaded,
     update_record,
 )
-from data_transfer.schemas.record import Record
 from data_transfer.services import dmpy
+from data_transfer.utils import DeviceType
 
 FILE_TYPES = {
     # Possibly move this to utils or embed with the enums
@@ -29,7 +24,6 @@ def batch_upload_data() -> None:
     This means that if prior tasks preprocessed multiple files from the same wear
     period, then those files will be uploaded as one request.
     """
-
     folders_to_upload = [p for p in config.upload_folder.iterdir() if p.is_dir()]
 
     for data_folder in folders_to_upload:
@@ -47,66 +41,47 @@ def batch_upload_data() -> None:
             dmpy.rm_local_data(zip_path)
 
 
-def prepare_data_folders() -> None:
+def prepare_data_folders(device_type: DeviceType) -> None:
     """
     Checks folders present in 'data/upload/ are finished
     and moves them into the upload folder in the format:
 
         DEVICEID-PATIENTID-STARTWEAR-ENDWEAR
     """
+    not_uploaded = records_not_uploaded(device_type)
 
-    @dataclass
-    class taskObject:
-        patient_id: str
-        device_id: str
-        folder: Path
-        records: List[Record]
-
-    ignore_folders = unfinished_folders()
-    all_folders = [
-        (p.name, d.name)
-        for p in config.storage_vol.iterdir()
-        if p.is_dir()
-        for d in p.iterdir()
-        if d.is_dir()
-    ]
-    ready_folders = [f for f in all_folders if f not in ignore_folders]
-
-    to_process = [
-        taskObject(
-            folder[0],
-            folder[1],
-            (config.storage_vol / folder[0] / folder[1]),
-            get_records_in_folder(folder[0], folder[1]),
-        )
-        for folder in ready_folders
+    grouped: dict = {}
+    # transform the result to {PatientID1-DeviceID1: [{Record1}, ... {Record2}], ... }
+    [
+        grouped.setdefault(f"{r.patient_id}-{r.device_id}", []).append(r)
+        for r in not_uploaded
     ]
 
-    for task in to_process:
-        max_data, min_data = min_max_data_wear_times(task.records)
+    # filter sets which have any record with 'is_processed' == False
+    # 'is_processed' == False catches the 'False' for any preceding task as well
+    to_upload = {k: v for k, v in grouped.items() if all([r.is_processed for r in v])}
+
+    for patient_device in to_upload.keys():
+        max_data, min_data = min_max_data_wear_times(to_upload[patient_device])
 
         start_data = max_data.strftime("%Y%m%d")
         end_data = min_data.strftime("%Y%m%d")
 
-        data_folder_name = (
-            f"{task.patient_id}-{task.device_id.replace('-', '')}"
-            f"-{start_data}-{end_data}"
-        )
-        destination = config.upload_folder / data_folder_name
+        source = config.storage_vol / patient_device.replace("-", "/", 1)
+        destination = config.upload_folder / f"{patient_device}-{start_data}-{end_data}"
+        source.rename(destination)
 
-        if not config.upload_folder.exists():
-            config.upload_folder.mkdir()
+        # don't forget the -meta.json file! Each record in the list has a reference to it
+        meta_file_name = f"{to_upload[patient_device][0].manufacturer_ref}-meta.json"
+        meta_file_path = config.storage_vol / meta_file_name
+        meta_file_path.rename(destination / meta_file_name)
 
-        if not destination.exists():
-            destination.mkdir()
-
-        # assuming all downloads went well: move everything and update records
-        for fname in task.folder.glob("*.*"):  # grabs all files
-
-            new_path = destination / fname.name
-            fname.rename(new_path)
-
-        # update records
-        for record in task.records:
+        for record in to_upload[patient_device]:
             record.is_prepared = True
             update_record(record)
+
+        # check if patient folder is empty, then remove it
+        patient_path = config.storage_vol / to_upload[patient_device][0].patient_id
+        if not any(patient_path.iterdir()):
+            # throws if not empty
+            patient_path.rmdir()

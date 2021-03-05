@@ -1,4 +1,4 @@
-from typing import Any, List, Set, Tuple
+from typing import List
 
 from bson import ObjectId
 from pymongo import MongoClient
@@ -41,25 +41,8 @@ def records_not_downloaded(device_type: DeviceType) -> List[Record]:
     return [Record(**doc) for doc in docs]
 
 
-def unfinished_folders() -> Set[Tuple[Any, Any]]:
-    """
-    Return a list of folders 'PATIENT_ID/DEVICE_ID'
-    that are not finished downloading/pre-processing
-    """
-    docs = _db.records.find({"is_processed": False})
-    folders = set([(doc.patient_id, doc.device_id) for doc in docs])
-    return folders
-
-
-def get_records_in_folder(patient_id: str, device_id: str) -> List[Record]:
-    docs = _db.records.find(
-        {
-            "device_id": device_id,
-            "patient_id": patient_id,
-            "is_processed": True,
-            "is_prepared": False,
-        }
-    )
+def records_not_uploaded(device_type: DeviceType) -> List[Record]:
+    docs = _db.records.find({"is_uploaded": False, "device_type": device_type.name})
     return [Record(**doc) for doc in docs]
 
 

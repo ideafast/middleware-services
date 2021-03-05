@@ -128,7 +128,7 @@ class Byteflies:
                 start_wear=recording.start,
                 end_wear=recording.end,
                 meta=dict(
-                    group_id=recording.group_id,
+                    studysite_id=recording.group_id,
                     recording_id=recording.recording_id,
                     signal_id=recording.signal_id,
                     algorithm_id=recording.algorithm_id,
@@ -138,11 +138,10 @@ class Byteflies:
             create_record(record)
             print(f"Record Created:\n   {record}")
 
-            del item["IDEAFAST"]  # remove generated temporary metadata
-            # NOTE: this gets overwritten for each to-download file = most recent version
-            # Could argue to pass if already exists (= oldest version)
+            del item["IDEAFAST"]  # remove record-specific temporary metadata
             path = Path(config.storage_vol / f"{record.manufacturer_ref}-meta.json")
-            utils.write_json(path, item)
+            if not path.exists():
+                utils.write_json(path, item)
 
             print(f"Metadata saved to: {path}\n")
 

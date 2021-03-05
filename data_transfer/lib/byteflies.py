@@ -10,18 +10,6 @@ from data_transfer.config import config
 from data_transfer.utils import DeviceType, read_csv_from_cache, uid_to_hash
 
 
-@dataclass
-class BytefliesFileDownload:
-    """Use as CLI arguments for ByteFlies' library."""
-
-    directory: Path = config.storage_vol
-    ftype: str = "csv"
-
-
-# Define location and filetype to download
-args = BytefliesFileDownload()
-
-
 def get_token(creds: dict) -> str:
     """
     Generates a AWS Cognito IdToken for API access
@@ -226,7 +214,7 @@ def __download_file(download_folder: str, url: str, filename: str) -> None:
     folder = Path(config.storage_vol) / download_folder
     if not folder.exists():
         folder.mkdir(parents=True, exist_ok=True)
-    file_path = folder / f"{filename}.{args.ftype}"
+    file_path = folder / f"{filename}.csv"
     response = requests.get(url, stream=True)
 
     with open(file_path, "wb") as output_file:
