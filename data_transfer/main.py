@@ -89,7 +89,7 @@ def byteflies_dag(study_site: StudySite) -> None:
     # Data is finalised and moved to a folder in /uploading/
     shared_jobs.prepare_data_folders(DeviceType.BTF)
     # All said folders FOR ALL DEVICES are uploaded once per day
-    shared_jobs.batch_upload_data()
+    shared_jobs.batch_upload_data(DeviceType.BTF)
 
 
 if __name__ == "__main__":

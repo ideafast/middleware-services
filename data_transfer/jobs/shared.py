@@ -16,7 +16,7 @@ FILE_TYPES = {
 }
 
 
-def batch_upload_data() -> None:
+def batch_upload_data(device_type: DeviceType) -> None:
     """
     Zips and uploads all folders in /uploading/ to the DMP, which
     if successful, updates database record and removes data locally.
@@ -24,7 +24,8 @@ def batch_upload_data() -> None:
     This means that if prior tasks preprocessed multiple files from the same wear
     period, then those files will be uploaded as one request.
     """
-    folders_to_upload = [p for p in config.upload_folder.iterdir() if p.is_dir()]
+    device_subfolder = config.upload_folder / device_type.name
+    folders_to_upload = [p for p in device_subfolder.iterdir() if p.is_dir()]
 
     for data_folder in folders_to_upload:
         zip_path = dmpy.zip_folder(data_folder)
@@ -68,7 +69,11 @@ def prepare_data_folders(device_type: DeviceType) -> None:
         end_data = min_data.strftime("%Y%m%d")
 
         source = config.storage_vol / patient_device.replace("-", "/")
-        destination = config.upload_folder / f"{patient_device}-{start_data}-{end_data}"
+        destination = (
+            config.upload_folder
+            / device_type.name
+            / f"{patient_device}-{start_data}-{end_data}"
+        )
         source.rename(destination)
 
         # don't forget the -meta.json file! Each record in the list has a reference to it
