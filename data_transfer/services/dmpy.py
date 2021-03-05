@@ -1,3 +1,4 @@
+import logging
 import shutil
 from pathlib import Path
 
@@ -6,6 +7,8 @@ from dmpy.core.payloads import FileUploadPayload
 
 from data_transfer.config import config
 from data_transfer.utils import wear_time_in_ms
+
+log = logging.getLogger(__name__)
 
 
 def zip_folder(path: Path) -> Path:
@@ -23,6 +26,7 @@ def upload(path: Path) -> bool:
     """
     Given a path to a zip folder to be uploaded
     """
+    log.info(path)
     patient_id, device_id, _start, _end = path.stem.split("-")
 
     checksum = Dmpy.checksum(path)
@@ -33,8 +37,9 @@ def upload(path: Path) -> bool:
         config.dmp_study_id, path, patient_id, device_id, start, end, checksum
     )
 
-    is_uploaded = Dmpy().upload(payload)
-    return is_uploaded
+    log.info(payload)
+
+    return Dmpy().upload(payload)
 
 
 def rm_local_data(zip_path: Path) -> None:
