@@ -67,7 +67,7 @@ def prepare_data_folders(device_type: DeviceType) -> None:
         start_data = max_data.strftime("%Y%m%d")
         end_data = min_data.strftime("%Y%m%d")
 
-        source = config.storage_vol / patient_device.replace("-", "/", 1)
+        source = config.storage_vol / patient_device.replace("-", "/")
         destination = config.upload_folder / f"{patient_device}-{start_data}-{end_data}"
         source.rename(destination)
 
