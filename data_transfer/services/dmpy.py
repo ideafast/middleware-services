@@ -27,14 +27,14 @@ def upload(path: Path) -> bool:
     Given a path to a zip folder to be uploaded
     """
     log.info(path)
-    patient_id, device_id, _start, _end = path.stem.split("-")
+    patient_id, device_id, start, end = path.stem.split("-")
 
     checksum = Dmpy.checksum(path)
-    start = wear_time_in_ms(_start)
-    end = wear_time_in_ms(_end)
+    start_wear = wear_time_in_ms(start)
+    end_wear = wear_time_in_ms(end)
 
     payload = FileUploadPayload(
-        config.dmp_study_id, path, patient_id, device_id, start, end, checksum
+        config.dmp_study_id, path, patient_id, device_id, start_wear, end_wear, checksum
     )
 
     log.info(payload)
