@@ -98,8 +98,7 @@ def format_id_patient(patient_id: str) -> Optional[str]:
 
 def format_id_device(device_id: str) -> Optional[str]:
     """Validate and formats device id s """
-    # 4 chars prefix, to retain the "-"
-    return __format_id_ideafast(device_id, 4)
+    return __format_id_ideafast(device_id, 3)
 
 
 def __format_id_ideafast(ideafast_id: str, prefix_length: int) -> Optional[str]:
