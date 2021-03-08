@@ -9,7 +9,7 @@ from data_transfer.tasks import shared as shared_tasks
 from data_transfer.tasks import vttsma as vttsma_tasks
 from data_transfer.utils import DeviceType
 
-fileConfig("logging.conf")
+fileConfig("logging.ini")
 
 
 def dreem_dag(study_site: str) -> None:
