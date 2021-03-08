@@ -51,6 +51,11 @@ def write_json(filepath: Path, data: dict) -> None:
         json.dump(data, f, indent=4)
 
 
+def wear_time_in_ms(weartime: str) -> int:
+    """Converts DMP formatted weartime (20210101) to miliseconds."""
+    return int(datetime.strptime(weartime, "%Y%m%d").timestamp() * 1e3)
+
+
 def normalise_day(_datetime: datetime) -> datetime:
     """
     Replaces day time with zero for comparison by day.
