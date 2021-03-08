@@ -15,8 +15,6 @@ root_path = Path(__file__).parent.parent
 class Settings(BaseSettings):
     database_uri: str
 
-    dmp_study_id: str
-
     dreem_users: Path = root_path / "ideafast-users-full.csv"
     dreem_devices: Path = root_path / "ideafast-devices-full.csv"
 
