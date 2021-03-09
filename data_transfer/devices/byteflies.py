@@ -90,7 +90,7 @@ class Byteflies:
 
         for item in unknown_records:
             # Pulls out the most relevant metadata for this recording
-            recording = self.__recording_metadata(item)
+            recording = self.recording_metadata(item)
 
             # NOTE: lookup in .csv export from inventory TODO: translate to inventory api
             if not (
@@ -164,8 +164,10 @@ class Byteflies:
             update_record(record)
 
             print(f"Downloaded file for:\n   {record}")
+        else:
+            print(f"FAILED downloading file for:\n   {record}")
 
-    def __recording_metadata(self, recording: dict) -> BytefliesRecording:
+    def recording_metadata(self, recording: dict) -> BytefliesRecording:
         """
         Maps data from ByteFlies response to class to simplify access/logging.
         """

@@ -120,7 +120,7 @@ def download_file(
     )
 
     # TODO: for now, assumes that this method never throws ...
-    __download_file(download_folder, url, filename)
+    __download_file(session, download_folder, url, filename)
     return True
 
 
@@ -151,6 +151,8 @@ def __get_response(session: requests.Session, url: str) -> Any:
     # TODO: manage ByteFlies API requests through other means than time.sleep
     time.sleep(1)
     response = session.get(url)
+    print(url)
+    print(session)
     if code := response.status_code != 200:
         # when too many requests, we expect 429 or 502
         if code != 429 and code != 502:
@@ -206,7 +208,9 @@ def __get_algorithm_uri_by_id(
     return str(payload["uri"])
 
 
-def __download_file(download_folder: str, url: str, filename: str) -> None:
+def __download_file(
+    session: requests.Session, download_folder: str, url: str, filename: str
+) -> None:
     """
     Builds the target filename and starts downloading the file to disk
     NOTE: Download folder is always /PATIENT_ID/DEVICE_ID
@@ -215,7 +219,7 @@ def __download_file(download_folder: str, url: str, filename: str) -> None:
     if not folder.exists():
         folder.mkdir(parents=True, exist_ok=True)
     file_path = folder / f"{filename}.csv"
-    response = requests.get(url, stream=True)
+    response = session.get(url, stream=True)
 
     with open(file_path, "wb") as output_file:
         for chunk in response.iter_content(chunk_size=1024):

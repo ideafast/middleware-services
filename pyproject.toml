@@ -30,6 +30,10 @@ isort = "^5.7.0"
 mypy = "^0.800"
 pre-commit = "^2.10.0"
 mypy-boto3-s3 = "^1.17.2"
+pytest-mock = "^3.5.1"
+requests-mock = "^1.8.0"
+mongomock = "^3.22.1"
+pymongo = "^3.11.3"
 
 [tool.poetry.scripts]
 consumer = "cli:consumer"
