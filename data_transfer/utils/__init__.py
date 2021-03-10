@@ -92,13 +92,19 @@ def normalise_day(_datetime: datetime) -> datetime:
 
 
 def format_id_patient(patient_id: str) -> Optional[str]:
-    """Validate and formats patient id s """
-    return __format_id_ideafast(patient_id, 1)
+    """
+    Validate and formats patient id s
+    NOTE: retains the '-'
+    """
+    return __format_id_ideafast(patient_id, 2)
 
 
 def format_id_device(device_id: str) -> Optional[str]:
-    """Validate and formats device id s """
-    return __format_id_ideafast(device_id, 3)
+    """
+    Validate and formats device id s
+    NOTE: retains the '-'
+    """
+    return __format_id_ideafast(device_id, 4)
 
 
 def __format_id_ideafast(ideafast_id: str, prefix_length: int) -> Optional[str]:

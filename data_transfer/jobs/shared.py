@@ -54,7 +54,7 @@ def prepare_data_folders(device_type: DeviceType) -> None:
     grouped: dict = {}
     # transform the result to {PatientID1-DeviceID1: [{Record1}, ... {Record2}], ... }
     [
-        grouped.setdefault(f"{r.patient_id}-{r.device_id}", []).append(r)
+        grouped.setdefault(f"{r.patient_id}/{r.device_id}", []).append(r)
         for r in not_uploaded
     ]
 
@@ -68,12 +68,16 @@ def prepare_data_folders(device_type: DeviceType) -> None:
         start_data = max_data.strftime("%Y%m%d")
         end_data = min_data.strftime("%Y%m%d")
 
-        source = config.storage_vol / patient_device.replace("-", "/")
+        source = config.storage_vol / patient_device
         destination = (
             config.upload_folder
             / device_type.name
-            / f"{patient_device}-{start_data}-{end_data}"
+            / f"{patient_device.replace('-','').replace('/','-')}-{start_data}-{end_data}"
         )
+
+        if not destination.exists():
+            destination.mkdir(parents=True)
+
         source.rename(destination)
 
         # don't forget the -meta.json file! Each record in the list has a reference to it

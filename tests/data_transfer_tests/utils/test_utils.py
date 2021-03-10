@@ -9,9 +9,9 @@ from data_transfer.utils import (
 
 
 def test_patient_valid() -> None:
-    result = format_id_patient("KNXYP6F")
+    result = format_id_patient("K-NXYP6F")
 
-    assert result == "KNXYP6F"
+    assert result == "K-NXYP6F"
 
 
 def test_device_valid() -> None:
@@ -35,37 +35,37 @@ def test_device_ideafast_valid() -> None:
 def test_device_ideafast_invalid() -> None:
     result = __format_id_ideafast("FYCRXW", 1)
 
-    assert result is False
+    assert result is None
 
 
 def test_invalid() -> None:
     result = format_id_patient("K-NXYP6G")
 
-    assert result is False
+    assert result is None
 
 
 def test_punctuation() -> None:
     result = format_id_patient("K-NXYP6F.")
 
-    assert result == "KNXYP6F"
+    assert result == "K-NXYP6F"
 
 
 def test_tabs_spaces() -> None:
     result = format_id_patient("K-N XYP6\tF ")
 
-    assert result == "KNXYP6F"
+    assert result == "K-NXYP6F"
 
 
 def test_length_patient() -> None:
     result = format_id_patient("K-NXYP6FF")
 
-    assert result is False
+    assert result is None
 
 
 def test_length_device() -> None:
     result = format_id_device("K-NXYP6FF")
 
-    assert result is False
+    assert result is None
 
 
 @pytest.mark.parametrize(

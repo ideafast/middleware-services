@@ -151,8 +151,6 @@ def __get_response(session: requests.Session, url: str) -> Any:
     # TODO: manage ByteFlies API requests through other means than time.sleep
     time.sleep(1)
     response = session.get(url)
-    print(url)
-    print(session)
     if code := response.status_code != 200:
         # when too many requests, we expect 429 or 502
         if code != 429 and code != 502:
