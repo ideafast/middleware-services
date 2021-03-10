@@ -1,3 +1,4 @@
+from datetime import datetime
 from logging.config import fileConfig
 
 from data_transfer.db import records_not_downloaded
