@@ -2,31 +2,35 @@ import os
 from functools import lru_cache
 from pathlib import Path
 
-from dotenv import load_dotenv
+from dotenv import get_key, load_dotenv
 from pydantic import BaseSettings
 
-load_dotenv(".dtransfer.env")
+
+def get_env_value(key_to_get: str, env_file: str = ".dtransfer.prod.env") -> str:
+    return get_key(env_file, key_to_get)
 
 
-# TODO: would be docker volume
-root_path = Path(__file__).parent.parent
+class GlobalConfig(BaseSettings):
+    """Global configurations."""
 
-
-class Settings(BaseSettings):
-    is_local: bool
-    database_uri: str
+    root_path = Path(__file__).parent.parent
 
     csvs_path = root_path / "local"
     data_path = root_path / "data"
+
+    storage_vol: Path = data_path / "input"
+    upload_folder: Path = data_path / "uploading"
 
     dreem_users: Path = csvs_path / "ideafast-users-full.csv"
     dreem_devices: Path = csvs_path / "ideafast-devices-full.csv"
 
     ucam_data: Path = csvs_path / "ucam_db.csv"
 
-    storage_vol: Path = data_path / "input"
-    upload_folder: Path = data_path / "uploading"
 
+class Settings(GlobalConfig):
+    is_dev: bool
+
+    database_uri: str
     inventory_api: str
 
     support_base_url: str
@@ -44,30 +48,33 @@ class Settings(BaseSettings):
     # Hardcoded as this data structure is not
     # supported unless JSON is stored in .env
     dreem: dict = {
-        "kiel": (os.getenv("DREEM_KIEL_USERNAME"), os.getenv("DREEM_KIEL_PASSWORD")),
+        "kiel": (
+            get_env_value("DREEM_KIEL_USERNAME"),
+            get_env_value("DREEM_KIEL_PASSWORD"),
+        ),
         "newcastle": (
-            os.getenv("DREEM_NEWCASTLE_USERNAME"),
-            os.getenv("DREEM_NEWCASTLE_PASSWORD"),
+            get_env_value("DREEM_NEWCASTLE_USERNAME"),
+            get_env_value("DREEM_NEWCASTLE_PASSWORD"),
         ),
         "munster": (
-            os.getenv("DREEM_MUNSTER_USERNAME"),
-            os.getenv("DREEM_MUNSTER_PASSWORD"),
+            get_env_value("DREEM_MUNSTER_USERNAME"),
+            get_env_value("DREEM_MUNSTER_PASSWORD"),
         ),
         "rotterdam": (
-            os.getenv("DREEM_ROTTERDAM_USERNAME"),
-            os.getenv("DREEM_ROTTERDAM_PASSWORD"),
+            get_env_value("DREEM_ROTTERDAM_USERNAME"),
+            get_env_value("DREEM_ROTTERDAM_PASSWORD"),
         ),
     }
 
 
 @lru_cache()
 def settings() -> Settings:
-    _settings = Settings()
-    # TODO: is temporary and should be in a ".dev.env" file?
-    if _settings.is_local:
-        _settings.inventory_api = "http://0.0.0.0:8000/inventory/"
-        _settings.database_uri = "mongodb://localhost:27017/"
-    return _settings
+    # Load production settings as shared with dev.
+    load_dotenv(".dtransfer.prod.env")
+    # Override specific prod values, e.g., DMP.
+    if bool(os.getenv("IS_DEV")):
+        load_dotenv(".dtransfer.dev.env", override=True)
+    return Settings()
 
 
 config = settings()
