@@ -1,7 +1,33 @@
-*.env
+# python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.tox
+.nox
+.cache
+tests/**/*
+tests
+*.log
+.git
 *.example
 **/*.swp
-**/*.env
 **/*.git
 **/*.egg-info
 **/*__pycache__
+*.vscode
+**/*_cache/**/*
+# local data
+data/
+
+# json files
+/local/**/*
+
+# secrets
+*.env
+**/*.env
+
+# venvs (if local)
+.venv/**/*
+.venv/
