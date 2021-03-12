@@ -1,3 +1,4 @@
+import logging as log
 import time
 from dataclasses import asdict, dataclass
 from datetime import datetime
@@ -36,6 +37,7 @@ class Dreem:
         self.user_id, self.session = self.authenticate()
         # Used to filter UCAM devices and assign to type to record
         self.device_type = utils.DeviceType.DRM.name
+        log.info("Created dreem object")
 
     def authenticate(self) -> Tuple[str, requests.Session]:
         """
@@ -44,6 +46,7 @@ class Dreem:
         credentials = config.dreem[self.study_site]
         token, user_id = dreem_api.get_token(credentials)
         session = dreem_api.get_session(token)
+        log.info(f"Authentication successful: {user_id}")
         return user_id, session
 
     def download_metadata(self) -> None:
@@ -59,11 +62,14 @@ class Dreem:
         # Note: includes metadata for ALL data records, therefore we must filter them
         all_records = dreem_api.get_restricted_list(self.session, self.user_id)
 
+        log.info(f"Total dreem records: {len(all_records)} for {self.study_site}")
+
         # Only add records that are not known in the DB based on stored filename
         # i.e. (ID and filename in dreem)
         unknown_records = [
             r for r in all_records if r["id"] not in set(all_filenames())
         ]
+
         known, unknown = 0, 0
 
         for item in unknown_records:
@@ -75,7 +81,7 @@ class Dreem:
 
             # Serial may not exist in lookup, e.g., if Dreem send a device replacement.
             if not device_serial:
-                print(f"Unknown Device:\n   {recording}")
+                log.debug(f"Unknown Device:\n   {recording}")
                 # Move onto next record: skips logic below to simplify error handling
                 continue
 
@@ -110,11 +116,13 @@ class Dreem:
                     )
                 # Edge-case: device not logged with patient in UCAM
                 else:
-                    print(f"Metadata cannot be determined for:\n    {recording}")
+                    log.debug(
+                        f"Device does not exists in UCAM for {patient_id}:\n {recording}"
+                    )
                     continue
             else:
                 unknown += 1
-                print(f"Metadata cannot be determined for:\n    {recording}")
+                log.debug(f"Patient ID ({patient_id}) is not in UCAM:\n    {recording}")
                 continue
 
             record = Record(
@@ -125,18 +133,18 @@ class Dreem:
             )
 
             create_record(record)
-            print(f"Record Created:\n   {record}")
+            log.debug(f"Record Created:\n   {record}")
 
             path = Path(config.storage_vol / f"{record.filename}-meta.json")
             # Store metadata from memory to file
             utils.write_json(path, item)
 
-            print(f"Metadata saved to: {path}\n")
-        print(f"{known} records created and {unknown} NOT this session.")
+            log.debug(f"Metadata saved to: {path}\n")
+        log.debug(f"{known} records created and {unknown} NOT this session.")
 
     def __recording_metadata(self, recording: dict) -> DreemRecording:
         """
-        Maps data from Dreem response to class to simplify access/logging.
+        Maps data from Dreem response to class to simplify access/log.
         """
         id = recording["id"]
         device_id = recording["device"]
