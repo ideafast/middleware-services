@@ -6,6 +6,7 @@ DTP consists of multiple ETL data workflows for a range of sensing devices as pa
 
 | Path | Info |
 | ---- | ---- |
+| `/dags`    | Pipelines for each device. |
 | `/db`      | DB Connection and helper methods |
 | `/devices` | Implementation specific for each device |
 | `/jobs`    | Batch jobs to run per device or shared |

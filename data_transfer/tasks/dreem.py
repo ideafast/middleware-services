@@ -2,11 +2,11 @@ from data_transfer.db import read_record, update_record
 from data_transfer.devices.dreem import Dreem
 
 
-def task_download_data(study_site: str, mongoid: str) -> str:
+def task_download_data(dreem: Dreem, mongoid: str) -> str:
     """
     Download a datafile for the dreem device.
     """
-    Dreem(study_site).download_file(mongoid)
+    dreem.download_file(mongoid)
     return mongoid
 
 

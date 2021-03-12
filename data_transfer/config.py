@@ -13,15 +13,19 @@ root_path = Path(__file__).parent.parent
 
 
 class Settings(BaseSettings):
+    is_local: bool
     database_uri: str
 
-    dreem_users: Path = root_path / "ideafast-users-full.csv"
-    dreem_devices: Path = root_path / "ideafast-devices-full.csv"
+    csvs_path = root_path / "local"
+    data_path = root_path / "data"
 
-    ucam_data: Path = root_path / "ucam_db.csv"
+    dreem_users: Path = csvs_path / "ideafast-users-full.csv"
+    dreem_devices: Path = csvs_path / "ideafast-devices-full.csv"
 
-    storage_vol: Path = root_path / "data/input"
-    upload_folder: Path = root_path / "data/uploading"
+    ucam_data: Path = csvs_path / "ucam_db.csv"
+
+    storage_vol: Path = data_path / "input"
+    upload_folder: Path = data_path / "uploading"
 
     inventory_api: str
 
@@ -58,7 +62,12 @@ class Settings(BaseSettings):
 
 @lru_cache()
 def settings() -> Settings:
-    return Settings()
+    _settings = Settings()
+    # TODO: is temporary and should be in a ".dev.env" file?
+    if _settings.is_local:
+        _settings.inventory_api = "http://0.0.0.0:8000/inventory/"
+        _settings.database_uri = "mongodb://localhost:27017/"
+    return _settings
 
 
 config = settings()

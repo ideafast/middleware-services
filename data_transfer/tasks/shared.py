@@ -32,9 +32,6 @@ def task_prepare_data(device_type: DeviceType, mongo_id: str) -> None:
     destination = config.upload_folder / data_folder_name
     data_input = config.storage_vol
 
-    if not config.upload_folder.exists():
-        config.upload_folder.mkdir()
-
     if not destination.exists():
         destination.mkdir()
 
