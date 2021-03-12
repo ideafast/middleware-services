@@ -5,34 +5,27 @@ ENV PIP_NO_CACHE_DIR=1
 # Causes error on pip
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
-FROM base as builder
-
 # Temporarily install dependencies to build/install poetry
 # Create virtual dependency package so it can be deleted after use
-RUN apk add --quiet --no-cache --virtual .build-deps gcc libffi-dev musl-dev postgresql-dev \
-    && pip install -q poetry \
-    && apk del .build-deps
+RUN apk add gcc libffi-dev musl-dev postgresql-dev git
+
+RUN pip install -q poetry
 
 COPY pyproject.toml poetry.lock ./
-#
-RUN poetry export --without-hashes -f requirements.txt > /tmp/requirements.txt
 
-FROM base as final
-
-COPY . /app/
-COPY --from=builder /tmp/requirements.txt /app/
+RUN poetry export --without-hashes -f requirements.txt > ./requirements.txt
 
 # As dmpy is hosted on git (outside of pip) we must be able to install it via git ...
 # Annoyingly this is built with each step because the requirements file is passed between images
-RUN apk add --quiet --no-cache --virtual .deps gcc libffi-dev musl-dev postgresql-dev git \
-    && pip install -q -r /app/requirements.txt \
-    && apk del .deps
+RUN pip install -q -r ./requirements.txt
+
+COPY . /app/
 
 ENV PYTHONPATH=/app
 
 # NOTE: for now we are running a pipeline via cron to test infrastructure there
 # would be no RUN/CMD as this image would be used in a compose file (airflow).
-RUN echo '* * * * * cd /app/ && python ./data_transfer/main.py DRM newcastle' > /etc/crontabs/root
+RUN echo '* * * * * cd /app/ && python ./data_transfer/main.py DRM kiel' > /etc/crontabs/root
 
 # Set crond to foreground so it is always running
 # and set log level to list when critical.
