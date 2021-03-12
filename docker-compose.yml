@@ -1,9 +1,19 @@
 version: '3.8'
 
+networks:
+  web:
+    name: web
+    external: true
+  database:
+    name: database
+    external: false
+
 services:
   mongodb:
     container_name: mongo
     image: mongo:4.4.3
+    networks:
+      - database
     ports:
       - 27017:27017
     env_file:
@@ -11,5 +21,33 @@ services:
     volumes:
       - mongodb:/data/db
 
+  consumer:
+    container_name: consumer
+    image: middleware
+    # Required for linux
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - web
+    ports:
+      - 80:80
+    env_file:
+      - .consumer.env
+
+  dtransfer:
+    container_name: dtransfer
+    image: dtransfer
+    networks:
+      - database
+    env_file:
+      - .dtransfer.env
+      - .dmpy.env
+    volumes:
+      # Useful for development purposes
+      - ./data:/app/data/
+      # This is the CSVs
+      - ./local:/app/local/
+
 volumes:
   mongodb:
+  data:
