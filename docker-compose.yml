@@ -17,7 +17,7 @@ services:
     ports:
       - 27017:27017
     env_file:
-      - .dtransfer.env
+      - .dtransfer.prod.env
     volumes:
       - mongodb:/data/db
 
@@ -40,7 +40,7 @@ services:
     networks:
       - database
     env_file:
-      - .dtransfer.env
+      - .dtransfer.prod.env
     volumes:
       # Useful for development purposes
       - ./data:/app/data/

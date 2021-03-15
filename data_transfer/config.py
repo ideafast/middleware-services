@@ -1,12 +1,13 @@
+import os
 from functools import lru_cache
 from pathlib import Path
 
-from dotenv import get_key, load_dotenv
+from dotenv import load_dotenv
 from pydantic import BaseSettings
 
 
-def get_env_value(key_to_get: str, env_file: str = ".dtransfer.prod.env") -> str:
-    return get_key(env_file, key_to_get)
+def get_env_value(key_to_get: str) -> str:
+    return os.getenv(key_to_get)
 
 
 class GlobalConfig(BaseSettings):

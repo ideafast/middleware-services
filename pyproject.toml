@@ -14,8 +14,8 @@ requests = "^2.24.0"
 python-dotenv = "^0.15.0"
 pymongo = "^3.11.2"
 boto3 = "^1.16.61"
-dmpy = {git = "https://github.com/ideafast/dmpy.git", rev = "0.1.0"}
 mypy-boto3-s3 = "^1.17.22"
+dmpy = {git = "https://github.com/ideafast/dmpy.git", rev = "envfile"}
 
 [tool.poetry.dev-dependencies]
 click = "^7.1.2"

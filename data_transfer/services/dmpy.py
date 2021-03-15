@@ -5,7 +5,6 @@ from pathlib import Path
 from dmpy.client import Dmpy
 from dmpy.core.payloads import FileUploadPayload
 
-from data_transfer.config import config
 from data_transfer.utils import wear_time_in_ms
 
 log = logging.getLogger(__name__)
@@ -38,7 +37,7 @@ def upload(path: Path) -> bool:
     )
 
     log.info(payload)
-    return Dmpy(config.env_file).upload(payload)
+    return Dmpy().upload(payload)
 
 
 def rm_local_data(zip_path: Path) -> None:
