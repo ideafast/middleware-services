@@ -41,7 +41,6 @@ services:
       - database
     env_file:
       - .dtransfer.env
-      - .dmpy.env
     volumes:
       # Useful for development purposes
       - ./data:/app/data/

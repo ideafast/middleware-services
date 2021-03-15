@@ -1,4 +1,3 @@
-import os
 from functools import lru_cache
 from pathlib import Path
 
@@ -14,6 +13,8 @@ class GlobalConfig(BaseSettings):
     """Global configurations."""
 
     root_path = Path(__file__).parent.parent
+
+    env_file: Path = None
 
     csvs_path = root_path / "local"
     data_path = root_path / "data"
@@ -35,6 +36,13 @@ class Settings(GlobalConfig):
 
     support_base_url: str
     support_token: str
+
+    dmp_study_id: str
+    dmp_url: str
+    dmp_public_key: str
+    dmp_signature: str
+    dmp_access_token: str
+    dmp_access_token_gen_time: int
 
     # NOTE: VTT does not differentiate between study sites
     vttsma_aws_accesskey: str
@@ -69,12 +77,27 @@ class Settings(GlobalConfig):
 
 @lru_cache()
 def settings() -> Settings:
-    # Load production settings as shared with dev.
+    """
+    Only a few services provide development environments, e.g., DMPY.
+    As such, live APIs are used for most local developement and
+    specific production values overriden for development.
+    """
+    # Load production settings as many are shared with dev.
     load_dotenv(".dtransfer.prod.env")
-    # Override specific prod values, e.g., DMP.
-    if bool(os.getenv("IS_DEV")):
+    # Doing this here rather than below to access "is_dev"
+    _settings = Settings()
+
+    if _settings.is_dev:
+        # Override specific prod values, e.g., DMP.
         load_dotenv(".dtransfer.dev.env", override=True)
-    return Settings()
+        # Required so settings retrieves new .env values.
+        _settings = Settings()
+
+    # Useful to know which file was loaded, e.g., for dmpy.
+    env = "dev" if _settings.is_dev else "prod"
+    _settings.env_file = _settings.root_path / Path(f".dtransfer.{env}.env")
+
+    return _settings
 
 
 config = settings()
