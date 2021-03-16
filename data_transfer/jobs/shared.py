@@ -26,7 +26,6 @@ def batch_upload_data(device_type: DeviceType) -> None:
     """
     device_subfolder = config.upload_folder / device_type.name
 
-    print(device_subfolder)
     if device_subfolder.exists():
         folders_to_upload = [p for p in device_subfolder.iterdir() if p.is_dir()]
 
