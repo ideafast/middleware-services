@@ -2,12 +2,13 @@ import os
 from functools import lru_cache
 from pathlib import Path
 
-from dotenv import load_dotenv
+from dotenv import get_key, load_dotenv
 from pydantic import BaseSettings
 
 
-def get_env_value(key_to_get: str) -> str:
-    return os.getenv(key_to_get)
+def get_env_value(key_to_get: str, env_file: str = ".dtransfer.prod.env") -> str:
+    """Load from general env then specific file if not found."""
+    return os.getenv(key_to_get) or get_key(env_file, key_to_get)
 
 
 class GlobalConfig(BaseSettings):
@@ -83,16 +84,12 @@ def settings() -> Settings:
     """
     # Load production settings as many are shared with dev.
     load_dotenv(".dtransfer.prod.env")
-    # Doing this here rather than below to access "is_dev"
-    _settings = Settings()
 
-    if _settings.is_dev:
+    if get_env_value("IS_DEV"):
         # Override specific prod values, e.g., DMP.
         load_dotenv(".dtransfer.dev.env", override=True)
-        # Required so settings retrieves new .env values.
-        _settings = Settings()
 
-    return _settings
+    return Settings()
 
 
 config = settings()
