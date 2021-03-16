@@ -37,7 +37,6 @@ class Dreem:
         self.user_id, self.session = self.authenticate()
         # Used to filter UCAM devices and assign to type to record
         self.device_type = utils.DeviceType.DRM.name
-        log.info("Created dreem object")
 
     def authenticate(self) -> Tuple[str, requests.Session]:
         """
@@ -119,6 +118,7 @@ class Dreem:
                     log.debug(
                         f"Device does not exists in UCAM for {patient_id}:\n {recording}"
                     )
+                    log.debug("Attempting to use inventory.")
                     continue
             else:
                 unknown += 1

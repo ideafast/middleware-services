@@ -15,8 +15,6 @@ class GlobalConfig(BaseSettings):
 
     root_path = Path(__file__).parent.parent
 
-    env_file: Path = None
-
     csvs_path = root_path / "local"
     data_path = root_path / "data"
 
@@ -93,10 +91,6 @@ def settings() -> Settings:
         load_dotenv(".dtransfer.dev.env", override=True)
         # Required so settings retrieves new .env values.
         _settings = Settings()
-
-    # Useful to know which file was loaded, e.g., for dmpy.
-    env = "dev" if _settings.is_dev else "prod"
-    _settings.env_file = _settings.root_path / Path(f".dtransfer.{env}.env")
 
     return _settings
 
