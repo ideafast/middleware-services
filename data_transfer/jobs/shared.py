@@ -25,19 +25,22 @@ def batch_upload_data(device_type: DeviceType) -> None:
     period, then those files will be uploaded as one request.
     """
     device_subfolder = config.upload_folder / device_type.name
-    folders_to_upload = [p for p in device_subfolder.iterdir() if p.is_dir()]
 
-    for data_folder in folders_to_upload:
-        zip_path = dmpy.zip_folder(data_folder)
-        is_uploaded = dmpy.upload(zip_path)
+    print(device_subfolder)
+    if device_subfolder.exists():
+        folders_to_upload = [p for p in device_subfolder.iterdir() if p.is_dir()]
 
-        # Once uploaded to DMP, update metadata db
-        if is_uploaded:
-            for record in records_by_dmp_folder(data_folder.stem):
-                record.is_uploaded = True
-                update_record(record)
+        for data_folder in folders_to_upload:
+            zip_path = dmpy.zip_folder(data_folder)
+            is_uploaded = dmpy.upload(zip_path)
 
-            dmpy.rm_local_data(zip_path)
+            # Once uploaded to DMP, update metadata db
+            if is_uploaded:
+                for record in records_by_dmp_folder(data_folder.stem):
+                    record.is_uploaded = True
+                    update_record(record)
+
+                dmpy.rm_local_data(zip_path)
 
 
 def prepare_data_folders(device_type: DeviceType) -> None:

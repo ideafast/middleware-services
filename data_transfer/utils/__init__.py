@@ -62,6 +62,7 @@ def get_endwear_by_seconds(start: datetime, duration: int) -> datetime:
 def read_csv_from_cache(path: Path) -> List[dict]:
     """
     Load full CSV into memory for quick lookup
+    NOTE: breaks if .csv not in right codec (i.e. saved from Excel)
     """
     with open(path) as csv_file:
         data = [row for row in csv.DictReader(csv_file)]
