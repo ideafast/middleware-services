@@ -22,8 +22,8 @@ class Record(BaseModel):
     start_wear: datetime
     end_wear: datetime
     meta: dict  # meta data relevant to individual device pipelines
-
-    vttsma_export_date: Optional[str]
+    # the DMP upload this record is linked to - known in the last stages
+    dmp_folder: Optional[str]
 
     # Each stage of the pipeline
     is_downloaded: Optional[bool] = False

@@ -1,7 +1,7 @@
 from data_transfer.config import config
 from data_transfer.db import (
     min_max_data_wear_times,
-    record_by_filename,
+    records_by_dmp_folder,
     records_not_uploaded,
     update_record,
 )
@@ -33,12 +33,10 @@ def batch_upload_data(device_type: DeviceType) -> None:
 
         # Once uploaded to DMP, update metadata db
         if is_uploaded:
-            # All records that were uploaded
-            filenames = [f.stem for f in data_folder.iterdir() if "-meta" not in f.name]
-            for filename in filenames:
-                record = record_by_filename(filename)
+            for record in records_by_dmp_folder(data_folder.stem):
                 record.is_uploaded = True
                 update_record(record)
+
             dmpy.rm_local_data(zip_path)
 
 
@@ -69,19 +67,19 @@ def prepare_data_folders(device_type: DeviceType) -> None:
         end_data = min_data.strftime("%Y%m%d")
 
         source = config.storage_vol / device_type.name / patient_device
+        dmp_folder = (
+            f"{patient_device.replace('-','').replace('/','-')}-{start_data}-{end_data}"
+        )
 
         # patient_device looks like = 'patient-id/device-id'
-        destination = (
-            config.upload_folder
-            / device_type.name
-            / f"{patient_device.replace('-','').replace('/','-')}-{start_data}-{end_data}"
-        )
+        destination = config.upload_folder / device_type.name / dmp_folder
 
         destination.mkdir(parents=True, exist_ok=True)
         source.rename(destination)
 
         for record in to_upload[patient_device]:
             record.is_prepared = True
+            record.dmp_folder = dmp_folder
             update_record(record)
 
         # check if patient folder is empty, then remove it

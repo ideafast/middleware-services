@@ -21,9 +21,9 @@ def read_record(mongo_id: str) -> Record:
     return Record(**result)
 
 
-def record_by_filename(filename: str) -> Record:
-    result = _db.records.find_one(({"filename": filename}))
-    return Record(**result)
+def records_by_dmp_folder(dmp_folder: str) -> List[Record]:
+    docs = _db.records.find(({"dmp_folder": dmp_folder}))
+    return [Record(**doc) for doc in docs]
 
 
 def update_record(record: Record) -> None:
