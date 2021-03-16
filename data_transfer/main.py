@@ -9,14 +9,10 @@ fileConfig("logging.ini")
 
 if __name__ == "__main__":
     # Create this once upon setup
-    if not config.csvs_path.exists():
-        config.csvs_path.mkdir()
-    if not config.data_path.exists():
-        config.data_path.mkdir()
-    if not config.storage_vol.exists():
-        config.storage_vol.mkdir()
-    if not config.upload_folder.exists():
-        config.upload_folder.mkdir()
+    config.csvs_path.mkdir(exist_ok=True)
+    config.data_path.mkdir(exist_ok=True)
+    config.storage_vol.mkdir(exist_ok=True)
+    config.upload_folder.mkdir(exist_ok=True)
 
     device = sys.argv[1] or None
     study_site = sys.argv[2] or None
