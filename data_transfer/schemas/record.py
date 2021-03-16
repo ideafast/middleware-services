@@ -38,3 +38,7 @@ class Record(BaseModel):
         Skipping as this is created by DB.
         """
         return ObjectId(id)
+
+    def download_folder(self) -> str:
+        """consistenly structure target folder for download"""
+        return f"{self.device_type}/{self.patient_id}/{self.device_id}"

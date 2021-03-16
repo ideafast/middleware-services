@@ -120,7 +120,7 @@ def download_file(
     )
 
     # TODO: for now, assumes that this method never throws ...
-    __download_file(session, download_folder, url, filename)
+    __download_file(download_folder, url, filename)
     return True
 
 
@@ -206,20 +206,17 @@ def __get_algorithm_uri_by_id(
     return str(payload["uri"])
 
 
-def __download_file(
-    session: requests.Session, download_folder: str, url: str, filename: str
-) -> None:
+def __download_file(download_folder: str, url: str, filename: str) -> None:
     """
     Builds the target filename and starts downloading the file to disk
-    NOTE: Download folder is always /PATIENT_ID/DEVICE_ID
+    No session parameter as this queries a non-BTF url with authentication
+    embedded in the url
     """
-    folder = Path(config.storage_vol) / download_folder
-    if not folder.exists():
-        folder.mkdir(parents=True, exist_ok=True)
-    file_path = folder / f"{filename}.csv"
-    response = session.get(url, stream=True)
+    path = Path(config.storage_vol) / download_folder / f"{filename}.csv"
+    path.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(file_path, "wb") as output_file:
-        for chunk in response.iter_content(chunk_size=1024):
-            if chunk:
-                output_file.write(chunk)
+    with requests.get(url, stream=True) as response:
+        with open(path, "wb") as output_file:
+            for chunk in response.iter_content(chunk_size=1024):
+                if chunk:
+                    output_file.write(chunk)

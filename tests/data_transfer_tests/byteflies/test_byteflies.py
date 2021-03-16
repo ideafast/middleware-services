@@ -53,6 +53,8 @@ def test_populated_db(populated_db: Collection) -> None:
 def test_download_task(
     populated_db: Collection, mock_requests_session: dict, tmpdir: Path
 ) -> None:
+    # TODO: fix this test
+    # TODO: overrule 1 second sleep.time in api calls
     # patching
     db._db = populated_db
     devices.byteflies_api.config.storage_vol = tmpdir

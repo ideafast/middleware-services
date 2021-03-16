@@ -68,29 +68,31 @@ def prepare_data_folders(device_type: DeviceType) -> None:
         start_data = max_data.strftime("%Y%m%d")
         end_data = min_data.strftime("%Y%m%d")
 
-        source = config.storage_vol / patient_device
+        source = config.storage_vol / device_type.name / patient_device
+
+        # patient_device looks like = 'patient-id/device-id'
         destination = (
             config.upload_folder
             / device_type.name
             / f"{patient_device.replace('-','').replace('/','-')}-{start_data}-{end_data}"
         )
 
-        if not destination.exists():
-            destination.mkdir(parents=True)
-
+        destination.mkdir(parents=True, exist_ok=True)
         source.rename(destination)
-
-        # don't forget the -meta.json file! Each record in the list has a reference to it
-        meta_file_name = f"{to_upload[patient_device][0].manufacturer_ref}-meta.json"
-        meta_file_path = config.storage_vol / meta_file_name
-        meta_file_path.rename(destination / meta_file_name)
 
         for record in to_upload[patient_device]:
             record.is_prepared = True
             update_record(record)
 
         # check if patient folder is empty, then remove it
-        patient_path = config.storage_vol / to_upload[patient_device][0].patient_id
+        patient_path = (
+            config.storage_vol
+            / device_type.name
+            / to_upload[patient_device][0].patient_id
+        )
         if not any(patient_path.iterdir()):
-            # throws if not empty
             patient_path.rmdir()
+        else:
+            # TODO: throw and fix if files are left behind?
+            # This is an issue as the whole folder should be uploaded, or not at all...
+            pass

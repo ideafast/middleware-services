@@ -80,8 +80,6 @@ class Byteflies:
         all_records = byteflies_api.get_list(
             self.session, config.byteflies_group_ids[study_site], from_date, to_date
         )
-        # utils.write_json("./byteflies.json", all_records)
-        # all_records = utils.read_json(Path("./byteflies.json"))
 
         # Only add records that are not known in the DB based on stored filename
         unknown_records = [
@@ -139,8 +137,13 @@ class Byteflies:
             print(f"Record Created:\n   {record}")
 
             del item["IDEAFAST"]  # remove record-specific temporary metadata
-            path = Path(config.storage_vol / f"{record.manufacturer_ref}-meta.json")
+            path = Path(
+                config.storage_vol
+                / record.download_folder()
+                / f"{record.manufacturer_ref}-meta.json"
+            )
             if not path.exists():
+                path.parent.mkdir(parents=True, exist_ok=True)
                 utils.write_json(path, item)
 
             print(f"Metadata saved to: {path}\n")
@@ -154,9 +157,8 @@ class Byteflies:
         NOTE/TODO: is run as a task.
         """
         record = read_record(mongo_id)
-        download_folder = f"{record.patient_id}/{record.device_id}"
         is_downloaded_success = byteflies_api.download_file(
-            download_folder, self.session, **record.meta
+            record.download_folder(), self.session, **record.meta
         )
 
         if is_downloaded_success:
