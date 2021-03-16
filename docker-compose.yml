@@ -12,6 +12,7 @@ services:
   mongodb:
     container_name: mongo
     image: mongo:4.4.3
+    command: [--auth]
     networks:
       - database
     ports:
