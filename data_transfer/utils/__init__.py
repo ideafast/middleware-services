@@ -1,12 +1,13 @@
 import csv
+import hashlib
 import json
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import Enum
 from functools import lru_cache
 from math import floor
 from pathlib import Path
-from typing import Any, List, Union
+from typing import Any, List, Optional, Tuple
 
 
 class DeviceType(Enum):
@@ -23,17 +24,45 @@ class DeviceType(Enum):
     YSM = 11  # ZKOne YOLI
 
 
+class StudySite(Enum):
+    Newcastle = 1
+    Kiel = 2
+    Muenster = 3  # i.e. Münster
+    Rotterdam = 4  # i.e. Erasmus
+
+
 FORMATS = {"ucam": "%d/%m/%Y", "inventory": "%Y-%m-%d %H:%M:%S"}
 
 
 def format_weartime(period: str, type: str) -> datetime:
+    """create a datetime object from a specifically formated string"""
     return datetime.strptime(period, FORMATS[type])
+
+
+def format_weartime_from_timestamp(period: int) -> datetime:
+    """create a datetime object from a timestamp"""
+    return datetime.fromtimestamp(period)
+
+
+def get_period_by_days(start: datetime, days: int) -> Tuple[str, str]:
+    """return two timestamps based on a startdate and duration"""
+    end_date = start.replace(hour=23, minute=59)
+    from_date = end_date - timedelta(days=days)
+    begin = str(int(from_date.timestamp()))
+    end = str(int(end_date.timestamp()))
+    return (begin, end)
+
+
+def get_endwear_by_seconds(start: datetime, duration: int) -> datetime:
+    """return timestamps based on a startdate and duration"""
+    return start + timedelta(seconds=duration)
 
 
 @lru_cache(maxsize=None)
 def read_csv_from_cache(path: Path) -> List[dict]:
     """
     Load full CSV into memory for quick lookup
+    NOTE: breaks if .csv not in right codec (i.e. saved from Excel)
     """
     with open(path) as csv_file:
         data = [row for row in csv.DictReader(csv_file)]
@@ -63,23 +92,37 @@ def normalise_day(_datetime: datetime) -> datetime:
     return _datetime.replace(hour=0, minute=0, second=0)
 
 
-def validate_and_format_patient_id(ideafast_id: str) -> Union[bool, str]:
+def format_id_patient(patient_id: str) -> Optional[str]:
     """
-    Validate a (messy) IDEAFAST id, based on ideafast/ideafast-idgen
-    Returns boolean if validate with corrected formatting
+    Validate and formats patient id s
+    NOTE: retains the '-'
     """
+    return __format_id_ideafast(patient_id, 2)
 
+
+def format_id_device(device_id: str) -> Optional[str]:
+    """
+    Validate and formats device id s
+    NOTE: retains the '-'
+    """
+    return __format_id_ideafast(device_id, 4)
+
+
+def __format_id_ideafast(ideafast_id: str, prefix_length: int) -> Optional[str]:
+    """
+    Validate a and formats a (messy) patient or device IDEAFAST id based on
+    ideafast/ideafast-idgen. Returns boolean if validate with corrected formatting
+    """
     if type(ideafast_id) is str:
-        id_without_punc = re.sub(r"[^\w]", "", ideafast_id)
-        #  TODO: remove spaces if present
+        prefix = ideafast_id[:prefix_length]
+        stripped_id = ideafast_id[prefix_length:]
+        id_to_check = re.sub(r"[^\w]|_", "", stripped_id)
 
-        if len(id_without_punc) == 7:
-            study_site = id_without_punc[0]
-            idgen = id_without_punc[1:]
-            remainder = __get_remainder(idgen, 1)
-            return f"{study_site}{idgen}" if remainder == 0 else False
+        if len(id_to_check) == 6:
+            remainder = __get_remainder(id_to_check, 1)
+            return f"{prefix}{id_to_check}" if remainder == 0 else None
 
-    return False
+    return None
 
 
 def __get_remainder(string: str, factor: int) -> int:
@@ -98,3 +141,12 @@ def __get_remainder(string: str, factor: int) -> int:
         total += addend
 
     return total % len(character_set)
+
+
+def uid_to_hash(input: str, device_type: DeviceType) -> str:
+    result = hashlib.sha256()
+    # deviceType is used as a salt and to improve uniqueness across
+    # devices (i.e. Dreem uid != Byteflies uid)
+    result.update(device_type.name.encode("utf-8"))
+    result.update(input.encode("utf-8"))
+    return result.hexdigest()

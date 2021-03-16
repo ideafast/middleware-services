@@ -1,4 +1,5 @@
 from datetime import datetime
+from functools import lru_cache
 from typing import Any, Optional
 
 import requests
@@ -7,6 +8,7 @@ from data_transfer import utils
 from data_transfer.config import config
 
 
+@lru_cache
 def device_id_by_serial(serial: str) -> str:
     # TODO: there is a rate limit on the inventory!
     response = requests.get(f"{config.inventory_api}device/byserial/{serial}")
@@ -20,6 +22,7 @@ def device_history(device_id: str) -> Any:
     return response.json()["data"]
 
 
+@lru_cache
 def record_by_device_id(
     device_id: str, start_wear: datetime, end_wear: datetime
 ) -> Optional[Any]:

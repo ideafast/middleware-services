@@ -11,14 +11,19 @@ class Record(BaseModel):
     """
 
     id: Optional[Any] = Field(alias="_id")
-    filename: str
+
+    # used to diff new downloads with history stored in MongoDB
+    hash: str
+    # e.g. Dreem/Byteflies recording id, or VTT patient folder name
+    manufacturer_ref: str
     device_type: str
     device_id: str
     patient_id: str
     start_wear: datetime
     end_wear: datetime
-
-    vttsma_export_date: Optional[str]
+    meta: dict  # meta data relevant to individual device pipelines
+    # the DMP upload this record is linked to - known in the last stages
+    dmp_folder: Optional[str]
 
     # Each stage of the pipeline
     is_downloaded: Optional[bool] = False
@@ -33,3 +38,7 @@ class Record(BaseModel):
         Skipping as this is created by DB.
         """
         return ObjectId(id)
+
+    def download_folder(self) -> str:
+        """consistenly structure target folder for download"""
+        return f"{self.device_type}/{self.patient_id}/{self.device_id}"
