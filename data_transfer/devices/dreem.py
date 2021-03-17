@@ -63,8 +63,6 @@ class Dreem:
 
         log.info(f"Total dreem records: {len(all_records)} for {self.study_site}")
 
-        all_records = all_records[-6::3]
-
         # Only add records that are not known in the DB based on stored filename
         # i.e. (ID and filename in dreem)
         unknown_records = [r for r in all_records if r["id"] not in set(all_hashes())]

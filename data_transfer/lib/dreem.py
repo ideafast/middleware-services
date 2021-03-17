@@ -26,7 +26,6 @@ def get_token(creds: dict) -> Tuple[str, str]:
         resp = res.json()
         return (resp["token"], resp["user_id"])
     except requests.HTTPError:
-        # attempt to skip this one record
         log.error(f"GET Exception to: {url}\n", exc_info=True)
         # We do not want to rest of the pipeline to try and proceed
         raise
@@ -77,13 +76,13 @@ def download_file(
 
         log.debug(result)
 
-        data_url = result.get("data_url", None)
+        file_url = result.get("data_url", None)
         # NOTE: file_url may be empty if a file is unavailable:
         # (1): file is on dreem headband but not uploaded
         # (2): file is being processed by dreem's algorithms
-        if not url:
+        if not file_url:
             return False
-        return __download_file(data_url, download_path, record_id)
+        return __download_file(file_url, download_path, record_id)
     except requests.HTTPError:
         log.error(f"GET Exception to {url} ", exc_info=True)
         return False
@@ -132,7 +131,8 @@ def __download_file(url: str, download_path: Path, record_id: str) -> bool:
     Builds the target filename and starts downloading the file to disk
 
     Args:
-        url: AWS URL to download file
+        url: AWS URL to download file.
+        download_path: path to download folder.
         record_id: what to name the record.
     """
     try:
