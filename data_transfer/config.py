@@ -46,8 +46,6 @@ class Settings(GlobalConfig):
     dmp_url: str
     dmp_public_key: str
     dmp_signature: str
-    dmp_access_token: str
-    dmp_access_token_gen_time: int
 
     # BYTEFLIES
     byteflies_api_url: str
