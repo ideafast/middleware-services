@@ -1,3 +1,4 @@
+import logging as log
 from typing import List
 
 from bson import ObjectId
@@ -13,6 +14,7 @@ _db = client.dtransfer
 
 def create_record(record: Record) -> ObjectId:
     result = _db.records.insert_one(record.dict())
+    log.debug(f"Record Created:\n  {record}")
     return result.inserted_id
 
 

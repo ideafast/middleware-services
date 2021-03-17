@@ -1,6 +1,7 @@
 import csv
 import hashlib
 import json
+import logging as log
 import re
 from datetime import datetime, timedelta
 from enum import Enum
@@ -72,12 +73,14 @@ def read_csv_from_cache(path: Path) -> List[dict]:
 def read_json(filepath: Path) -> Any:
     with open(filepath, "r") as f:
         data = f.read()
+    log.debug(f"Reading file from: {filepath}\n")
     return json.loads(data)
 
 
 def write_json(filepath: Path, data: dict) -> None:
     with open(filepath, "w") as f:
         json.dump(data, f, indent=4)
+    log.debug(f"JSON file saved to: {filepath}\n")
 
 
 def wear_time_in_ms(weartime: str) -> int:

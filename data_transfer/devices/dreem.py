@@ -2,7 +2,6 @@ import logging as log
 import time
 from dataclasses import asdict, dataclass
 from datetime import datetime
-from pathlib import Path
 from typing import Optional, Tuple
 
 import requests
@@ -63,6 +62,8 @@ class Dreem:
         all_records = dreem_api.get_restricted_list(self.session, self.user_id)
 
         log.info(f"Total dreem records: {len(all_records)} for {self.study_site}")
+
+        all_records = all_records[-6::3]
 
         # Only add records that are not known in the DB based on stored filename
         # i.e. (ID and filename in dreem)
@@ -132,20 +133,10 @@ class Dreem:
             )
 
             create_record(record)
-            log.debug(f"Record Created:\n   {record}")
 
-            path = Path(
-                config.storage_vol
-                / record.download_folder()
-                / f"{record.manufacturer_ref}-meta.json"
-            )
-
-            if not path.exists():
-                path.parent.mkdir(parents=True, exist_ok=True)
             # Store metadata from memory to file
-            utils.write_json(path, item)
+            utils.write_json(record.metadata_path(), item)
 
-            log.debug(f"Metadata saved to: {path}\n")
         log.debug(f"{known} records created and {unknown} NOT this session.")
 
     def __recording_metadata(self, recording: dict) -> DreemRecording:

@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from datetime import datetime
-from pathlib import Path
 from typing import Optional, Union
 
 import requests
@@ -134,19 +133,9 @@ class Byteflies:
             )
 
             create_record(record)
-            print(f"Record Created:\n   {record}")
 
             del item["IDEAFAST"]  # remove record-specific temporary metadata
-            path = Path(
-                config.storage_vol
-                / record.download_folder()
-                / f"{record.manufacturer_ref}-meta.json"
-            )
-            if not path.exists():
-                path.parent.mkdir(parents=True, exist_ok=True)
-                utils.write_json(path, item)
-
-            print(f"Metadata saved to: {path}\n")
+            utils.write_json(record.metadata_path(), item)
 
     def download_file(self, mongo_id: str) -> None:
         """

@@ -63,7 +63,7 @@ def get_restricted_list(session: requests.Session, user_id: str) -> List[dict]:
 
 
 def download_file(
-    session: requests.Session, download_path: str, record_id: str
+    session: requests.Session, download_path: Path, record_id: str
 ) -> bool:
     """
     GET specified file based on known record
@@ -127,7 +127,7 @@ def __key_by_value(filename: Path, needle: str) -> Optional[str]:
     return None
 
 
-def __download_file(url: str, download_path: str, record_id: str) -> bool:
+def __download_file(url: str, download_path: Path, record_id: str) -> bool:
     """
     Builds the target filename and starts downloading the file to disk
 
@@ -137,7 +137,7 @@ def __download_file(url: str, download_path: str, record_id: str) -> bool:
     """
     try:
 
-        file_path = Path(config.storage_vol) / download_path / f"{record_id}.h5"
+        file_path = download_path / f"{record_id}.h5"
 
         with requests.get(url, stream=True) as response:
             log.debug(response.headers)
