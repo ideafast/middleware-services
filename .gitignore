@@ -7,8 +7,7 @@ __pycache__
 .vscode/settings.json
 /data/*
 ideafast-*-full.csv
-*.json
-ucam_db.csv
+ucam_db*.csv
 **/.DS_Store
 
 # mypy
@@ -16,3 +15,5 @@ ucam_db.csv
 .dmypy.json
 dmypy.json
 *.log
+*.json
+*.csv

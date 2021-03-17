@@ -5,6 +5,8 @@ from pathlib import Path
 from dotenv import get_key, load_dotenv
 from pydantic import BaseSettings
 
+from data_transfer.utils import StudySite
+
 
 def get_env_value(key_to_get: str, env_file: str = ".dtransfer.prod.env") -> str:
     """Load from general env then specific file if not found."""
@@ -22,6 +24,8 @@ class GlobalConfig(BaseSettings):
     storage_vol: Path = data_path / "input"
     upload_folder: Path = data_path / "uploading"
 
+    byteflies_devices = root_path / "ideafast-byteflies-devices-full.csv"
+
     dreem_users: Path = csvs_path / "ideafast-users-full.csv"
     dreem_devices: Path = csvs_path / "ideafast-devices-full.csv"
 
@@ -31,12 +35,13 @@ class GlobalConfig(BaseSettings):
 class Settings(GlobalConfig):
     is_dev: bool
 
+    # IDEAFAST
     database_uri: str
     inventory_api: str
-
     support_base_url: str
     support_token: str
 
+    # DATA MANAGEMENT PORTAL
     dmp_study_id: str
     dmp_url: str
     dmp_public_key: str
@@ -44,12 +49,27 @@ class Settings(GlobalConfig):
     dmp_access_token: str
     dmp_access_token_gen_time: int
 
-    # NOTE: VTT does not differentiate between study sites
+    # BYTEFLIES
+    byteflies_api_url: str
+    byteflies_username: str
+    byteflies_password: str
+    byteflies_aws_client_id: str
+    byteflies_aws_auth_url: str
+
+    byteflies_group_ids: dict = {
+        StudySite.Kiel: "ba92eb10-74d8-11ea-9162-a946985733fd",
+        StudySite.Rotterdam: "8c5ed850-b789-11ea-870a-c3400b84381c",
+        StudySite.Newcastle: "2f5e6630-4c03-11ea-9f2d-0949ce20b25c",
+        StudySite.Muenster: "aa3f7660-ba2a-11ea-bb28-b3fd87020c94",
+    }
+
+    # VTTSMA
     vttsma_aws_accesskey: str
     vttsma_aws_secret_accesskey: str
     vttsma_aws_bucket_name: str
     vttsma_global_device_id: str
 
+    # DREEM
     dreem_login_url: str
     dreem_api_url: str
 

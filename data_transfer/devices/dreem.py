@@ -9,10 +9,11 @@ import requests
 
 from data_transfer import utils
 from data_transfer.config import config
-from data_transfer.db import all_filenames, create_record, read_record, update_record
+from data_transfer.db import all_hashes, create_record, read_record, update_record
 from data_transfer.lib import dreem as dreem_api
 from data_transfer.schemas.record import Record
 from data_transfer.services import inventory, ucam
+from data_transfer.utils import StudySite
 
 
 @dataclass
@@ -29,7 +30,7 @@ class DreemRecording:
 
 
 class Dreem:
-    def __init__(self, study_site: str):
+    def __init__(self, study_site: StudySite):
         """
         Use study_site name to build auth as there are multiple sites/credentials.
         """
@@ -42,7 +43,7 @@ class Dreem:
         """
         Authenticate once when object created to share session between requests
         """
-        credentials = config.dreem[self.study_site]
+        credentials = config.dreem[self.study_site.name]
         token, user_id = dreem_api.get_token(credentials)
         session = dreem_api.get_session(token)
         log.info(f"Authentication successful: {user_id}")
@@ -61,14 +62,11 @@ class Dreem:
         # Note: includes metadata for ALL data records, therefore we must filter them
         all_records = dreem_api.get_restricted_list(self.session, self.user_id)
 
-        log.info(f"Total dreem records: {len(all_records)} for {self.study_site}")
+        log.info(f"Total dreem records: {len(all_records)} for {self.study_site.name}")
 
         # Only add records that are not known in the DB based on stored filename
         # i.e. (ID and filename in dreem)
-        unknown_records = [
-            r for r in all_records if r["id"] not in set(all_filenames())
-        ]
-
+        unknown_records = [r for r in all_records if r["id"] not in set(all_hashes())]
         known, unknown = 0, 0
 
         for item in unknown_records:

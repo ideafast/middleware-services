@@ -15,7 +15,7 @@ python-dotenv = "^0.15.0"
 pymongo = "^3.11.2"
 boto3 = "^1.16.61"
 mypy-boto3-s3 = "^1.17.22"
-dmpy = {git = "https://github.com/ideafast/dmpy.git", rev = "0.1.1"}
+dmpy = {git = "https://github.com/ideafast/dmpy", rev = "0.1.1"}
 
 [tool.poetry.dev-dependencies]
 click = "^7.1.2"
@@ -30,6 +30,10 @@ nox = "^2020.12.31"
 isort = "^5.7.0"
 mypy = "^0.800"
 pre-commit = "^2.10.0"
+pytest-mock = "^3.5.1"
+requests-mock = "^1.8.0"
+mongomock = "^3.22.1"
+pymongo = "^3.11.3"
 
 [tool.poetry.scripts]
 consumer = "cli:consumer"

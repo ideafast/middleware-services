@@ -1,0 +1,4282 @@
+[
+    {
+        "id": "random_id_1",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_1",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_2",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_1.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_3",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_4",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_2.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_5",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_3.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_6",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_7",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_4.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_8",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_5.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_9",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_10",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_6.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_11",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_7.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "25bb4e94732af410c8b80dbd756950f1cc27f0fc76d828381afc7c6c090eb967",
+            "signal_id": "random_id_2",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_1",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_1",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_2",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_1.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_3",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_4",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_2.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_5",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_3.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_6",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_7",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_4.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_8",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_5.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_9",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_10",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_6.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_11",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_7.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "211e50bbad85b1711250b79dcba2985d01c7027bbebb054aae32d29e8d87da09",
+            "signal_id": "random_id_2",
+            "algorithm_id": "random_id_3"
+        }
+    },
+    {
+        "id": "random_id_1",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_1",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_2",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_1.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_3",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_4",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_2.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_5",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_3.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_6",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_7",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_4.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_8",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_5.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_9",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_10",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_6.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_11",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_7.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "c1e0b919e5c87d82add7408f65ab15e8c2e2c51b4fcf22ddd35a85c5ae400088",
+            "signal_id": "random_id_4",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_1",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_1",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_2",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_1.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_3",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_4",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_2.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_5",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_3.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_6",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_7",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_4.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_8",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_5.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_9",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_10",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_6.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_11",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_7.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "620335857db97cc0e3d803f56a2ad1d84b89241cdeff211c852a5153fb16de93",
+            "signal_id": "random_id_5",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_1",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_1",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_2",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_1.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_3",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_4",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_2.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_5",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_3.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_6",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_7",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_4.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_8",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_5.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_9",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_10",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_6.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_11",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_7.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "a196dc39776b5461a78829d56134ad9f750604ffff8e2635a867b212ff591e51",
+            "signal_id": "random_id_5",
+            "algorithm_id": "random_id_6"
+        }
+    },
+    {
+        "id": "random_id_1",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_1",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_2",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_1.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_3",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_4",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_2.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_5",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_3.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_6",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_7",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_4.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_8",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_5.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_9",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_10",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_6.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_11",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_7.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "169b0be4394c04807e242619d3ec2ad2733b44ada717b00e3922840455473761",
+            "signal_id": "random_id_7",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_1",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_1",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_2",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_1.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_3",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_4",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_2.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_5",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_3.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_6",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_7",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_4.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_8",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_5.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_9",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_10",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_6.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_11",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_7.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "2f6138381afae3f4e6f42615349d2a9f0577abe1b3a37e8e4be85a13859f9bd9",
+            "signal_id": "random_id_8",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_1",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_1",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_2",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_1.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_3",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_4",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_2.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_5",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_3.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_6",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_7",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_4.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_8",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_5.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_9",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_10",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_6.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_11",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_7.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "7dbd5eddab92179897a7638d28b5a9b12d742f92a08f2faf4056a4f2466645c9",
+            "signal_id": "random_id_8",
+            "algorithm_id": "random_id_9"
+        }
+    },
+    {
+        "id": "random_id_1",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_1",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_2",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_1.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_3",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_4",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_2.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_5",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_3.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_6",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_7",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_4.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_8",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_5.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_9",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_10",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_6.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_11",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_7.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "f674b451e328a4296f3c19fe2b600872a3c81e3de9519a64811dfc5aba329d92",
+            "signal_id": "random_id_10",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_1",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_1",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_2",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_1.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_3",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_4",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_2.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_5",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_3.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_6",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_7",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_4.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_8",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_5.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_9",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_10",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_6.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_11",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_7.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "56770cb24f7fc9b8a469907214bad28991f4e5e398bfd6885b810d8533fb87ae",
+            "signal_id": "random_id_11",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_12",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_2",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614688929.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_13",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_8.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_14",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_15",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_9.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_16",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_10.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_17",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_18",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_11.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_19",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_12.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_20",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_21",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_13.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_22",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_14.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "7e8e244083a9614022157bbd4da5ca1362d284c8f0ca03d82b3098bccb69dc1c",
+            "signal_id": "random_id_13",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_12",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_2",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614688929.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_13",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_8.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_14",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_15",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_9.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_16",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_10.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_17",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_18",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_11.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_19",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_12.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_20",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_21",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_13.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_22",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_14.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "8cf5018fac76b0149d11b58567ade0d125ec58796f0de30cc4e6347447bde2c4",
+            "signal_id": "random_id_13",
+            "algorithm_id": "random_id_14"
+        }
+    },
+    {
+        "id": "random_id_12",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_2",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614688929.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_13",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_8.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_14",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_15",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_9.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_16",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_10.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_17",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_18",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_11.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_19",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_12.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_20",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_21",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_13.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_22",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_14.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "280a3137947f74f881961fed8298e973808043cd52444fcaa5e3077141c21bfe",
+            "signal_id": "random_id_15",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_12",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_2",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614688929.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_13",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_8.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_14",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_15",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_9.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_16",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_10.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_17",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_18",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_11.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_19",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_12.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_20",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_21",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_13.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_22",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_14.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "310cefb051baaa0a2ea122347faf25f54848c360e613a4c2ecf8aecd1e7fb5a4",
+            "signal_id": "random_id_16",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_12",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_2",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614688929.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_13",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_8.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_14",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_15",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_9.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_16",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_10.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_17",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_18",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_11.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_19",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_12.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_20",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_21",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_13.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_22",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_14.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "1949a15645c17682592c9fa9e23fb57a8c6ef9dd461b23914ecdb957fcba3477",
+            "signal_id": "random_id_16",
+            "algorithm_id": "random_id_17"
+        }
+    },
+    {
+        "id": "random_id_12",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_2",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614688929.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_13",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_8.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_14",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_15",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_9.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_16",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_10.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_17",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_18",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_11.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_19",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_12.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_20",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_21",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_13.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_22",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_14.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "a1eddc13f5fde6d736bf48a6c758d924dc997e55b6b622659cf34e42785d0033",
+            "signal_id": "random_id_18",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_12",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_2",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614688929.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_13",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_8.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_14",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_15",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_9.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_16",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_10.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_17",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_18",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_11.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_19",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_12.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_20",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_21",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_13.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_22",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_14.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "0ad9d9240744eed8e6300512d5c51ff7cdd193a3bdb311813ea2309c55db645d",
+            "signal_id": "random_id_19",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_12",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_2",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614688929.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_13",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_8.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_14",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_15",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_9.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_16",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_10.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_17",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_18",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_11.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_19",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_12.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_20",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_21",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_13.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_22",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_14.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "f092f5ebd76e4162ff43ef2c965bcd6e79b6e9ab0b66251a415876f8b8999d11",
+            "signal_id": "random_id_19",
+            "algorithm_id": "random_id_20"
+        }
+    },
+    {
+        "id": "random_id_12",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_2",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614688929.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_13",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_8.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_14",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_15",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_9.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_16",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_10.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_17",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_18",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_11.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_19",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_12.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_20",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_21",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_13.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_22",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_14.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "73c003bff9f1bc6fb061b88c7be7cbcce00822e286e50f56b4142a54db9ecb6b",
+            "signal_id": "random_id_21",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_12",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_2",
+        "patient": "KNXYP6F",
+        "groupId": "studysite_1",
+        "startDate": 1614688929.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_13",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_8.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_14",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_15",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_9.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_16",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_10.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_17",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_18",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_11.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_19",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_12.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_20",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_21",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_13.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_22",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_14.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "d1da61cf5659d0eac48bb3560a3ef31d351d5ac8baed498db808d3fa60ff8dd5",
+            "signal_id": "random_id_22",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_23",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_3",
+        "patient": "KJXKX49",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_24",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_15.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_25",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_26",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_16.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_27",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_17.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_28",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_29",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_18.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_30",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_19.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_31",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_32",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_20.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_33",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_21.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "168faf3eba0306fc34674383d6cee3d12ec08f51dbb4ff38436f4917e12a7c3c",
+            "signal_id": "random_id_24",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_23",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_3",
+        "patient": "KJXKX49",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_24",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_15.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_25",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_26",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_16.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_27",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_17.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_28",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_29",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_18.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_30",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_19.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_31",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_32",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_20.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_33",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_21.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "72c517653fa308e324ac575c8db94d07a31ddf9fa4e63ef042021248342dcc2f",
+            "signal_id": "random_id_24",
+            "algorithm_id": "random_id_25"
+        }
+    },
+    {
+        "id": "random_id_23",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_3",
+        "patient": "KJXKX49",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_24",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_15.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_25",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_26",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_16.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_27",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_17.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_28",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_29",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_18.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_30",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_19.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_31",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_32",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_20.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_33",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_21.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "21f02b6d85a0deafd35d6349055677761f9c9cb527e5c9eef1fae3126a76588b",
+            "signal_id": "random_id_26",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_23",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_3",
+        "patient": "KJXKX49",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_24",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_15.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_25",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_26",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_16.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_27",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_17.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_28",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_29",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_18.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_30",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_19.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_31",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_32",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_20.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_33",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_21.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "cd2e09323127873cc89b244e808a282ac6c8f6e50c2a795f1a2b4fc0a48fd382",
+            "signal_id": "random_id_27",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_23",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_3",
+        "patient": "KJXKX49",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_24",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_15.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_25",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_26",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_16.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_27",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_17.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_28",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_29",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_18.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_30",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_19.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_31",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_32",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_20.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_33",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_21.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "080727be971f59158ac68e193237d48f0d0c407151d4ace1b179b951463149f2",
+            "signal_id": "random_id_27",
+            "algorithm_id": "random_id_28"
+        }
+    },
+    {
+        "id": "random_id_23",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_3",
+        "patient": "KJXKX49",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_24",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_15.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_25",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_26",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_16.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_27",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_17.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_28",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_29",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_18.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_30",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_19.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_31",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_32",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_20.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_33",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_21.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "e7120ab19db292f551875d51fd06c7bc504870ed8d646d08b05181b53ab0c209",
+            "signal_id": "random_id_29",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_23",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_3",
+        "patient": "KJXKX49",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_24",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_15.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_25",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_26",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_16.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_27",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_17.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_28",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_29",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_18.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_30",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_19.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_31",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_32",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_20.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_33",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_21.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "f38470a4adfc8c4b008260aa2ed3d0bcbe7f1463bcf6d66c8cdc4ac3184973ce",
+            "signal_id": "random_id_30",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_23",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_3",
+        "patient": "KJXKX49",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_24",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_15.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_25",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_26",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_16.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_27",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_17.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_28",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_29",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_18.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_30",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_19.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_31",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_32",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_20.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_33",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_21.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "777776809fb2664a8bc6aef23d4d51754cec8c9b69c0b6cc092f91fb85f20e03",
+            "signal_id": "random_id_30",
+            "algorithm_id": "random_id_31"
+        }
+    },
+    {
+        "id": "random_id_23",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_3",
+        "patient": "KJXKX49",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_24",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_15.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_25",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_26",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_16.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_27",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_17.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_28",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_29",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_18.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_30",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_19.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_31",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_32",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_20.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_33",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_21.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "46eda84a1f95cfd74db1fb1a761c209f25c2a9bc4692a0d69291b266c6c93630",
+            "signal_id": "random_id_32",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_23",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_3",
+        "patient": "KJXKX49",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_24",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_15.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_25",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_26",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_16.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_27",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_17.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_28",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_29",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_18.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_30",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_19.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_31",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_32",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_20.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_33",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_21.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "c97b08f86ac08404b2e482b5784a7d09be0718dc783ecefc7485f5b05ef00607",
+            "signal_id": "random_id_33",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_34",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_4",
+        "patient": "",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_35",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_22.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_36",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_37",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_23.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_38",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_24.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_39",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_40",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_25.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_41",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_26.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_42",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_43",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_27.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_44",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_28.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "59176ee0dae7516adde3e4416414e15f9dde7d33b57b149f96bcd5c2da6361c0",
+            "signal_id": "random_id_35",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_34",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_4",
+        "patient": "",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_35",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_22.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_36",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_37",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_23.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_38",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_24.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_39",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_40",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_25.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_41",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_26.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_42",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_43",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_27.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_44",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_28.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "d0f9fa2f2b5d9c26be55ec56c53b47fe3c6b3c3bf044146ab80c3f91e29b9d82",
+            "signal_id": "random_id_35",
+            "algorithm_id": "random_id_36"
+        }
+    },
+    {
+        "id": "random_id_34",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_4",
+        "patient": "",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_35",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_22.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_36",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_37",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_23.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_38",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_24.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_39",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_40",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_25.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_41",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_26.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_42",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_43",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_27.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_44",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_28.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "9b015aec8845213bac2fe9462036c227f0d2a2a4fdff2a9b5f81314dc1dcb08e",
+            "signal_id": "random_id_37",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_34",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_4",
+        "patient": "",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_35",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_22.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_36",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_37",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_23.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_38",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_24.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_39",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_40",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_25.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_41",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_26.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_42",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_43",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_27.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_44",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_28.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "0ca3df7760c080967d0e35b5a6812f2619f3e6fb5b3133e88468b67865c90e79",
+            "signal_id": "random_id_38",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_34",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_4",
+        "patient": "",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_35",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_22.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_36",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_37",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_23.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_38",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_24.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_39",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_40",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_25.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_41",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_26.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_42",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_43",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_27.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_44",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_28.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "c7d7c7a23032e9044afc59de81a9cc3ae818b9d3d0b6347223b3b626e439d061",
+            "signal_id": "random_id_38",
+            "algorithm_id": "random_id_39"
+        }
+    },
+    {
+        "id": "random_id_34",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_4",
+        "patient": "",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_35",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_22.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_36",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_37",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_23.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_38",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_24.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_39",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_40",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_25.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_41",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_26.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_42",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_43",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_27.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_44",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_28.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "435ed28f4fa69d4e10380575561bb11e81b677309d6bde5225a19570eec50b2f",
+            "signal_id": "random_id_40",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_34",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_4",
+        "patient": "",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_35",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_22.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_36",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_37",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_23.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_38",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_24.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_39",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_40",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_25.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_41",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_26.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_42",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_43",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_27.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_44",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_28.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "61f1f9e8a5074f36d310d9f025ef4e60a0bf09ecc5426df1fa5e7d4cc2bcd062",
+            "signal_id": "random_id_41",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_34",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_4",
+        "patient": "",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_35",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_22.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_36",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_37",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_23.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_38",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_24.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_39",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_40",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_25.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_41",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_26.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_42",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_43",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_27.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_44",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_28.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "b0676b06491a42f7fcf09a540b09a028dd846d0fd9d714a7c991c3fce940dc21",
+            "signal_id": "random_id_41",
+            "algorithm_id": "random_id_42"
+        }
+    },
+    {
+        "id": "random_id_34",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_4",
+        "patient": "",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_35",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_22.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_36",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_37",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_23.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_38",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_24.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_39",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_40",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_25.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_41",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_26.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_42",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_43",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_27.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_44",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_28.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "8af2e5240c7ba303cb54fcc8d798535029f1c6e2c824f35372cc4b391adef499",
+            "signal_id": "random_id_43",
+            "algorithm_id": ""
+        }
+    },
+    {
+        "id": "random_id_34",
+        "dockName": "Dock-18937f778a02",
+        "dotId": "dot_id_4",
+        "patient": "",
+        "groupId": "studysite_1",
+        "startDate": 1614861729.07679,
+        "uploadDate": 1614861965.081,
+        "duration": 205.271613282,
+        "firmwareVersion": "1.19.4",
+        "signals": [
+            {
+                "id": "random_id_35",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_22.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_36",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862248
+                    }
+                ]
+            },
+            {
+                "id": "random_id_37",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 1,
+                "rawData": "mock://mock_btf_file_23.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_38",
+                "type": "EEG",
+                "quality": "FAIL",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_24.csv",
+                "samplingRate": 250,
+                "conversionFactor": 0.4808108585052719,
+                "algorithms": [
+                    {
+                        "id": "random_id_39",
+                        "type": "EEG_ARTFCTS",
+                        "added": 1614862247
+                    }
+                ]
+            },
+            {
+                "id": "random_id_40",
+                "type": "LEAD_OFF",
+                "quality": "",
+                "channel": 2,
+                "rawData": "mock://mock_btf_file_25.csv",
+                "samplingRate": 0,
+                "conversionFactor": 0,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_41",
+                "type": "ACC",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_26.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.000244140625,
+                "algorithms": [
+                    {
+                        "id": "random_id_42",
+                        "type": "ACTINDEX",
+                        "added": 1614862222
+                    }
+                ]
+            },
+            {
+                "id": "random_id_43",
+                "type": "GYR",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_27.csv",
+                "samplingRate": 100,
+                "conversionFactor": 0.030517578125,
+                "algorithms": []
+            },
+            {
+                "id": "random_id_44",
+                "type": "BAT",
+                "quality": "",
+                "channel": 0,
+                "rawData": "mock://mock_btf_file_28.csv",
+                "samplingRate": 0.01666666753590107,
+                "conversionFactor": 1,
+                "algorithms": []
+            }
+        ],
+        "status": "done",
+        "IDEAFAST": {
+            "hash": "f884fa97a1765d542e837a5f4919c653b0f7fc1abb25f68c14c322cfa304dd74",
+            "signal_id": "random_id_44",
+            "algorithm_id": ""
+        }
+    }
+]

@@ -21,9 +21,9 @@ def read_record(mongo_id: str) -> Record:
     return Record(**result)
 
 
-def record_by_filename(filename: str) -> Record:
-    result = _db.records.find_one(({"filename": filename}))
-    return Record(**result)
+def records_by_dmp_folder(dmp_folder: str) -> List[Record]:
+    docs = _db.records.find(({"dmp_folder": dmp_folder}))
+    return [Record(**doc) for doc in docs]
 
 
 def update_record(record: Record) -> None:
@@ -32,10 +32,25 @@ def update_record(record: Record) -> None:
     )
 
 
-def all_filenames() -> List[str]:
-    return [doc["filename"] for doc in _db.records.find()]
+def all_hashes() -> List[str]:
+    return [doc["hash"] for doc in _db.records.find()]
 
 
 def records_not_downloaded(device_type: DeviceType) -> List[Record]:
     docs = _db.records.find({"is_downloaded": False, "device_type": device_type.name})
     return [Record(**doc) for doc in docs]
+
+
+def records_not_uploaded(device_type: DeviceType) -> List[Record]:
+    docs = _db.records.find({"is_uploaded": False, "device_type": device_type.name})
+    return [Record(**doc) for doc in docs]
+
+
+def min_max_data_wear_times(records: List[Record]) -> tuple:
+    """
+    Calculate the begin and end date of a folder being prepped for upload
+    Returns (start, end) datetimes
+    """
+    earliest_start = min([doc.start_wear for doc in records])
+    latest_end = max([doc.end_wear for doc in records])
+    return (earliest_start, latest_end)
