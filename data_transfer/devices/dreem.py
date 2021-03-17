@@ -34,7 +34,7 @@ class Dreem:
         """
         Use study_site name to build auth as there are multiple sites/credentials.
         """
-        self.study_site = study_site
+        self.study_site = study_site.name.lower()
         self.user_id, self.session = self.authenticate()
         # Used to filter UCAM devices and assign to type to record
         self.device_type = utils.DeviceType.DRM.name
@@ -43,7 +43,7 @@ class Dreem:
         """
         Authenticate once when object created to share session between requests
         """
-        credentials = config.dreem[self.study_site.name]
+        credentials = config.dreem[self.study_site]
         token, user_id = dreem_api.get_token(credentials)
         session = dreem_api.get_session(token)
         log.info(f"Authentication successful: {user_id}")
@@ -62,7 +62,7 @@ class Dreem:
         # Note: includes metadata for ALL data records, therefore we must filter them
         all_records = dreem_api.get_restricted_list(self.session, self.user_id)
 
-        log.info(f"Total dreem records: {len(all_records)} for {self.study_site.name}")
+        log.info(f"Total dreem records: {len(all_records)} for {self.study_site}")
 
         # Only add records that are not known in the DB based on stored filename
         # i.e. (ID and filename in dreem)
@@ -124,7 +124,8 @@ class Dreem:
                 continue
 
             record = Record(
-                filename=recording.id,
+                hash=recording.id,
+                manufacturer_ref=recording.id,
                 device_type=self.device_type,
                 patient_id=patient_id,
                 **asdict(device_record),
@@ -133,7 +134,14 @@ class Dreem:
             create_record(record)
             log.debug(f"Record Created:\n   {record}")
 
-            path = Path(config.storage_vol / f"{record.filename}-meta.json")
+            path = Path(
+                config.storage_vol
+                / record.download_folder()
+                / f"{record.manufacturer_ref}-meta.json"
+            )
+
+            if not path.exists():
+                path.parent.mkdir(parents=True, exist_ok=True)
             # Store metadata from memory to file
             utils.write_json(path, item)
 
@@ -186,7 +194,9 @@ class Dreem:
         NOTE/TODO: is run as a task.
         """
         record = read_record(mongo_id)
-        is_downloaded_success = dreem_api.download_file(self.session, record.filename)
+        is_downloaded_success = dreem_api.download_file(
+            self.session, record.download_folder(), record.manufacturer_ref
+        )
         if is_downloaded_success:
             record.is_downloaded = is_downloaded_success
             update_record(record)

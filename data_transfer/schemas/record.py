@@ -21,7 +21,10 @@ class Record(BaseModel):
     patient_id: str
     start_wear: datetime
     end_wear: datetime
-    meta: dict  # meta data relevant to individual device pipelines
+
+    # Relevant to individual device pipelines
+    meta: Optional[dict]
+
     # the DMP upload this record is linked to - known in the last stages
     dmp_folder: Optional[str]
 

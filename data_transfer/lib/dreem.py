@@ -62,7 +62,9 @@ def get_restricted_list(session: requests.Session, user_id: str) -> List[dict]:
     return results
 
 
-def download_file(session: requests.Session, record_id: str) -> bool:
+def download_file(
+    session: requests.Session, download_path: str, record_id: str
+) -> bool:
     """
     GET specified file based on known record
     """
@@ -81,7 +83,7 @@ def download_file(session: requests.Session, record_id: str) -> bool:
         # (2): file is being processed by dreem's algorithms
         if not url:
             return False
-        return __download_file(data_url, record_id)
+        return __download_file(data_url, download_path, record_id)
     except requests.HTTPError:
         log.error(f"GET Exception to {url} ", exc_info=True)
         return False
@@ -125,7 +127,7 @@ def __key_by_value(filename: Path, needle: str) -> Optional[str]:
     return None
 
 
-def __download_file(url: str, record_id: str) -> bool:
+def __download_file(url: str, download_path: str, record_id: str) -> bool:
     """
     Builds the target filename and starts downloading the file to disk
 
@@ -134,7 +136,8 @@ def __download_file(url: str, record_id: str) -> bool:
         record_id: what to name the record.
     """
     try:
-        file_path = Path(config.storage_vol) / f"{record_id}.h5"
+
+        file_path = Path(config.storage_vol) / download_path / f"{record_id}.h5"
 
         with requests.get(url, stream=True) as response:
             log.debug(response.headers)
