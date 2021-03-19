@@ -81,7 +81,7 @@ class Dreem:
                 # Move onto next record: skips logic below to simplify error handling
                 continue
 
-            patient_id = (
+            patient_id = utils.format_id_patient(
                 # NOTE: PatientID is encoded in email so there is a 1-2-1 mapping.
                 dreem_api.patient_id_by_user(recording.user_id)
                 or self.__patient_id_from_ucam(
@@ -91,9 +91,6 @@ class Dreem:
                     device_serial, recording.start, recording.end
                 )
             )
-
-            # Reformat to mirror UCAM/DMP.
-            patient_id = patient_id.replace("-", "") if patient_id else patient_id
 
             if patient_id and (ucam_entry := ucam.get_record(patient_id)):
                 known += 1
