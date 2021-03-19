@@ -31,7 +31,6 @@ def dag(study_site: StudySite) -> None:
         for record in records:
             # Each task should be idempotent. Returned values feeds subsequent task
             mongoid = dreem_tasks.task_download_data(dreem, record.id)
-            mongoid = dreem_tasks.task_preprocess_data(mongoid)
-
+            dreem_tasks.task_preprocess_data(mongoid)
         shared_jobs.prepare_data_folders(DeviceType.DRM)
         shared_jobs.batch_upload_data(DeviceType.DRM)

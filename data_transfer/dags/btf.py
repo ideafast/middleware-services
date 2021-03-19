@@ -29,7 +29,7 @@ def dag(study_site: StudySite) -> None:
     for record in records_not_downloaded(DeviceType.BTF):
         # Each task should be idempotent. Returned values feeds subsequent task
         mongoid = byteflies_tasks.task_download_data(record.id)
-        mongoid = byteflies_tasks.task_preprocess_data(mongoid)
+        byteflies_tasks.task_preprocess_data(mongoid)
 
     # Data is finalised and moved to a folder in /uploading/
     shared_jobs.prepare_data_folders(DeviceType.BTF)
