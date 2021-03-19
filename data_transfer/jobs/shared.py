@@ -1,4 +1,5 @@
 import logging as log
+from pathlib import Path
 
 from data_transfer.config import config
 from data_transfer.db import (
@@ -33,17 +34,22 @@ def batch_upload_data(device_type: DeviceType) -> None:
         return
 
     for data_folder in [p for p in device_subfolder.iterdir() if p.is_dir()]:
-        zip_path = dmpy.zip_folder(data_folder)
-        is_uploaded = dmpy.upload(zip_path)
+        upload_data(data_folder)
 
-        # Once uploaded to DMP, update metadata db
-        if is_uploaded:
-            for record in records_by_dmp_folder(data_folder.stem):
-                record.is_uploaded = True
-                update_record(record)
 
-            dmpy.rm_local_data(zip_path)
-            log.debug(f"Removed {zip_path}")
+def upload_data(data_folder: Path) -> None:
+    """Zips and uploads a folder at data_folder."""
+    log.debug(f"Uploading: {data_folder}")
+
+    zip_path = dmpy.zip_folder(data_folder)
+    is_uploaded = dmpy.upload(zip_path)
+
+    if is_uploaded:
+        for record in records_by_dmp_folder(data_folder.stem):
+            record.is_uploaded = True
+            update_record(record)
+
+        dmpy.rm_local_data(zip_path)
 
 
 def prepare_data_folders(device_type: DeviceType) -> None:
@@ -53,13 +59,7 @@ def prepare_data_folders(device_type: DeviceType) -> None:
 
         DEVICEID-PATIENTID-STARTWEAR-ENDWEAR
     """
-    not_uploaded = records_not_uploaded(device_type)
-
-    grouped: dict = {}
-    # Transform the result to {PatientID1-DeviceID1: [{Record1}, ... {Record2}], ... }
-    for _record in not_uploaded:
-        composite_key = f"{_record.patient_id}/{_record.device_id}"
-        grouped.setdefault(composite_key, []).append(_record)
+    grouped = records_not_uploaded(device_type)
 
     # filter sets which have any record with 'is_processed' == False
     # 'is_processed' == False catches the 'False' for any preceding task as well

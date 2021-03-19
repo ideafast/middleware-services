@@ -183,10 +183,19 @@ class Dreem:
         NOTE/TODO: is run as a task.
         """
         record = read_record(mongo_id)
+
+        # If pipeline is rerun after an error
+        if record.is_downloaded:
+            log.debug("Data file already downloaded. Skipping.")
+            return
+
         is_downloaded_success = dreem_api.download_file(
             self.session, record.download_folder(), record.manufacturer_ref
         )
+
         if is_downloaded_success:
             record.is_downloaded = is_downloaded_success
             update_record(record)
-        # TODO: otherwise re-start task to try again
+            log.debug(f"Download SUCESS for:\n   {record}")
+        else:
+            log.debug(f"Download FAILED for:\n   {record}")
