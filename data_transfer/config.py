@@ -24,10 +24,10 @@ class GlobalConfig(BaseSettings):
     storage_vol: Path = data_path / "input"
     upload_folder: Path = data_path / "uploading"
 
-    byteflies_devices = root_path / "ideafast-byteflies-devices-full.csv"
+    byteflies_devices = root_path / "byteflies_devices.csv"
 
-    dreem_users: Path = csvs_path / "ideafast-users-full.csv"
-    dreem_devices: Path = csvs_path / "ideafast-devices-full.csv"
+    dreem_users: Path = csvs_path / "dreem_users.csv"
+    dreem_devices: Path = csvs_path / "dreem_devices.csv"
 
     ucam_data: Path = csvs_path / "ucam_db.csv"
 
