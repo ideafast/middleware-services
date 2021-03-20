@@ -1,6 +1,6 @@
 import logging as log
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, Tuple
 
@@ -66,6 +66,8 @@ class Dreem:
         # Only add records that are not known in the DB based on stored filename
         # i.e. (ID and filename in dreem)
         unknown_records = [r for r in all_records if r["id"] not in set(all_hashes())]
+        log.info(f"Total unknown records: {len(unknown_records)}")
+
         known, unknown = 0, 0
 
         for item in unknown_records:
@@ -78,8 +80,7 @@ class Dreem:
             # Serial may not exist in lookup, e.g., if Dreem send a device replacement.
             if not device_serial:
                 log.debug(f"Unknown Device:\n   {recording}")
-                # Move onto next record: skips logic below to simplify error handling
-                continue
+                continue  # Skip record
 
             patient_id = utils.format_id_patient(
                 # NOTE: PatientID is encoded in email so there is a 1-2-1 mapping.
@@ -92,39 +93,25 @@ class Dreem:
                 )
             )
 
-            if patient_id and (ucam_entry := ucam.get_record(patient_id)):
-                known += 1
-                dreem_devices = [
-                    d for d in ucam_entry.devices if self.device_type in d.device_id
-                ]
+            device_id = self.__device_id_from_ucam(
+                patient_id, recording.start, recording.end
+            ) or inventory.device_id_by_serial(device_serial)
 
-                # Best-case: only one device was worn and UCAM knows it
-                if len(dreem_devices) == 1:
-                    device_record = dreem_devices[0]
-                # Edge-case: multiple dreem headbands used, e.g., if one broke.
-                elif len(dreem_devices) > 1:
-                    # Determine usage based on weartime as it exists in UCAM
-                    device_record = ucam.record_by_wear_period_in_list(
-                        dreem_devices, recording.start, recording.end
-                    )
-                # Edge-case: device not logged with patient in UCAM
-                else:
-                    log.debug(
-                        f"Device does not exists in UCAM for {patient_id}:\n {recording}"
-                    )
-                    log.debug("Attempting to use inventory.")
-                    continue
-            else:
+            if not patient_id or not device_id:
+                log.debug(f"Unknown Device:\n   {recording}")
+                log.debug(f"Patient ({patient_id}) or Device ID ({device_id}) missing.")
                 unknown += 1
-                log.debug(f"Patient ID ({patient_id}) is not in UCAM:\n    {recording}")
-                continue
+                continue  # Skip record
+            known += 1
 
             record = Record(
                 hash=recording.id,
                 manufacturer_ref=recording.id,
                 device_type=self.device_type,
                 patient_id=patient_id,
-                **asdict(device_record),
+                device_id=device_id,
+                start_wear=recording.start,
+                end_wear=recording.end,
             )
 
             create_record(record)
@@ -147,27 +134,49 @@ class Dreem:
 
         return DreemRecording(*(id, device_id, user_id, start, end))
 
+    def __device_id_from_ucam(
+        self, patient_id: str, start: datetime, end: datetime
+    ) -> Optional[str]:
+        """
+        Determine DeviceID in UCAM in two ways:
+
+            1. If only one device is used then use Patient ID
+            2. Else use wear period to perform lookup.
+        """
+        if patient_id and (ucam_entry := ucam.get_record(patient_id)):
+            devices = [d for d in ucam_entry.devices if self.device_type in d.device_id]
+
+            # Best-case: only one device was worn and UCAM knows it
+            if len(devices) == 1:
+                return devices[0].device_id
+            # Edge-case: multiple dreem headbands used, e.g., if one broke.
+            elif len(devices) > 1:
+                # Determine usage based on weartime as it exists in UCAM
+                device = ucam.record_by_wear_period_in_list(devices, start, end)
+                return device.device_id if device else None
+        return None
+
     def __patient_id_from_ucam(
-        self, device_serial: str, dreem_start: datetime, dreem_end: datetime
+        self, device_serial: str, start: datetime, end: datetime
     ) -> Optional[str]:
         """
         Determine PatientID by wear period of device in UCAM.
         """
         # NOTE/TODO: given this is a 1-1 mapping, why not use a local CSV?
         device_id = inventory.device_id_by_serial(device_serial)
-        record = ucam.record_by_wear_period(device_id, dreem_start, dreem_end)
+        record = ucam.record_by_wear_period(device_id, start, end)
         # TODO: inventory has small rate limit.
         time.sleep(4)
         return record.patient_id if record else None
 
     def __patient_id_from_inventory(
-        self, device_serial: str, dreem_start: datetime, dreem_end: datetime
+        self, device_serial: str, start: datetime, end: datetime
     ) -> Optional[str]:
         """
         Determine PatientID by wear period in inventory.
         """
         device_id = inventory.device_id_by_serial(device_serial)
-        record = inventory.record_by_device_id(device_id, dreem_start, dreem_end)
+        record = inventory.record_by_device_id(device_id, start, end)
         time.sleep(4)
         return record.get("patient_id", None) if record else None
 
