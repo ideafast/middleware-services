@@ -22,7 +22,7 @@ services:
 
   consumer:
     container_name: consumer
-    image: middleware
+    image: consumer
     # Required for linux
     extra_hosts:
       - "host.docker.internal:host-gateway"
