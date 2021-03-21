@@ -39,11 +39,13 @@ services:
     networks:
       - database
     env_file:
+      # As this is for local development use both
       - .dtransfer.prod.env
+      - .dtransfer.dev.env
     volumes:
       # Useful for development purposes
       - ./data:/app/data/
-      # This is the CSVs
+      # Relevant CSVs
       - ./local:/app/local/
 
 volumes:
