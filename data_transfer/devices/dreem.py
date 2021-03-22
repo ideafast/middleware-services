@@ -234,6 +234,6 @@ class Dreem:
         if is_downloaded_success:
             record.is_downloaded = is_downloaded_success
             update_record(record)
-            log.debug(f"Download SUCESS for:\n   {record}")
+            log.debug(f"Download SUCCESS for:\n   {record}")
         else:
             log.debug(f"Download FAILED for:\n   {record}")

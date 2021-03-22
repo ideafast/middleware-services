@@ -76,7 +76,7 @@ def download_file(
 
         result: dict = response.json()
 
-        log.debug(result)
+        log.debug(f"Response from {url} was:\n    {result}")
 
         file_url = result.get("data_url", None)
         # NOTE: file_url may be empty if a file is unavailable:
