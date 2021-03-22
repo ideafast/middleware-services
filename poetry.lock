@@ -197,8 +197,8 @@ cli = ["colorama[cli] (>=0.4.4,<0.5.0)", "pandas[cli] (>=1.1.4,<2.0.0)"]
 [package.source]
 type = "git"
 url = "https://github.com/ideafast/dmpy"
-reference = "0.1.1"
-resolved_reference = "df433cbf3f2a46de4a870578cc4381b573c47d18"
+reference = "0.1.2"
+resolved_reference = "b22b04b6c5a0585e78d58522aeb85a82c52b1351"
 
 [[package]]
 name = "fastapi"
@@ -824,7 +824,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "9fabf47e7bbc002f168c1607224a9be2cf931b9d354b470c43c5c781e19d54eb"
+content-hash = "9129485e690d6223ab18894907a0dab98db4c0f7b23e8ba8b02d55c97a65ffea"
 
 [metadata.files]
 appdirs = [
