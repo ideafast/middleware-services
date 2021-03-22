@@ -2,6 +2,7 @@ import logging
 import time
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import requests
@@ -223,6 +224,12 @@ class Dreem:
         is_downloaded_success = dreem_api.download_file(
             self.session, record.download_folder(), record.manufacturer_ref
         )
+
+        # Useful metadata for performing pre-processing.
+        downloaded_file = Path(
+            record.download_folder() / f"{record.manufacturer_ref}.h5"
+        )
+        record.meta = dict(filesize=downloaded_file.stat().st_size)
 
         if is_downloaded_success:
             record.is_downloaded = is_downloaded_success
