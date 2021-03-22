@@ -5,19 +5,28 @@ ENV PIP_NO_CACHE_DIR=1
 # Causes error on pip
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
+FROM base as builder
+
 # Temporarily install dependencies to build/install poetry
 # Create virtual dependency package so it can be deleted after use
-RUN apk add gcc libffi-dev musl-dev postgresql-dev git
-
-RUN pip install -q poetry
+RUN apk add --quiet --no-cache --virtual .build-deps gcc libffi-dev musl-dev postgresql-dev \
+    && pip install -q poetry \
+    && apk del .build-deps
 
 COPY pyproject.toml poetry.lock ./
 
-RUN poetry export --without-hashes -f requirements.txt > ./requirements.txt
+# Convert to requirements so we
+RUN poetry export --without-hashes -f requirements.txt > /tmp/requirements.txt
+
+FROM base as final
+
+COPY --from=builder /tmp/requirements.txt /app/
 
 # As dmpy is hosted on git (outside of pip) we must be able to install it via git ...
 # Annoyingly this is built with each step because the requirements file is passed between images
-RUN pip install -q -r ./requirements.txt
+RUN apk add --quiet --no-cache --virtual .deps gcc libffi-dev musl-dev postgresql-dev git \
+    && pip install -q -r /app/requirements.txt \
+    && apk del .deps
 
 COPY . /app/
 
