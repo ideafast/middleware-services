@@ -81,7 +81,7 @@ class Dreem:
 
             # Serial may not exist in lookup, e.g., if Dreem send a device replacement.
             if not device_serial:
-                log.debug(f"Unknown Device:\n   {recording}")
+                log.debug(f"Record NOT created for unknown device\n   {recording}")
                 unknown += 1
                 continue  # Skip record
 
@@ -97,8 +97,8 @@ class Dreem:
             )
 
             if not (patient_id := utils.format_id_patient(_patient_id)):
-                log.debug(
-                    f"Error formatting Patient ID ({_patient_id}) for :\n   {recording}"
+                log.error(
+                    f"Record NOT created: Error formatting PatientID ({_patient_id}) for\n{recording}\n"
                 )
                 unknown += 1
                 continue
@@ -108,8 +108,8 @@ class Dreem:
             ) or inventory.device_id_by_serial(device_serial)
 
             if not patient_id or not device_id:
-                log.debug(f"Metadata cannot be determined for {recording}")
-                log.debug(f"Patient ({patient_id}) or Device ID ({device_id}) missing.")
+                log.error(f"Metadata cannot be determined for {recording}")
+                log.error(f"Patient ({patient_id}) or Device ID ({device_id}) missing.")
                 unknown += 1
                 continue  # Skip record
             known += 1
