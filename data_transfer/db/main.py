@@ -49,6 +49,12 @@ def records_not_downloaded(device_type: DeviceType) -> Dict[str, List]:
 
 
 def records_not_uploaded(device_type: DeviceType) -> Dict[str, List]:
+    filters = {"is_uploaded": False, "device_type": device_type.name}
+    records = __filtered_records(filters)
+    return __group_by_composite_key(records)
+
+
+def records_processed_and_not_uploaded(device_type: DeviceType) -> Dict[str, List]:
     filters = {
         "is_uploaded": False,
         "is_processed": True,
