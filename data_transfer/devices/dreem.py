@@ -225,13 +225,13 @@ class Dreem:
             self.session, record.download_folder(), record.manufacturer_ref
         )
 
-        # Useful metadata for performing pre-processing.
-        downloaded_file = Path(
-            record.download_folder() / f"{record.manufacturer_ref}.h5"
-        )
-        record.meta["filesize"] = downloaded_file.stat().st_size
-
         if is_downloaded_success:
+            # Useful metadata for performing pre-processing.
+            downloaded_file = Path(
+                record.download_folder() / f"{record.manufacturer_ref}.h5"
+            )
+            record.meta["filesize"] = downloaded_file.stat().st_size
+
             record.is_downloaded = is_downloaded_success
             update_record(record)
             log.debug(f"Download SUCCESS for:\n   {record}")
