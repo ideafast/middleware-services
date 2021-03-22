@@ -68,9 +68,9 @@ class Dreem:
         # Only add records that are not known in the DB based on stored filename
         # i.e. (ID and filename in dreem)
         unknown_records = [
-            r
-            for r in all_records
-            if uid_to_hash(r["id"], self.device_type) not in set(all_hashes())
+            record
+            for record in all_records
+            if uid_to_hash(record["id"], self.device_type) not in set(all_hashes())
         ]
         log.info(f"Total unknown records: {len(unknown_records)}")
 
