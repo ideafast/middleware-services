@@ -15,6 +15,7 @@ def task_preprocess_data(mongoid: str) -> str:
     Preprocessing tasks on dreem data.
     """
     record = read_record(mongoid)
-    record.is_processed = True
-    update_record(record)
+    if not record.is_processed:
+        record.is_processed = True
+        update_record(record)
     return mongoid
