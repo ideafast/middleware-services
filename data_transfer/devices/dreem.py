@@ -86,6 +86,7 @@ class Dreem:
             # Serial may not exist in lookup, e.g., if Dreem send a device replacement.
             if not device_serial:
                 log.debug(f"Unknown Device:\n   {recording}")
+                unknown += 1
                 continue  # Skip record
 
             _patient_id = (
@@ -103,6 +104,7 @@ class Dreem:
                 log.debug(
                     f"Error formatting Patient ID ({_patient_id}) for :\n   {recording}"
                 )
+                unknown += 1
                 continue
 
             device_id = self.__device_id_from_ucam(
