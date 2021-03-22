@@ -44,7 +44,8 @@ def all_hashes() -> List[str]:
 
 def records_not_downloaded(device_type: DeviceType) -> Dict[str, List]:
     filters = {"is_downloaded": False, "device_type": device_type.name}
-    return __records_grouped_by_composite_key(filters)
+    records = __filtered_records(filters)
+    return __group_by_composite_key(records)
 
 
 def records_not_uploaded(device_type: DeviceType) -> Dict[str, List]:
@@ -54,7 +55,8 @@ def records_not_uploaded(device_type: DeviceType) -> Dict[str, List]:
         "is_downloaded": True,
         "device_type": device_type.name,
     }
-    return __records_grouped_by_composite_key(filters)
+    records = __filtered_records(filters)
+    return __group_by_composite_key(records)
 
 
 def __filtered_records(filters: dict) -> List[Record]:
@@ -62,17 +64,15 @@ def __filtered_records(filters: dict) -> List[Record]:
     return [Record(**doc) for doc in _db.records.find(filters)]
 
 
-def __records_grouped_by_composite_key(filters: dict) -> Dict[str, List]:
+def __group_by_composite_key(records: List[Record]) -> Dict[str, List]:
     """Groups records by a pre-determined key. Could be a componsent"""
-    not_uploaded = __filtered_records(filters)
-
-    records = defaultdict(list)
+    results = defaultdict(list)
     # Transform the result to:
     # {PatientID1-DeviceID1: [{Record1}, ... {Record2}], ... }
-    for _record in not_uploaded:
+    for _record in records:
         key = f"{_record.patient_id}/{_record.device_id}"
-        records[key].append(_record)
-    return records
+        results[key].append(_record)
+    return results
 
 
 def min_max_data_wear_times(records: List[Record]) -> tuple:

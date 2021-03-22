@@ -63,6 +63,7 @@ to master to enable continuous deployment. To build an image locally run the fol
 where `$VERSION` is your desired version and `$REPO` is the name of the image:
 
     poetry run build $VERSION $REPO
+    # e.g., poetry run build 0.0.1 dtransfer
 
 The compose file uses specified `.env` files and runs all services:
 
@@ -73,6 +74,6 @@ The compose file uses specified `.env` files and runs all services:
 ### Deploying
 
 [Docker Hub](https://hub.docker.com/u/ideafast) is used to store images. To push
-to a `$REPO` run  the following:
+to an image to a `$REPO` run  the following:
 
     poetry run publish $VERSION $REPO

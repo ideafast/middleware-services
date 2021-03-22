@@ -9,7 +9,12 @@ from data_transfer.utils import StudySite
 
 
 def get_env_value(key_to_get: str, env_file: str = ".dtransfer.prod.env") -> str:
-    """Load from general env then specific file if not found."""
+    """
+    Load from general env then specific file if not found.
+
+    Gets from OS.ENV as may be there when running locally and from envfile when
+    running in docker.
+    """
     return os.getenv(key_to_get) or get_key(env_file, key_to_get)
 
 
@@ -18,6 +23,8 @@ class GlobalConfig(BaseSettings):
 
     root_path = Path(__file__).parent.parent
 
+    # Stores CSVs for mapping devices to patients.
+    # See: local/README.md for more details
     csvs_path = root_path / "local"
     data_path = root_path / "data"
 
@@ -74,19 +81,19 @@ class Settings(GlobalConfig):
     # Hardcoded as this data structure is not
     # supported unless JSON is stored in .env
     dreem: dict = {
-        "kiel": (
+        StudySite.Kiel: (
             get_env_value("DREEM_KIEL_USERNAME"),
             get_env_value("DREEM_KIEL_PASSWORD"),
         ),
-        "newcastle": (
+        StudySite.Newcastle: (
             get_env_value("DREEM_NEWCASTLE_USERNAME"),
             get_env_value("DREEM_NEWCASTLE_PASSWORD"),
         ),
-        "munster": (
+        StudySite.Muenster: (
             get_env_value("DREEM_MUNSTER_USERNAME"),
             get_env_value("DREEM_MUNSTER_PASSWORD"),
         ),
-        "rotterdam": (
+        StudySite.Rotterdam: (
             get_env_value("DREEM_ROTTERDAM_USERNAME"),
             get_env_value("DREEM_ROTTERDAM_PASSWORD"),
         ),

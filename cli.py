@@ -5,8 +5,8 @@ import click
 import uvicorn
 
 REGISTRIES = {
-    "consumer": "ideafast/consumer",
-    "dtransfer": "ideafast/dtransfer",
+    "consumer": "ideafast/middleware-consumer",
+    "dtransfer": "ideafast/middleware-dtransfer",
 }
 
 DOCKER_FILES = {

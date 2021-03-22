@@ -12,7 +12,7 @@ from data_transfer.db import all_hashes, create_record, read_record, update_reco
 from data_transfer.lib import dreem as dreem_api
 from data_transfer.schemas.record import Record
 from data_transfer.services import inventory, ucam
-from data_transfer.utils import StudySite
+from data_transfer.utils import StudySite, uid_to_hash
 
 log = logging.getLogger(__name__)
 
@@ -35,10 +35,10 @@ class Dreem:
         """
         Use study_site name to build auth as there are multiple sites/credentials.
         """
-        self.study_site = study_site.name.lower()
+        self.study_site = study_site
         self.user_id, self.session = self.authenticate()
         # Used to filter UCAM devices and assign to type to record
-        self.device_type = utils.DeviceType.DRM.name
+        self.device_type = utils.DeviceType.DRM
 
     def authenticate(self) -> Tuple[str, requests.Session]:
         """
@@ -63,11 +63,15 @@ class Dreem:
         # Note: includes metadata for ALL data records, therefore we must filter them
         all_records = dreem_api.get_restricted_list(self.session, self.user_id)
 
-        log.info(f"Total dreem records: {len(all_records)} for {self.study_site}")
+        log.info(f"Total dreem records: {len(all_records)} for {self.study_site.name}")
 
         # Only add records that are not known in the DB based on stored filename
         # i.e. (ID and filename in dreem)
-        unknown_records = [r for r in all_records if r["id"] not in set(all_hashes())]
+        unknown_records = [
+            r
+            for r in all_records
+            if uid_to_hash(r["id"], self.device_type) not in set(all_hashes())
+        ]
         log.info(f"Total unknown records: {len(unknown_records)}")
 
         known, unknown = 0, 0
@@ -84,7 +88,7 @@ class Dreem:
                 log.debug(f"Unknown Device:\n   {recording}")
                 continue  # Skip record
 
-            patient_id = utils.format_id_patient(
+            _patient_id = (
                 # NOTE: PatientID is encoded in email so there is a 1-2-1 mapping.
                 dreem_api.patient_id_by_user(recording.user_id)
                 or self.__patient_id_from_ucam(
@@ -95,21 +99,27 @@ class Dreem:
                 )
             )
 
+            if not (patient_id := utils.format_id_patient(_patient_id)):
+                log.debug(
+                    f"Error formatting Patient ID ({_patient_id}) for :\n   {recording}"
+                )
+                continue
+
             device_id = self.__device_id_from_ucam(
                 patient_id, recording.start, recording.end
             ) or inventory.device_id_by_serial(device_serial)
 
             if not patient_id or not device_id:
-                log.debug(f"Unknown Device:\n   {recording}")
+                log.debug(f"Metadata cannot be determined for {recording}")
                 log.debug(f"Patient ({patient_id}) or Device ID ({device_id}) missing.")
                 unknown += 1
                 continue  # Skip record
             known += 1
 
             record = Record(
-                hash=recording.id,
+                hash=uid_to_hash(recording.id, self.device_type),
                 manufacturer_ref=recording.id,
-                device_type=self.device_type,
+                device_type=self.device_type.name,
                 patient_id=patient_id,
                 device_id=device_id,
                 start_wear=recording.start,
@@ -146,7 +156,9 @@ class Dreem:
             2. Else use wear period to perform lookup.
         """
         if patient_id and (ucam_entry := ucam.get_record(patient_id)):
-            devices = [d for d in ucam_entry.devices if self.device_type in d.device_id]
+            devices = [
+                d for d in ucam_entry.devices if self.device_type.name in d.device_id
+            ]
 
             # Best-case: only one device was worn and UCAM knows it
             if len(devices) == 1:
@@ -163,6 +175,8 @@ class Dreem:
     ) -> Optional[str]:
         """
         Determine PatientID by wear period of device in UCAM.
+
+        Note: uses inventory API to determine DeviceID to make association.
         """
         # NOTE/TODO: given this is a 1-1 mapping, why not use a local CSV?
         device_id = inventory.device_id_by_serial(device_serial)

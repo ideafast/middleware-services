@@ -21,7 +21,7 @@ tests
 # local data
 data/
 
-# json files
+# json and .csv files
 /local/**/*
 
 # secrets
