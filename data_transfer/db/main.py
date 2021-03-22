@@ -40,13 +40,18 @@ def all_hashes() -> List[str]:
     return [doc["hash"] for doc in _db.records.find()]
 
 
-def records_not_downloaded(device_type: DeviceType) -> List[Record]:
+def records_not_downloaded(device_type: DeviceType) -> Dict[str, List]:
     filters = {"is_downloaded": False, "device_type": device_type.name}
-    return __filtered_records(filters)
+    return __records_grouped_by_composite_key(filters)
 
 
 def records_not_uploaded(device_type: DeviceType) -> Dict[str, List]:
-    filters = {"is_uploaded": False, "device_type": device_type.name}
+    filters = {
+        "is_uploaded": False,
+        "is_processed": True,
+        "is_downloaded": True,
+        "device_type": device_type.name,
+    }
     return __records_grouped_by_composite_key(filters)
 
 

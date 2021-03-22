@@ -1,4 +1,4 @@
-from data_transfer.db import records_not_uploaded
+from data_transfer.db import records_not_downloaded
 from data_transfer.devices.dreem import Dreem
 from data_transfer.jobs import dreem as dreem_jobs
 from data_transfer.jobs import shared as shared_jobs
@@ -24,7 +24,7 @@ def dag(study_site: StudySite) -> None:
 
     dreem_jobs.batch_metadata(dreem)
 
-    results = records_not_uploaded(DeviceType.DRM)
+    results = records_not_downloaded(DeviceType.DRM)
 
     # NOTE: group records by patients per device to process small batches.
     for _, records in results.items():
