@@ -2,7 +2,7 @@
 name = "consumer"
 version = "0.1.0"
 description = "Hosts the middleware services for IDEA-FAST, including: data transfer protocols and application consumer APIs."
-authors = ["Drew Miley <drew.miley@ncl.ac.uk>", "Jay Rainey <jay.rainey@ncl.ac.uk>"]
+authors = ["Jay Rainey <jay.rainey@ncl.ac.uk>", "David Verweij <david.verweij@ncl.ac.uk>"]
 homepage = "https://github.com/ideafast/middleware-services"
 repository = "https://github.com/ideafast/middleware-services"
 
