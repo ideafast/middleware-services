@@ -229,7 +229,7 @@ class Dreem:
         downloaded_file = Path(
             record.download_folder() / f"{record.manufacturer_ref}.h5"
         )
-        record.meta = dict(filesize=downloaded_file.stat().st_size)
+        record.meta["filesize"] = downloaded_file.stat().st_size
 
         if is_downloaded_success:
             record.is_downloaded = is_downloaded_success
