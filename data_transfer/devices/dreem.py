@@ -2,7 +2,7 @@ import logging
 import time
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import requests
 
@@ -65,18 +65,13 @@ class Dreem:
 
         log.info(f"Total dreem records: {len(all_records)} for {self.study_site.name}")
 
-        # Only add records that are not known in the DB based on stored filename
-        # i.e. (ID and filename in dreem)
-        unknown_records = [
-            record
-            for record in all_records
-            if uid_to_hash(record["id"], self.device_type) not in set(all_hashes())
-        ]
-        log.info(f"Total unknown records: {len(unknown_records)}")
+        unknown_records = self.__unknown_records(all_records)
+
+        log.info(f"Total unknown records: {len(unknown_records.keys())}")
 
         known, unknown = 0, 0
 
-        for item in unknown_records:
+        for hash_id, item in unknown_records.items():
             # Pulls out the most relevant metadata for this recording
             recording = self.__recording_metadata(item)
 
@@ -119,7 +114,7 @@ class Dreem:
             known += 1
 
             record = Record(
-                hash=uid_to_hash(recording.id, self.device_type),
+                hash=hash_id,
                 manufacturer_ref=recording.id,
                 device_type=self.device_type.name,
                 patient_id=patient_id,
@@ -134,6 +129,18 @@ class Dreem:
             utils.write_json(record.metadata_path(), item)
 
         log.debug(f"{known} records created and {unknown} NOT this session.")
+
+    def __unknown_records(self, records: List[Dict]) -> Dict[str, Dict]:
+        """
+        Only add records that are not known in the DB, i.e., ID and filename.
+        """
+        results = {}
+        known_records = set(all_hashes())
+        for record in records:
+            record_hash = uid_to_hash(record["id"], self.device_type)
+            if record_hash not in known_records:
+                results[record_hash] = record
+        return results
 
     def __recording_metadata(self, recording: dict) -> DreemRecording:
         """
