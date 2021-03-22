@@ -23,13 +23,9 @@ services:
   consumer:
     container_name: consumer
     image: consumer
-    # Required for linux
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     networks:
       - web
-    ports:
-      - 80:80
+      - database
     env_file:
       - .consumer.env
 
@@ -37,6 +33,7 @@ services:
     container_name: dtransfer
     image: dtransfer
     networks:
+      - web
       - database
     env_file:
       # As this is for local development use both
