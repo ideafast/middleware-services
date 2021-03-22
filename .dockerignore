@@ -3,6 +3,8 @@ __pycache__
 *.pyc
 *.pyo
 *.pyd
+.mypy_cache
+.pytest_cache
 .Python
 .tox
 .nox
@@ -18,6 +20,8 @@ tests
 **/*__pycache__
 *.vscode
 **/*_cache/**/*
+**/._cache/**/*
+**/.DS_Store/**/*
 # local data
 data/
 
