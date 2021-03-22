@@ -88,6 +88,8 @@ def publish(repo: str, version: str) -> None:
     """Publish git tag and docker image."""
     validate_repo_name(repo)
     run_command(f"docker push {REGISTRIES[repo]}:{version}")
+    message = "Do you want to push this tag to GitHub too?"
+    click.confirm(message, abort=True)
     git_push_tag_remote(version)
 
 
