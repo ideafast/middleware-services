@@ -26,7 +26,7 @@ class Record(BaseModel):
     end_wear: datetime
 
     # Relevant to individual device pipelines
-    meta: Optional[dict]
+    meta: dict = {}
 
     # the DMP upload this record is linked to - known in the last stages
     dmp_folder: Optional[str]
