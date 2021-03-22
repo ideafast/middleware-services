@@ -1,7 +1,7 @@
 import csv
 import hashlib
 import json
-import logging as log
+import logging
 import re
 from datetime import datetime, timedelta
 from enum import Enum
@@ -9,6 +9,8 @@ from functools import lru_cache
 from math import floor
 from pathlib import Path
 from typing import Any, List, Optional, Tuple
+
+log = logging.getLogger(__name__)
 
 
 class DeviceType(Enum):

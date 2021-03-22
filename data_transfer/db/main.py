@@ -1,4 +1,4 @@
-import logging as log
+import logging
 from collections import defaultdict
 from typing import Dict, List
 
@@ -11,6 +11,8 @@ from data_transfer.utils import DeviceType
 
 client = MongoClient(config.database_uri)
 _db = client.dtransfer
+
+log = logging.getLogger(__name__)
 
 
 def create_record(record: Record) -> ObjectId:

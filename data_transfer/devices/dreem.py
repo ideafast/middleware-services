@@ -1,4 +1,4 @@
-import logging as log
+import logging
 import time
 from dataclasses import dataclass
 from datetime import datetime
@@ -13,6 +13,8 @@ from data_transfer.lib import dreem as dreem_api
 from data_transfer.schemas.record import Record
 from data_transfer.services import inventory, ucam
 from data_transfer.utils import StudySite
+
+log = logging.getLogger(__name__)
 
 
 @dataclass

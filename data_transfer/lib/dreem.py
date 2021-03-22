@@ -5,7 +5,7 @@
 # for the CVS, e.g. serial_by_device_uuid might to hit a live
 # endpoint rather than pull from a CSV file.
 
-import logging as log
+import logging
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -13,6 +13,8 @@ import requests
 
 from data_transfer.config import config
 from data_transfer.utils import read_csv_from_cache
+
+log = logging.getLogger(__name__)
 
 
 def get_token(creds: dict) -> Tuple[str, str]:

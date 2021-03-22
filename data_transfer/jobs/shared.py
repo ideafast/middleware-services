@@ -1,4 +1,4 @@
-import logging as log
+import logging
 from pathlib import Path
 
 from data_transfer.config import config
@@ -17,6 +17,8 @@ FILE_TYPES = {
     "SMA": ".zip",
     "BTF": ".csv",
 }
+
+log = logging.getLogger(__name__)
 
 
 def batch_upload_data(device_type: DeviceType) -> None:
