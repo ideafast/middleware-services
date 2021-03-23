@@ -31,10 +31,11 @@ RUN apk add --quiet --no-cache --virtual .deps gcc libffi-dev musl-dev postgresq
 COPY . /app/
 
 ENV PYTHONPATH=/app
+WORKDIR /app
 
 # NOTE: for now we are running a pipeline via cron to test infrastructure there
 # would be no RUN/CMD as this image would be used in a compose file (airflow).
-RUN echo '0 0 */3 * * cd /app/ && python ./data_transfer/main.py DRM kiel' > /etc/crontabs/root
+RUN echo '0 0 */3 * * python /app/data_transfer/main.py DRM kiel' > /etc/crontabs/root
 
 # Set crond to foreground so it is always running
 # and set log level to list when critical.

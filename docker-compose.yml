@@ -22,7 +22,7 @@ services:
 
   consumer:
     container_name: consumer
-    image: consumer
+    image: middleware-consumer:latest
     networks:
       - web
       - database
@@ -31,7 +31,7 @@ services:
 
   dtransfer:
     container_name: dtransfer
-    image: dtransfer
+    image: middleware-dtransfer:latest
     networks:
       - web
       - database
