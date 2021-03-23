@@ -1,7 +1,37 @@
-*.env
+# python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.mypy_cache
+.pytest_cache
+.Python
+.tox
+.nox
+.cache
+tests/**/*
+tests
+*.log
+.git
 *.example
 **/*.swp
-**/*.env
 **/*.git
 **/*.egg-info
 **/*__pycache__
+*.vscode
+**/*_cache/**/*
+**/._cache/**/*
+**/.DS_Store/**/*
+# local data
+data/
+
+# json and .csv files
+/local/**/*
+
+# secrets
+*.env
+**/*.env
+
+# venvs (if local)
+.venv/**/*
+.venv/

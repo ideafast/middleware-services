@@ -6,6 +6,7 @@ DTP consists of multiple ETL data workflows for a range of sensing devices as pa
 
 | Path | Info |
 | ---- | ---- |
+| `/dags`    | Pipelines for each device. |
 | `/db`      | DB Connection and helper methods |
 | `/devices` | Implementation specific for each device |
 | `/jobs`    | Batch jobs to run per device or shared |
@@ -17,3 +18,37 @@ DTP consists of multiple ETL data workflows for a range of sensing devices as pa
 | `/utils`   | Helper methods for across DTP |
 | `config.py`| Static environmental variables |
 | `main.py`  | Entry point to DTP |
+
+## MongoDB Authentication
+
+Authentication is disabled in mongodb by default, and will need to be setup to access the db remotely. To do that:
+
+1. Remove `command: [--auth]` from the `docker-compose.yml`.
+2. Run `docker compose up -d` to see the changes.
+3. Enter the docker container: `docker exec -it mongo bash`
+4. Run `mongo` from the command line and create two users as follows:
+
+```bash
+use admin
+db.createUser(
+    {
+        user: "ADMIN_USER",
+        pwd: "ROOT_PASSWORD",
+        roles:["root"]
+    }
+);
+
+use dtransfer
+db.createUser(
+    {
+        user: "DT_USER",
+        pwd: "DT_PASSWORD",
+        roles:[
+            {
+                role: "readWrite",
+                db: "dtransfer"
+            }
+        ]
+    }
+);
+```

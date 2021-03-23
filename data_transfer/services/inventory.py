@@ -9,11 +9,14 @@ from data_transfer.config import config
 
 
 @lru_cache
-def device_id_by_serial(serial: str) -> str:
+def device_id_by_serial(serial: str) -> Optional[str]:
     # TODO: there is a rate limit on the inventory!
     response = requests.get(f"{config.inventory_api}device/byserial/{serial}")
     # TODO: validation
-    return response.json()["data"]["device_id"]
+    _response = response.json()
+    if not _response["meta"]["success"]:
+        return None
+    return _response["data"]["device_id"]
 
 
 def device_history(device_id: str) -> Any:

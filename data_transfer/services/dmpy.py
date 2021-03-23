@@ -37,10 +37,10 @@ def upload(path: Path) -> bool:
     )
 
     log.info(payload)
-
     return Dmpy().upload(payload)
 
 
 def rm_local_data(zip_path: Path) -> None:
     zip_path.unlink()
     shutil.rmtree(zip_path.with_suffix(""))
+    log.debug(f"Removed {zip_path}")

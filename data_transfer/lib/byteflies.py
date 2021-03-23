@@ -96,7 +96,7 @@ def get_list(
 
 
 def download_file(
-    download_folder: str,
+    download_folder: Path,
     session: requests.Session,
     studysite_id: str,
     recording_id: str,
@@ -206,14 +206,13 @@ def __get_algorithm_uri_by_id(
     return str(payload["uri"])
 
 
-def __download_file(download_folder: str, url: str, filename: str) -> None:
+def __download_file(download_folder: Path, url: str, filename: str) -> None:
     """
     Builds the target filename and starts downloading the file to disk
     No session parameter as this queries a non-BTF url with authentication
     embedded in the url
     """
-    path = Path(config.storage_vol) / download_folder / f"{filename}.csv"
-    path.parent.mkdir(parents=True, exist_ok=True)
+    path = download_folder / f"{filename}.csv"
 
     with requests.get(url, stream=True) as response:
         with open(path, "wb") as output_file:

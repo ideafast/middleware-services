@@ -4,7 +4,15 @@ from typing import Any
 import click
 import uvicorn
 
-REGISTRY = "ideafast/middleware"
+REGISTRIES = {
+    "consumer": "ideafast/middleware-consumer",
+    "dtransfer": "ideafast/middleware-dtransfer",
+}
+
+DOCKER_FILES = {
+    "consumer": "Dockerfile",
+    "dtransfer": "Dtransfer.Dockerfile",
+}
 
 
 def run_command(command: str, capture: bool = False) -> subprocess.CompletedProcess:
@@ -22,12 +30,19 @@ def git_push_tag_remote(version: str) -> None:
     run_command(f"git push origin {version}")
 
 
-def docker_image_exists(version: str) -> Any:
+def docker_image_exists(version: str, repo: str) -> Any:
     """Check if docker image exists based on version."""
-    command = f"docker images -q {REGISTRY}:{version}"
+    command = f"docker images -q {REGISTRIES[repo]}:{version}"
     res = run_command(command, True)
     # The hash ID of the image if it exists
     return res.stdout.decode("ascii").rstrip()
+
+
+def validate_repo_name(repo: str) -> None:
+    """Ensures Docker arguments are valid, e.g., consumer or dtransfer."""
+    if repo not in DOCKER_FILES:
+        names = " or ".join(DOCKER_FILES.keys())
+        raise click.ClickException(f"Repository name must be {names}")
 
 
 def run_uvicorn(
@@ -49,21 +64,32 @@ def consumer() -> None:
 
 
 @cli.command()
+@click.argument("repo")
 @click.argument("version")
-def build(version: str) -> None:
+def build(repo: str, version: str) -> None:
     """Build docker image."""
-    message = "THIS VERSION ALREADY EXISTS.\nDo you want to rebuild it?"
-    if docker_image_exists(version):
+    validate_repo_name(repo)
+
+    if docker_image_exists(version, repo):
+        message = "THIS VERSION ALREADY EXISTS.\nDo you want to rebuild it?"
         click.confirm(message, abort=True)
+
     git_tag_local(version)
-    run_command(f"docker build -t {REGISTRY}:{version} .")
+
+    run_command(
+        f"docker build -f {DOCKER_FILES[repo]} -t {REGISTRIES[repo]}:{version} ."
+    )
 
 
 @cli.command()
+@click.argument("repo")
 @click.argument("version")
-def publish(version: str) -> None:
+def publish(repo: str, version: str) -> None:
     """Publish git tag and docker image."""
-    run_command(f"docker push {REGISTRY}:{version}")
+    validate_repo_name(repo)
+    run_command(f"docker push {REGISTRIES[repo]}:{version}")
+    message = "Do you want to push this tag to GitHub too?"
+    click.confirm(message, abort=True)
     git_push_tag_remote(version)
 
 

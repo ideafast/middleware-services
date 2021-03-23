@@ -5,7 +5,7 @@
 # for the CVS, e.g. serial_by_device_uuid might to hit a live
 # endpoint rather than pull from a CSV file.
 
-from dataclasses import dataclass
+import logging
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -14,31 +14,23 @@ import requests
 from data_transfer.config import config
 from data_transfer.utils import read_csv_from_cache
 
-
-@dataclass
-class DreemFileDownload:
-    """Use as CLI arguments for Dreem's library."""
-
-    directory: Path = config.storage_vol
-    # TODO: do we want H5, H5 + EDF, or raw/H5/EDF
-    # EDF is a cleaned/reduced H5 file while raw is primarly
-    # for internal dreem use.
-    ftype: str = "h5"
-
-
-# Define location and filetype to download
-args = DreemFileDownload()
+log = logging.getLogger(__name__)
 
 
 def get_token(creds: dict) -> Tuple[str, str]:
     """
     Generates a JWT token with the credentials for API access
     """
-    res = requests.post(f"{config.dreem_login_url}/token/", auth=creds)
-    #  TODO: catch/log exception
-    res.raise_for_status()
-    resp = res.json()
-    return (resp["token"], resp["user_id"])
+    url = f"{config.dreem_login_url}/token/"
+    try:
+        res = requests.post(url, auth=creds)
+        res.raise_for_status()
+        resp = res.json()
+        return (resp["token"], resp["user_id"])
+    except requests.HTTPError:
+        log.error(f"GET Exception to: {url}\n", exc_info=True)
+        # We do not want to rest of the pipeline to try and proceed
+        raise
 
 
 def get_session(token: str) -> requests.Session:
@@ -58,39 +50,44 @@ def get_restricted_list(session: requests.Session, user_id: str) -> List[dict]:
     results = []
 
     while url:
-        response = session.get(url)
-        # TODO: catch/log exception
-        response.raise_for_status()
-        result: dict = response.json()
-        url = result["next"]
-        results.extend(result["results"])
+        try:
+            response = session.get(url)
+            response.raise_for_status()
+            result: dict = response.json()
+            url = result["next"]
+            results.extend(result["results"])
+        except requests.HTTPError:
+            # attempt to skip this one record
+            log.error(f"GET Exception to ({url}):", exc_info=True)
+            url = result["next"]
     return results
 
 
-def download_file(session: requests.Session, record_id: str) -> bool:
+def download_file(
+    session: requests.Session, download_path: Path, record_id: str
+) -> bool:
     """
     GET specified file based on known record
     """
-    file_type = args.ftype
-    url = __build_url(file_type, record_id)
+    url = f"{config.dreem_api_url}/dreem/algorythm/record/{record_id}/h5/"
+    try:
+        response = session.get(url)
+        response.raise_for_status()
 
-    response = session.get(url)
-    # TODO: catch/log exception
-    response.raise_for_status()
-    result: dict = response.json()
+        result: dict = response.json()
 
-    # Used to lookup the download URL
-    key = "url" if file_type == "raw" else "data_url"
-    file_url = result[key]
+        log.debug(f"Response from {url} was:\n    {result}")
 
-    # NOTE: file_url may be empty if a file is unavailable:
-    # (1): file is on dreem headband but not uploaded
-    # (2): file is being processed by dreem's algorithms
-    if not file_url:
+        file_url = result.get("data_url", None)
+        # NOTE: file_url may be empty if a file is unavailable:
+        # (1): file is on dreem headband but not uploaded
+        # (2): file is being processed by dreem's algorithms
+        if not file_url:
+            return False
+        return __download_file(file_url, download_path, record_id)
+    except requests.HTTPError:
+        log.error(f"GET Exception to {url} ", exc_info=True)
         return False
-    # TODO: for now, assumes that this method never throws ...
-    __download_file(file_url, record_id)
-    return True
 
 
 def serial_by_device(uuid: str) -> Optional[str]:
@@ -131,28 +128,29 @@ def __key_by_value(filename: Path, needle: str) -> Optional[str]:
     return None
 
 
-def __download_file(url: str, record_id: str) -> None:
+def __download_file(url: str, download_path: Path, record_id: str) -> bool:
     """
     Builds the target filename and starts downloading the file to disk
-    """
-    # NOTE: can be simplified once we agree on specific file type
-    ext = "tar.gz" if args.ftype == "raw" else args.ftype
-    file_path = Path(config.storage_vol) / f"{record_id}.{ext}"
-    response = requests.get(url, stream=True)
 
-    with open(file_path, "wb") as output_file:
-        for chunk in response.iter_content(chunk_size=1024):
-            if chunk:
-                output_file.write(chunk)
-
-
-def __build_url(file_type: str, record_id: str) -> str:
+    Args:
+        url: AWS URL to download file.
+        download_path: path to download folder.
+        record_id: what to name the record.
     """
-    Build URL based on file info. This varied by filetype, e.g., raw/EDF/H5.
-    """
-    #  TODO: can be simplified once we determine if we will download only H5 data.
-    if file_type == "raw":
-        url = f"{config.dreem_api_url}/dreem/dataupload/data/{record_id}"
-    else:
-        url = f"{config.dreem_api_url}/dreem/algorythm/record/{record_id}/{file_type}/"
-    return url
+    try:
+
+        file_path = download_path / f"{record_id}.h5"
+
+        with requests.get(url, stream=True) as response:
+            log.debug(response.headers)
+
+            response.raise_for_status()
+
+            with open(file_path, "wb") as output_file:
+                for chunk in response.iter_content(chunk_size=1024):
+                    if chunk:
+                        output_file.write(chunk)
+        return True
+    except Exception:
+        log.error("Exception:", exc_info=True)
+        return False

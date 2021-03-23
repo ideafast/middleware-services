@@ -2,11 +2,11 @@ from data_transfer.db import read_record, update_record
 from data_transfer.devices.dreem import Dreem
 
 
-def task_download_data(study_site: str, mongoid: str) -> str:
+def task_download_data(dreem: Dreem, mongoid: str) -> str:
     """
     Download a datafile for the dreem device.
     """
-    Dreem(study_site).download_file(mongoid)
+    dreem.download_file(mongoid)
     return mongoid
 
 
@@ -15,6 +15,7 @@ def task_preprocess_data(mongoid: str) -> str:
     Preprocessing tasks on dreem data.
     """
     record = read_record(mongoid)
-    record.is_processed = True
-    update_record(record)
+    if not record.is_processed:
+        record.is_processed = True
+        update_record(record)
     return mongoid

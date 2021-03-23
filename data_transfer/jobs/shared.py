@@ -1,3 +1,6 @@
+import logging
+from pathlib import Path
+
 from data_transfer.config import config
 from data_transfer.db import (
     min_max_data_wear_times,
@@ -15,6 +18,8 @@ FILE_TYPES = {
     "BTF": ".csv",
 }
 
+log = logging.getLogger(__name__)
+
 
 def batch_upload_data(device_type: DeviceType) -> None:
     """
@@ -26,20 +31,27 @@ def batch_upload_data(device_type: DeviceType) -> None:
     """
     device_subfolder = config.upload_folder / device_type.name
 
-    if device_subfolder.exists():
-        folders_to_upload = [p for p in device_subfolder.iterdir() if p.is_dir()]
+    if not device_subfolder.exists():
+        log.debug("Tried to upload non-existing folder.")
+        return
 
-        for data_folder in folders_to_upload:
-            zip_path = dmpy.zip_folder(data_folder)
-            is_uploaded = dmpy.upload(zip_path)
+    for data_folder in [p for p in device_subfolder.iterdir() if p.is_dir()]:
+        upload_data(data_folder)
 
-            # Once uploaded to DMP, update metadata db
-            if is_uploaded:
-                for record in records_by_dmp_folder(data_folder.stem):
-                    record.is_uploaded = True
-                    update_record(record)
 
-                dmpy.rm_local_data(zip_path)
+def upload_data(data_folder: Path) -> None:
+    """Zips and uploads a folder at data_folder."""
+    log.debug(f"Uploading: {data_folder}")
+
+    zip_path = dmpy.zip_folder(data_folder)
+    is_uploaded = dmpy.upload(zip_path)
+
+    if is_uploaded:
+        for record in records_by_dmp_folder(data_folder.stem):
+            record.is_uploaded = True
+            update_record(record)
+
+        dmpy.rm_local_data(zip_path)
 
 
 def prepare_data_folders(device_type: DeviceType) -> None:
@@ -49,14 +61,7 @@ def prepare_data_folders(device_type: DeviceType) -> None:
 
         DEVICEID-PATIENTID-STARTWEAR-ENDWEAR
     """
-    not_uploaded = records_not_uploaded(device_type)
-
-    grouped: dict = {}
-    # transform the result to {PatientID1-DeviceID1: [{Record1}, ... {Record2}], ... }
-    [
-        grouped.setdefault(f"{r.patient_id}/{r.device_id}", []).append(r)
-        for r in not_uploaded
-    ]
+    grouped = records_not_uploaded(device_type)
 
     # filter sets which have any record with 'is_processed' == False
     # 'is_processed' == False catches the 'False' for any preceding task as well
@@ -69,6 +74,7 @@ def prepare_data_folders(device_type: DeviceType) -> None:
         end_data = min_data.strftime("%Y%m%d")
 
         source = config.storage_vol / device_type.name / patient_device
+
         dmp_folder = (
             f"{patient_device.replace('-','').replace('/','-')}-{start_data}-{end_data}"
         )
@@ -77,6 +83,7 @@ def prepare_data_folders(device_type: DeviceType) -> None:
         destination = config.upload_folder / device_type.name / dmp_folder
 
         destination.mkdir(parents=True, exist_ok=True)
+
         source.rename(destination)
 
         for record in to_upload[patient_device]:
@@ -90,9 +97,8 @@ def prepare_data_folders(device_type: DeviceType) -> None:
             / device_type.name
             / to_upload[patient_device][0].patient_id
         )
+
         if not any(patient_path.iterdir()):
             patient_path.rmdir()
         else:
-            # TODO: throw and fix if files are left behind?
-            # This is an issue as the whole folder should be uploaded, or not at all...
-            pass
+            log.error("Files left behind when uploading dataset to DMP.")

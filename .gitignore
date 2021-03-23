@@ -15,3 +15,6 @@ ucam_db*.csv
 .dmypy.json
 dmypy.json
 *.log
+*.json
+*.csv
+*.h5

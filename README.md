@@ -19,14 +19,14 @@ To setup a virtual environment with your local pyenv version run:
 
     poetry shell
 
-## Setting up .env
+## Setting up Environmental Files
 
-Copy `.NAME.env.example` file to `.NAME.env` where `NAME` is the python package (consumer, data_transfer).
-Then add relevant local/live values and credentials.
+Copy `.NAME.dev.env.example` file to `.NAME.dev.env` where `NAME` is the python package (consumer, data_transfer).
+Then add relevant local/live values and credentials. You will need `.NAME.dev.env.example` if deploying
 
 ## Local Development
 
-For development, install additional dependencies through
+For development, install additional dependencies through:
 
     poetry install
     poetry run pre-commit install
@@ -35,39 +35,45 @@ When developing the consumer API run:
 
     poetry run consumer
 
-When developing the data transfer jobs run:
+When developing the data transfer jobs run where `DEVICE_TYPE` is the type of device (e.g., DRM, BTF, etc.) and `study_site` is one of the core study sites. View the [DAGs in data_transfer](./data_transfer/dags/) for more information:
 
-    poetry run dtransfer
+    python data_transfer/main.py $DEVICE_TYPE $STUDY_SITE
 
+### Running Tests, Type Checking, Linting and Code Formatting
 
 [Nox](https://nox.thea.codes/) is used for automation and standardisation of tests, type hints, automatic code formatting, and linting. Any contribution needs to pass these tests before creating a Pull Request.
 
-Run linting and tests
+To run all these libraries:
 
     poetry run nox -r
 
-Or individual checks via
+Or individual checks by choosing one of the options from the list:
 
-    poetry run nox -rs tests
-    poetry run nox -rs mypy
-    poetry run nox -rs isort
-    poetry run nox -rs lint
-    poetry run nox -rs black
+    poetry run nox -rs [tests, mypy, isort, lint, black]
 
+### Developing with Docker
 
-### Deploying
+[Docker](https://www.docker.com/) is used to build images both for the consumer and data_transfer services. A [docker-compose file](./docker-compose.yml) configures the required services and image needed for local development. This can be run locally when developing if interacting with a service (e.g., consumer) to mirror deployment usage. To run the compose file you first need to create two docker networks:
+
+    docker network create web
+    docker network create database
 
 [Semantic versioning](https://semver.org/) is used when core changes are merged
-to master to enable continuous deployment. To build an image locally where `$VERSION`
-for your desired version:
+to master to enable continuous deployment. To build an image locally run the following
+where `$VERSION` is your desired version and `$REPO` is the name of the image:
 
-    poetry run build $VERSION
+    poetry run build $VERSION $REPO
+    # e.g., poetry run build 0.0.1-DRM dtransfer
 
-The compose file contains all environmental variables and runs all services:
+The compose file uses specified `.env` files and runs all services:
 
     poetry run compose
 
-We use [Docker Hub](https://hub.docker.com/u/ideafast) to store images. To push
-to your own image, update `REGISTRY` inside `cli.py` and run:
+*Note:* for local development docker is primarily used to test changes prior to deploying live _or_ to interact with services in isolation.
 
-    poetry run publish $VERSION
+### Deploying
+
+[Docker Hub](https://hub.docker.com/u/ideafast) is used to store images. To push
+to an image to a `$REPO` run  the following:
+
+    poetry run publish $VERSION $REPO

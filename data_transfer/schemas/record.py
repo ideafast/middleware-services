@@ -1,8 +1,11 @@
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Optional
 
 from bson import ObjectId
 from pydantic import BaseModel, Field, validator
+
+from data_transfer.config import config
 
 
 class Record(BaseModel):
@@ -21,7 +24,10 @@ class Record(BaseModel):
     patient_id: str
     start_wear: datetime
     end_wear: datetime
-    meta: dict  # meta data relevant to individual device pipelines
+
+    # Relevant to individual device pipelines
+    meta: dict = {}
+
     # the DMP upload this record is linked to - known in the last stages
     dmp_folder: Optional[str]
 
@@ -39,6 +45,15 @@ class Record(BaseModel):
         """
         return ObjectId(id)
 
-    def download_folder(self) -> str:
-        """consistenly structure target folder for download"""
-        return f"{self.device_type}/{self.patient_id}/{self.device_id}"
+    def metadata_path(self) -> Path:
+        """Location of metadata for this record."""
+        return self.download_folder() / f"{self.manufacturer_ref}-meta.json"
+
+    def download_folder(self) -> Path:
+        """Location of data for this record."""
+        path = (
+            config.storage_vol
+            / f"{self.device_type}/{self.patient_id}/{self.device_id}"
+        )
+        path.mkdir(parents=True, exist_ok=True)
+        return path
