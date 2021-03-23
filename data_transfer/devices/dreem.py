@@ -103,9 +103,16 @@ class Dreem:
                 unknown += 1
                 continue
 
-            device_id = self.__device_id_from_ucam(
+            _device_id = self.__device_id_from_ucam(
                 patient_id, recording.start, recording.end
             ) or inventory.device_id_by_serial(device_serial)
+
+            if not (device_id := utils.format_id_device(_device_id)):
+                log.error(
+                    f"Record NOT created: Error formatting DeviceID ({_device_id}) for\n{recording}\n"
+                )
+                unknown += 1
+                continue
 
             if not patient_id or not device_id:
                 log.error(f"Metadata cannot be determined for {recording}")
