@@ -136,7 +136,7 @@ class Dreem:
         Only add records that are not known in the DB, i.e., ID and filename.
         """
         results = {}
-        known_records = set(all_hashes())
+        known_records = all_hashes()
         for record in records:
             record_hash = uid_to_hash(record["id"], self.device_type)
             if record_hash not in known_records:
