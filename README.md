@@ -63,7 +63,7 @@ to master to enable continuous deployment. To build an image locally run the fol
 where `$VERSION` is your desired version and `$REPO` is the name of the image:
 
     poetry run build $VERSION $REPO
-    # e.g., poetry run build 0.0.1 dtransfer
+    # e.g., poetry run build 0.0.1-DRM dtransfer
 
 The compose file uses specified `.env` files and runs all services:
 

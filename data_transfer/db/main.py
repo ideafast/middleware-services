@@ -89,3 +89,8 @@ def min_max_data_wear_times(records: List[Record]) -> tuple:
     earliest_start = min([doc.start_wear for doc in records])
     latest_end = max([doc.end_wear for doc in records])
     return (earliest_start, latest_end)
+
+
+def all_records_downloaded(records: List[Record]) -> bool:
+    """True if all data for each record in parameter was downloaded."""
+    return all([read_record(record.id).is_downloaded for record in records])
