@@ -23,13 +23,19 @@ def test_device_valid() -> None:
 def test_device_ideafast_valid_no_prefix() -> None:
     result = __format_id_ideafast("FYCRXH", 0)
 
-    assert result == "FYCRXH"
+    assert result == "-FYCRXH"  # Note the prepended - due to expected prefixes
 
 
 def test_device_ideafast_valid() -> None:
-    result = __format_id_ideafast("ABC-FYCRXH", 4)
+    result = __format_id_ideafast("ABC-FYCRXH", 3)
 
     assert result == "ABC-FYCRXH"
+
+
+def test_weard_prefix_ideafast_valid() -> None:
+    result = __format_id_ideafast("AbCDef129A-FYCRXH", 10)
+
+    assert result == "ABCDEF129A-FYCRXH"
 
 
 def test_device_ideafast_invalid() -> None:
@@ -39,7 +45,7 @@ def test_device_ideafast_invalid() -> None:
 
 
 def test_invalid() -> None:
-    result = format_id_patient("K-NXYP6G")
+    result = format_id_patient("K-NXyP6G")
 
     assert result is None
 
@@ -52,6 +58,12 @@ def test_punctuation() -> None:
 
 def test_tabs_spaces() -> None:
     result = format_id_patient("K-N XYP6\tF ")
+
+    assert result == "K-NXYP6F"
+
+
+def test_lower_case() -> None:
+    result = format_id_patient("knxyp6f")
 
     assert result == "K-NXYP6F"
 

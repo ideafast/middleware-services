@@ -102,7 +102,7 @@ def format_id_patient(patient_id: str) -> Optional[str]:
     Validate and formats patient id s
     NOTE: retains the '-'
     """
-    return __format_id_ideafast(patient_id, 2)
+    return __format_id_ideafast(patient_id, 1)
 
 
 def format_id_device(device_id: str) -> Optional[str]:
@@ -110,7 +110,7 @@ def format_id_device(device_id: str) -> Optional[str]:
     Validate and formats device id s
     NOTE: retains the '-'
     """
-    return __format_id_ideafast(device_id, 4)
+    return __format_id_ideafast(device_id, 3)
 
 
 def __format_id_ideafast(ideafast_id: str, prefix_length: int) -> Optional[str]:
@@ -119,7 +119,9 @@ def __format_id_ideafast(ideafast_id: str, prefix_length: int) -> Optional[str]:
     ideafast/ideafast-idgen. Returns boolean if validate with corrected formatting
     """
     if type(ideafast_id) is str:
-        prefix = ideafast_id[:prefix_length]
+        ideafast_id = ideafast_id.upper()
+        # NOTE: appending a '-' in preperation of a result
+        prefix = f"{ideafast_id[:prefix_length]}-"
         stripped_id = ideafast_id[prefix_length:]
         id_to_check = re.sub(r"[^\w]|_", "", stripped_id)
 
