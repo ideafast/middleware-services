@@ -35,11 +35,12 @@ def dag(study_site: StudySite, timespan: int, now: int = -1) -> None:
     NOTE/TODO: this method simulates the pipeline.
     """
 
-    byteflies = Byteflies()
+    byteflies = Byteflies(study_site)
 
     reference: datetime = datetime.today() if now == -1 else datetime.fromtimestamp(now)
     data_period = get_period_by_days(reference, timespan)
-    byteflies_jobs.batch_metadata(*data_period, study_site)
+
+    byteflies_jobs.batch_metadata(byteflies, *data_period)
 
     results = records_not_uploaded(DeviceType.BTF)
 

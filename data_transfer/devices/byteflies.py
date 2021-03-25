@@ -1,6 +1,8 @@
+import logging
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional, Union
+from pathlib import Path
+from typing import Dict, List, Optional
 
 import requests
 
@@ -10,6 +12,9 @@ from data_transfer.db import all_hashes, create_record, read_record, update_reco
 from data_transfer.lib import byteflies as byteflies_api
 from data_transfer.schemas.record import Record
 from data_transfer.services import inventory, ucam
+from data_transfer.utils import StudySite
+
+log = logging.getLogger(__name__)
 
 
 @dataclass
@@ -38,19 +43,21 @@ class BytefliesRecording:
     patient_id: str
     signal_id: str
 
-    algorithm_id: Union[str, None]
+    algorithm_id: Optional[str]
 
     start: datetime
     end: datetime
 
 
 class Byteflies:
-    def __init__(self) -> None:
+    def __init__(self, study_site: StudySite) -> None:
         """
         Authenticate with AWS cognito to access ByteFlies resources
         """
+        self.study_site = study_site
         self.session = self.authenticate()
         self.device_type = utils.DeviceType.BTF.name
+        self.file_type = ".csv"
 
     def authenticate(self) -> requests.Session:
         """
@@ -63,11 +70,10 @@ class Byteflies:
         )
         token = byteflies_api.get_token(credentials)
         session = byteflies_api.get_session(token)
+        log.info("Authentication successful")
         return session
 
-    def download_metadata(
-        self, from_date: str, to_date: str, study_site: utils.StudySite
-    ) -> None:
+    def download_metadata(self, from_date: str, to_date: str) -> None:
         """
         Before downloading raw data we need to know which files to download.
         Byteflies offers an API which we can query for a given time period
@@ -77,51 +83,66 @@ class Byteflies:
         """
         # Note: includes metadata for ALL data records, therefore we must filter them
         all_records = byteflies_api.get_list(
-            self.session, config.byteflies_group_ids[study_site], from_date, to_date
+            self.session,
+            config.byteflies_group_ids[self.study_site],
+            from_date,
+            to_date,
         )
 
-        # Only add records that are not known in the DB based on stored filename
-        unknown_records = [
-            r for r in all_records if r["IDEAFAST"]["hash"] not in set(all_hashes())
-        ]
+        log.info(
+            f"Total Byteflies records: {len(all_records)} for {self.study_site.name}"
+        )
 
-        for item in unknown_records:
+        unknown_records = self.__unknown_records(all_records)
+
+        log.info(f"Total unknown records: {len(unknown_records.keys())}")
+
+        known, unknown = 0, 0
+
+        for hash_id, item in unknown_records.items():
             # Pulls out the most relevant metadata for this recording
             recording = self.recording_metadata(item)
 
             # NOTE: lookup in .csv export from inventory TODO: translate to inventory api
-            if not (
-                resolved_device_id := byteflies_api.serial_by_device(recording.dot_id)
-            ):
-                print(f"Unknown Device:\n   {recording}")
-                continue  # Err: SKIP RECORD
-            else:
-                resolved_device_id = utils.format_id_device(resolved_device_id)
+            if not (_device_id := byteflies_api.serial_by_device(recording.dot_id)):
+                log.debug(f"Record NOT created for unknown device\n   {recording}")
+                unknown += 1
+                continue  # Skip record
+
+            if not (device_id := utils.format_id_device(_device_id)):
+                log.error(
+                    f"Record NOT created: Error formatting DeviceID ({_device_id}) for\n{recording}\n"
+                )
+                unknown += 1
+                continue
 
             # saving resolved patient_id back in recording for logging
-            recording.patient_id = (
+            _patient_id = (
                 recording.patient_id  # very sporadically the record has a patient_id already
                 or self.__patient_id_from_ucam(
-                    resolved_device_id, recording.start, recording.end
+                    device_id, recording.start, recording.end
                 )
                 or self.__patient_id_from_inventory(
-                    resolved_device_id, recording.start, recording.end
+                    device_id, recording.start, recording.end
                 )
             )
 
-            if not (
-                resolved_patient_id := utils.format_id_patient(recording.patient_id)
-            ):
-                print(f"Unknown Patient:\n   {recording}")
-                continue  # Err: SKIP RECORD
+            if not (patient_id := utils.format_id_patient(_patient_id)):
+                log.error(
+                    f"Record NOT created: Error formatting PatientID ({_patient_id}) for\n{recording}\n"
+                )
+                unknown += 1
+                continue
+
+            known += 1
 
             record = Record(
                 # can relate to a single download file or a group of files
-                hash=item["IDEAFAST"]["hash"],
+                hash=hash_id,
                 manufacturer_ref=recording.recording_id,
                 device_type=self.device_type,
-                device_id=resolved_device_id,
-                patient_id=resolved_patient_id,
+                device_id=device_id,
+                patient_id=patient_id,
                 start_wear=recording.start,
                 end_wear=recording.end,
                 meta=dict(
@@ -137,6 +158,20 @@ class Byteflies:
             del item["IDEAFAST"]  # remove record-specific temporary metadata
             utils.write_json(record.metadata_path(), item)
 
+        log.debug(f"{known} records created and {unknown} NOT this session.")
+
+    def __unknown_records(self, records: List[dict]) -> Dict[str, dict]:
+        """
+        Only add records that are not known in the DB, i.e., ID and filename.
+        """
+        results = {}
+        known_records = all_hashes()
+        for record in records:
+            record_hash = record["IDEAFAST"]["hash"]
+            if record_hash not in known_records:
+                results[record_hash] = record
+        return results
+
     def download_file(self, mongo_id: str) -> None:
         """
         Downloads files and store them to {config.storage_vol}
@@ -146,17 +181,33 @@ class Byteflies:
         NOTE/TODO: is run as a task.
         """
         record = read_record(mongo_id)
+
+        # If pipeline is rerun after an error
+        if record.is_downloaded:
+            log.debug("Data file already downloaded. Skipping.")
+            return
+
         is_downloaded_success = byteflies_api.download_file(
-            record.download_folder(), self.session, **record.meta
+            self.session,
+            record.download_folder(),
+            record.meta["study_site"],
+            record.meta["recording_id"],
+            record.meta["signal_id"],
+            record.meta["algorithm_id"],
         )
 
         if is_downloaded_success:
+            # Useful metadata for performing pre-processing.
+            downloaded_file = Path(
+                record.download_folder() / f"{record.manufacturer_ref}{self.file_type}"
+            )
+            record.meta["filesize"] = downloaded_file.stat().st_size
+
             record.is_downloaded = is_downloaded_success
             update_record(record)
-
-            print(f"Downloaded file for:\n   {record}")
+            log.debug(f"Download SUCCESS for:\n   {record}")
         else:
-            print(f"FAILED downloading file for:\n   {record}")
+            log.debug(f"Download FAILED for:\n   {record}")
 
     def recording_metadata(self, recording: dict) -> BytefliesRecording:
         """

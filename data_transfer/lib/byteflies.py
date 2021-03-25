@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -8,6 +9,8 @@ import requests
 
 from data_transfer.config import config
 from data_transfer.utils import DeviceType, read_csv_from_cache, uid_to_hash
+
+log = logging.getLogger(__name__)
 
 
 def get_token(creds: dict) -> str:
@@ -62,6 +65,7 @@ def get_list(
 
         def get(self, signal_id: str, algorithm_id: str = "") -> Any:
             copy = json.loads(self.jsondump)
+            # injecting data to copy with duplicates all based on one recording
             copy["IDEAFAST"] = {
                 "hash": uid_to_hash(
                     f"{copy['id']}/{signal_id}/{algorithm_id}", DeviceType.BTF
@@ -96,8 +100,8 @@ def get_list(
 
 
 def download_file(
-    download_folder: Path,
     session: requests.Session,
+    download_folder: Path,
     studysite_id: str,
     recording_id: str,
     signal_id: str,
@@ -148,19 +152,21 @@ def __get_response(session: requests.Session, url: str) -> Any:
     Wrapper method to execute a GET request. Gives a second
     break to avoid 429 / 502 TooManyRequests (as advised)
     """
-    # TODO: manage ByteFlies API requests through other means than time.sleep
+    # ByteFlies DEV: when too many requests, it throws 429 or 502
+    #    If once per second, should not be a problem
     time.sleep(1)
-    response = session.get(url)
-    if code := response.status_code != 200:
-        # when too many requests, we expect 429 or 502
-        if code != 429 and code != 502:
-            # TODO: catch/log exception
-            response.raise_for_status()
-        else:
-            # wait and retry soon-ish
-            pass
+    try:
+        response = session.get(url)
+        response.raise_for_status()
 
-    return response.json()
+        result: dict = response.json()
+
+        log.debug(f"Response from {url} was:\n    {result}")
+
+        return result
+    except requests.HTTPError:
+        log.error(f"GET Exception to {url} ", exc_info=True)
+        return False
 
 
 def __get_groups(session: requests.Session) -> List[str]:
@@ -206,16 +212,26 @@ def __get_algorithm_uri_by_id(
     return str(payload["uri"])
 
 
-def __download_file(download_folder: Path, url: str, filename: str) -> None:
+def __download_file(download_folder: Path, url: str, filename: str) -> bool:
     """
     Builds the target filename and starts downloading the file to disk
     No session parameter as this queries a non-BTF url with authentication
     embedded in the url
     """
-    path = download_folder / f"{filename}.csv"
+    try:
 
-    with requests.get(url, stream=True) as response:
-        with open(path, "wb") as output_file:
-            for chunk in response.iter_content(chunk_size=1024):
-                if chunk:
-                    output_file.write(chunk)
+        path = download_folder / f"{filename}.csv"
+
+        with requests.get(url, stream=True) as response:
+            log.debug(response.headers)
+
+            response.raise_for_status()
+
+            with open(path, "wb") as output_file:
+                for chunk in response.iter_content(chunk_size=1024):
+                    if chunk:
+                        output_file.write(chunk)
+        return True
+    except Exception:
+        log.error("Exception:", exc_info=True)
+        return False
