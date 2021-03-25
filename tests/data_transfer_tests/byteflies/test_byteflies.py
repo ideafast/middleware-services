@@ -24,12 +24,12 @@ def test_get_list(mock_requests_session: dict) -> None:
 def test_download_file(mock_requests_session: dict, tmpdir: Path) -> None:
     # mock temp storage folder
     lib.config.storage_vol = tmpdir
-    target_folder = "test_download_file"
+    target_folder = tmpdir / "test_download_file"
     target_file_name = "random_id_13"
     target_file = tmpdir / target_folder / f"{target_file_name}.csv"
 
     result = lib.download_file(
-        str(target_folder),
+        target_folder,
         mock_requests_session["session"],
         "studysite_1",
         "random_id_12",
@@ -63,9 +63,9 @@ def test_download_task(
         tasks.Byteflies, "authenticate", return_value=mock_requests_session["session"]
     ):
 
-        for record in db.records_not_downloaded(DeviceType.BTF):
-            devices.Byteflies().download_file(record.id)
-            tasks.task_preprocess_data(record.id)
+        for _key, records in db.records_not_downloaded(DeviceType.BTF).items():
+            devices.Byteflies().download_file(records[0].id)
+            tasks.task_preprocess_data(records[0].id)
 
         result = False
 
