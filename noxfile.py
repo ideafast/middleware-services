@@ -1,6 +1,3 @@
-import tempfile
-from typing import Any
-
 import nox
 from nox_poetry import session
 
@@ -9,38 +6,21 @@ nox.options.sessions = "black", "lint", "mypy", "tests", "isort"
 locations = "consumer", "data_transfer", "tests", "noxfile.py", "cli.py"
 
 
-def install_with_constraints(session: nox.Session, *args: str, **kwargs: Any) -> None:
-    """A wrapper for session.install use linting and
-    test depenencies that are pinned. This ensure
-    replicatability amongst developers."""
-    with tempfile.NamedTemporaryFile() as requirements:
-        session.run(
-            "poetry",
-            "export",
-            "--dev",
-            "--without-hashes",
-            "--format=requirements.txt",
-            f"--output={requirements.name}",
-            external=True,
-        )
-        session.install(f"--constraint={requirements.name}", *args, **kwargs)
-
-
 @session(python=["3.8"])
 def black(session: nox.Session) -> None:
     """Automatic format code following black codestyle:
     https://github.com/psf/black
     """
-    # args = session.posargs or locations
+    args = session.posargs or locations
     session.install("black")
-    session.run("black", *locations)
+    session.run("black", *args)
 
 
 @session(python=["3.8"])
 def isort(session: nox.Session) -> None:
     """Automatic order import statements"""
     args = session.posargs or locations
-    install_with_constraints(session, "isort")
+    session.install("isort")
     session.run("isort", *args)
 
 
