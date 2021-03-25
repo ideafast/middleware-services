@@ -34,6 +34,7 @@ pytest-mock = "^3.5.1"
 requests-mock = "^1.8.0"
 mongomock = "^3.22.1"
 pymongo = "^3.11.3"
+nox-poetry = "^0.8.4"
 
 [tool.poetry.scripts]
 consumer = "cli:consumer"

@@ -2,14 +2,14 @@ import tempfile
 from typing import Any
 
 import nox
-from nox.sessions import Session
+from nox_poetry import session
 
 package = "session", "data_transfer"
 nox.options.sessions = "black", "lint", "mypy", "tests", "isort"
 locations = "consumer", "data_transfer", "tests", "noxfile.py", "cli.py"
 
 
-def install_with_constraints(session: Session, *args: str, **kwargs: Any) -> None:
+def install_with_constraints(session: nox.Session, *args: str, **kwargs: Any) -> None:
     """A wrapper for session.install use linting and
     test depenencies that are pinned. This ensure
     replicatability amongst developers."""
@@ -26,37 +26,36 @@ def install_with_constraints(session: Session, *args: str, **kwargs: Any) -> Non
         session.install(f"--constraint={requirements.name}", *args, **kwargs)
 
 
-@nox.session(python=["3.8"])
-def black(session: Session) -> None:
+@session(python=["3.8"])
+def black(session: nox.Session) -> None:
     """Automatic format code following black codestyle:
     https://github.com/psf/black
     """
-    args = session.posargs or locations
-    install_with_constraints(session, "black")
-    session.run("black", *args)
+    # args = session.posargs or locations
+    session.install("black")
+    session.run("black", *locations)
 
 
-@nox.session(python=["3.8"])
-def isort(session: Session) -> None:
+@session(python=["3.8"])
+def isort(session: nox.Session) -> None:
     """Automatic order import statements"""
     args = session.posargs or locations
     install_with_constraints(session, "isort")
     session.run("isort", *args)
 
 
-@nox.session(python=["3.8"])
-def mypy(session: Session) -> None:
+@session(python=["3.8"])
+def mypy(session: nox.Session) -> None:
     args = session.posargs or locations
-    install_with_constraints(session, "mypy")
+    session.install("mypy")
     session.run("mypy", *args)
 
 
-@nox.session(python=["3.8"])
-def lint(session: Session) -> None:
+@session(python=["3.8"])
+def lint(session: nox.Session) -> None:
     """Provide lint warnings to help enforce style guide."""
     args = session.posargs or locations
-    install_with_constraints(
-        session,
+    session.install(
         "flake8",
         "flake8-aaa",
         "flake8-bandit",
@@ -66,8 +65,8 @@ def lint(session: Session) -> None:
     session.run("flake8", *args)
 
 
-@nox.session(python=["3.8"])
-def tests(session: Session) -> None:
+@session(python=["3.8"])
+def tests(session: nox.Session) -> None:
     """Setup for automated testing with pytest"""
     session.run("poetry", "run", "pytest", "-vs")
 
