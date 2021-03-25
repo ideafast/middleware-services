@@ -23,6 +23,8 @@ class GlobalConfig(BaseSettings):
 
     root_path = Path(__file__).parent.parent
 
+    logger_path = root_path / "logging.ini"
+
     # Stores CSVs for mapping devices to patients.
     # See: local/README.md for more details
     csvs_path = root_path / "local"
