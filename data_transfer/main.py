@@ -5,7 +5,7 @@ from data_transfer.config import config
 from data_transfer.dags import btf, drm, sma
 from data_transfer.utils import DeviceType, StudySite
 
-fileConfig("logging.ini")
+fileConfig(config.logger_path)
 
 if __name__ == "__main__":
     # Create this once upon setup
