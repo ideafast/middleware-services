@@ -16,10 +16,11 @@ if __name__ == "__main__":
 
     device = DeviceType[sys.argv[1]] or None
     study_site = StudySite[sys.argv[2].capitalize()] or None
+    timespan = int(sys.argv[3]) or 2  # default 2 days for testing
 
     if device == DeviceType.DRM:
         drm.dag(study_site)
     if device == DeviceType.SMA:
         sma.dag()
     if device == DeviceType.BTF:
-        btf.dag(study_site)
+        btf.dag(study_site, timespan)
