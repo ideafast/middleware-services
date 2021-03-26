@@ -33,7 +33,7 @@ class GlobalConfig(BaseSettings):
     storage_vol: Path = data_path / "input"
     upload_folder: Path = data_path / "uploading"
 
-    byteflies_devices = root_path / "byteflies_devices.csv"
+    byteflies_devices = csvs_path / "byteflies_devices.csv"
 
     dreem_users: Path = csvs_path / "dreem_users.csv"
     dreem_devices: Path = csvs_path / "dreem_devices.csv"

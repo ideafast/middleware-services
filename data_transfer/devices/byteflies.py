@@ -116,21 +116,27 @@ class Byteflies:
                 unknown += 1
                 continue
 
-            # saving resolved patient_id back in recording for logging
             _patient_id = (
-                recording.patient_id  # very sporadically the record has a patient_id already
-                or self.__patient_id_from_ucam(
-                    device_id, recording.start, recording.end
-                )
+                # To keep UCAM as the source of truth, we ignore the patient_id in the
+                # BTF payload - though log to debug later on
+                self.__patient_id_from_ucam(device_id, recording.start, recording.end)
                 or self.__patient_id_from_inventory(
                     device_id, recording.start, recording.end
                 )
             )
 
             if not (patient_id := utils.format_id_patient(_patient_id)):
-                log.error(
-                    f"Record NOT created: Error formatting PatientID ({_patient_id}) for\n{recording}\n"
-                )
+
+                if (api_patient_id := utils.format_id_patient(recording.patient_id)) :
+                    log.error(
+                        f"Record NOT created: Error finding provided PatientID ({api_patient_id})"
+                        f"for\n{recording}\n"
+                    )
+                else:
+                    log.error(
+                        f"Record NOT created: Error formatting PatientID ({_patient_id})"
+                        f"for\n{recording}\n"
+                    )
                 unknown += 1
                 continue
 
@@ -190,20 +196,21 @@ class Byteflies:
         is_downloaded_success = byteflies_api.download_file(
             self.session,
             record.download_folder(),
-            record.meta["study_site"],
+            record.meta["studysite_id"],
             record.meta["recording_id"],
             record.meta["signal_id"],
             record.meta["algorithm_id"],
         )
 
+        # filename if succes, False is not
         if is_downloaded_success:
             # Useful metadata for performing pre-processing.
             downloaded_file = Path(
-                record.download_folder() / f"{record.manufacturer_ref}{self.file_type}"
+                record.download_folder() / f"{is_downloaded_success}{self.file_type}"
             )
             record.meta["filesize"] = downloaded_file.stat().st_size
 
-            record.is_downloaded = is_downloaded_success
+            record.is_downloaded = True
             update_record(record)
             log.debug(f"Download SUCCESS for:\n   {record}")
         else:

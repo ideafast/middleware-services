@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
     device = DeviceType[sys.argv[1]] or None
     study_site = StudySite[sys.argv[2].capitalize()] or None
-    timespan = int(sys.argv[3]) or 2  # default 2 days for testing
+    timespan = int(sys.argv[3]) if len(sys.argv) >= 4 else 2
 
     if device == DeviceType.DRM:
         drm.dag(study_site)

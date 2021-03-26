@@ -3,7 +3,7 @@ import logging
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union
 
 import requests
 
@@ -106,26 +106,32 @@ def download_file(
     recording_id: str,
     signal_id: str,
     algorithm_id: str = "",
-) -> bool:
+) -> Union[bool, str]:
     """
     Download all files associated with one ByteFlies recording.
     """
-    details: dict = __get_recording_by_id(session, studysite_id, recording_id)
-    signal: dict = next((s for s in details["signals"] if s["id"] == signal_id), None)
-    url, filename = (
-        (signal["rawData"], signal_id)
-        if not algorithm_id
-        else (
-            __get_algorithm_uri_by_id(
-                session, studysite_id, recording_id, algorithm_id
-            ),
-            algorithm_id,
+    try:
+        details: dict = __get_recording_by_id(session, studysite_id, recording_id)
+        signal: dict = next(
+            (s for s in details["signals"] if s["id"] == signal_id), None
         )
-    )
+        url, filename = (
+            (signal["rawData"], signal_id)
+            if not algorithm_id
+            else (
+                __get_algorithm_uri_by_id(
+                    session, studysite_id, recording_id, algorithm_id
+                ),
+                algorithm_id,
+            )
+        )
 
-    # TODO: for now, assumes that this method never throws ...
-    __download_file(download_folder, url, filename)
-    return True
+        if __download_file(download_folder, url, filename):
+            return filename
+        return False
+    except requests.HTTPError:
+        log.error(f"GET Exception to {url} ", exc_info=True)
+        return False
 
 
 def serial_by_device(uuid: str) -> Optional[str]:
@@ -161,7 +167,7 @@ def __get_response(session: requests.Session, url: str) -> Any:
 
         result: dict = response.json()
 
-        log.debug(f"Response from {url} was:\n    {result}")
+        log.info(f"Response from {url} was:\n    {result}")
 
         return result
     except requests.HTTPError:
