@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from typing import Union
 
 from data_transfer.db import all_records_downloaded, records_not_uploaded
 from data_transfer.devices.byteflies import Byteflies
@@ -11,7 +12,9 @@ from data_transfer.utils import DeviceType, StudySite, get_period_by_days
 log = logging.getLogger(__name__)
 
 
-def dag(study_site: StudySite, timespan: int, now: int = -1) -> None:
+def dag(
+    study_site: StudySite, days: Union[int, str] = 50, from_today: Union[int, str] = 0
+) -> None:
     """
     Directed acyclic graph (DAG) representing dreem data pipeline:
 
@@ -21,24 +24,27 @@ def dag(study_site: StudySite, timespan: int, now: int = -1) -> None:
             ->task_prepare_data
         ->batch_upload_data
 
-    Parameters
+    Parametersi
     ----------
     study_site : StudySite
-    timespan : int
-        The amount of days in the past to query data for. This should
-        correspond with the pipeline recurrance + margin to ensure overlap
-    now : int, optional
-        The unix time to reference timespan to, defaults to today for the pipeline.
-        Allows traversing and stepping through the past for historical data
+    days : int, optional
+        The amount of days in the past to query data for. This defaults to 50 days
+        to ensure prior data which has been delayed in upload is picked up
+    from_today : int, optional
+        Initial reference (0 == today) to query backwards from. This allows
+        traversing back in time for historical data
 
 
     NOTE/TODO: this method simulates the pipeline.
     """
-
     byteflies = Byteflies(study_site)
 
-    reference: datetime = datetime.today() if now == -1 else datetime.fromtimestamp(now)
-    data_period = get_period_by_days(reference, timespan)
+    data_period = get_period_by_days(int(from_today), int(days))
+
+    log.debug(
+        f"Dowloading records from {datetime.fromtimestamp(int(data_period[0]))}"
+        f" to {datetime.fromtimestamp(int(data_period[1]))}"
+    )
 
     byteflies_jobs.batch_metadata(byteflies, *data_period)
 
@@ -59,3 +65,5 @@ def dag(study_site: StudySite, timespan: int, now: int = -1) -> None:
             shared_jobs.batch_upload_data(DeviceType.BTF)
         else:
             log.error(f"Some records for {patient_device} were not downloaded.")
+
+        break
