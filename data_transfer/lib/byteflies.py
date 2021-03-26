@@ -223,7 +223,7 @@ def __download_file(download_folder: Path, url: str, filename: str) -> bool:
         path = download_folder / f"{filename}.csv"
 
         with requests.get(url, stream=True) as response:
-            log.debug(response.headers)
+            log.debug(f"Headers from {url} was:\n    {response.headers}")
 
             response.raise_for_status()
 
