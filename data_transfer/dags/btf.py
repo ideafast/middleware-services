@@ -65,5 +65,3 @@ def dag(
             shared_jobs.batch_upload_data(DeviceType.BTF)
         else:
             log.error(f"Some records for {patient_device} were not downloaded.")
-
-        break
