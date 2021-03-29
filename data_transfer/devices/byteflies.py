@@ -103,8 +103,7 @@ class Byteflies:
             # Pulls out the most relevant metadata for this recording
             recording = self.recording_metadata(item)
 
-            # NOTE: lookup in .csv export from inventory TODO: translate to inventory api
-            if not (_device_id := byteflies_api.serial_by_device(recording.dot_id)):
+            if not (_device_id := inventory.device_id_by_serial(recording.dot_id)):
                 log.debug(f"Record NOT created for unknown device\n   {recording}")
                 unknown += 1
                 continue  # Skip record
