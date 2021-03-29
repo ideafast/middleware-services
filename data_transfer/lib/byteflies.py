@@ -3,7 +3,7 @@ import logging
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional
 
 import requests
 
@@ -51,7 +51,7 @@ def get_session(token: str) -> requests.Session:
 
 
 def get_list(
-    session: requests.Session, studysite_id: str, from_date: str, to_date: str
+    session: requests.Session, studysite_id: str, from_date: int, to_date: int
 ) -> List[dict]:
     """
     GET a list of records (metadata) across study sites, or 'groups' in ByteFlies API
@@ -106,7 +106,7 @@ def download_file(
     recording_id: str,
     signal_id: str,
     algorithm_id: str = "",
-) -> Union[bool, str]:
+) -> Optional[str]:
     """
     Download all files associated with one ByteFlies recording.
     """
@@ -128,10 +128,10 @@ def download_file(
 
         if __download_file(download_folder, url, filename):
             return filename
-        return False
+        return None
     except requests.HTTPError:
         log.error(f"GET Exception to {url} ", exc_info=True)
-        return False
+        return None
 
 
 def serial_by_device(uuid: str) -> Optional[str]:
@@ -186,7 +186,7 @@ def __get_groups(session: requests.Session) -> List[str]:
 
 
 def __get_recordings_by_group(
-    session: requests.Session, studysite_id: str, begin_date: str, end_date: str
+    session: requests.Session, studysite_id: str, begin_date: int, end_date: int
 ) -> Any:
     """Returns the list of Recordings associated to a Group"""
     return __get_response(

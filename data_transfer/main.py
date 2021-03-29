@@ -22,17 +22,18 @@ if __name__ == "__main__":
     config.storage_vol.mkdir(exist_ok=True)
     config.upload_folder.mkdir(exist_ok=True)
 
-    device = DeviceType[sys.argv[1]] or None
-    study_site = StudySite[sys.argv[2].capitalize()] or None
+    device = DeviceType[sys.argv[1]]
+    study_site = StudySite[sys.argv[2].capitalize()]
 
     if device == DeviceType.DRM:
         drm.dag(study_site)
     if device == DeviceType.SMA:
         sma.dag()
     if device == DeviceType.BTF:
-        # if 'days' == -1, trigger full history
-        if len(sys.argv) >= 4 and int(sys.argv[3]) == -1:
-            btf.historical_dag(study_site, *sys.argv[3:])
+        btf_params = [int(x) for x in sys.argv[3:]]
+
+        if len(btf_params) and btf_params[0] == -1:
+            btf.historical_dag(study_site, *btf_params)
         else:
             # passes timespan and reference if present
-            btf.dag(study_site, *sys.argv[3:])
+            btf.dag(study_site, *btf_params)

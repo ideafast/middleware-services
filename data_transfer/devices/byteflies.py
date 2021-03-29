@@ -73,7 +73,7 @@ class Byteflies:
         log.info("Authentication successful")
         return session
 
-    def download_metadata(self, from_date: str, to_date: str) -> None:
+    def download_metadata(self, from_date: int, to_date: int) -> None:
         """
         Before downloading raw data we need to know which files to download.
         Byteflies offers an API which we can query for a given time period
@@ -193,7 +193,7 @@ class Byteflies:
             log.debug("Data file already downloaded. Skipping.")
             return
 
-        is_downloaded_success = byteflies_api.download_file(
+        filename = byteflies_api.download_file(
             self.session,
             record.download_folder(),
             record.meta["studysite_id"],
@@ -202,11 +202,11 @@ class Byteflies:
             record.meta["algorithm_id"],
         )
 
-        # filename if succes, False is not
-        if is_downloaded_success:
+        # filename if succes, None if not
+        if filename:
             # Useful metadata for performing pre-processing.
             downloaded_file = Path(
-                record.download_folder() / f"{is_downloaded_success}{self.file_type}"
+                record.download_folder() / f"{filename}{self.file_type}"
             )
             record.meta["filesize"] = downloaded_file.stat().st_size
 

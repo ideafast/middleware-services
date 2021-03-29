@@ -1,6 +1,5 @@
 import logging
 from datetime import datetime
-from typing import Union
 
 from data_transfer.config import config
 from data_transfer.db import all_records_downloaded, records_not_uploaded
@@ -13,9 +12,7 @@ from data_transfer.utils import DeviceType, StudySite, get_period_by_days
 log = logging.getLogger(__name__)
 
 
-def dag(
-    study_site: StudySite, days: Union[int, str] = 50, delta: Union[int, str] = 0
-) -> None:
+def dag(study_site: StudySite, days: int = 50, delta: int = 0) -> None:
     """
     Directed acyclic graph (DAG) representing dreem data pipeline:
 
@@ -40,7 +37,7 @@ def dag(
     """
     byteflies = Byteflies(study_site)
 
-    data_period = get_period_by_days(int(delta), int(days))
+    data_period = get_period_by_days(delta, days)
 
     log.debug(
         f"Dowloading records from {datetime.fromtimestamp(int(data_period[0]))}"
