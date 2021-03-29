@@ -3,6 +3,7 @@ from unittest.mock import Mock, patch
 
 from pymongo.collection import Collection
 
+from data_transfer.dags import btf as dags
 from data_transfer.db import main as db
 from data_transfer.lib import byteflies as lib
 
@@ -14,6 +15,7 @@ def test_get_list(mock_time_sleep: Mock, mock_requests_session: dict) -> None:
         mock_requests_session["session"], "studysite_1", "begindate", "enddate"
     )
 
+    # NOTE: Can't replicate, but sleep_call_count failed on me once (was 26853)
     assert mock_time_sleep.call_count == 5
     assert mock_requests_session["get_all"].call_count == 1
     assert mock_requests_session["get_one"].call_count == 4
@@ -48,3 +50,26 @@ def test_populated_db(populated_db: Collection) -> None:
         result = len(db.all_hashes())
 
         assert result == 40
+
+
+@patch.object(dags, "records_not_uploaded", return_value={})
+@patch.object(dags, "Byteflies")
+@patch.object(dags, "StudySite")
+@patch.object(dags.byteflies_jobs, "batch_metadata")
+def test_historical_dag_coverage(
+    mock_batch_metadata: Mock,
+    mock_city: Mock,
+    mock_Byteflies: Mock,
+    mock_not_uploaded: Mock,
+) -> None:
+    dags.historical_dag(mock_city)
+    timespans = [call.args[1:3] for call in mock_batch_metadata.call_args_list]
+    comparison = []
+    for num, timespan in enumerate(timespans):
+        if num < len(timespans) - 1:
+            # the 'from' should be before the next 'end' to ensure overlap
+            comparison.append(timespan[0] < timespans[num + 1][1])
+
+    result = all(comparison)
+
+    assert result

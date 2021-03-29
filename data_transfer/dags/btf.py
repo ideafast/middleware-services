@@ -68,13 +68,15 @@ def dag(
             log.error(f"Some records for {patient_device} were not downloaded.")
 
 
-def historical_dag(study_site: StudySite, delta: int) -> None:
+def historical_dag(
+    study_site: StudySite, _days: Union[int, str] = -1, delta: Union[int, str] = 0
+) -> None:
     """Loops through set periods to retreive all historical data"""
     days_to_cover = (
         datetime.today() - datetime.fromisoformat(config.byteflies_historical_start)
     ).days
     # jump straight to delta reference and skip days in between
-    tracker = delta
+    tracker = int(delta)
     while tracker < days_to_cover:
         dag(study_site, 50, tracker)
         # ensure 1 day overlap for sanity

@@ -31,8 +31,8 @@ if __name__ == "__main__":
         sma.dag()
     if device == DeviceType.BTF:
         # if 'days' == -1, trigger full history
-        if len(sys.argv) >= 5 and int(sys.argv[3]) == -1:
-            btf.historical_dag(study_site, int(sys.argv[4]))
+        if len(sys.argv) >= 4 and int(sys.argv[3]) == -1:
+            btf.historical_dag(study_site, *sys.argv[3:])
         else:
             # passes timespan and reference if present
             btf.dag(study_site, *sys.argv[3:])
