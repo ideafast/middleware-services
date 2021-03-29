@@ -137,14 +137,6 @@ def download_file(
         return None
 
 
-def serial_by_device(uuid: str) -> Optional[str]:
-    """
-    Lookup Device ID by ByteFlies dot.id
-    """
-    serial = __key_by_value(config.byteflies_devices, uuid)
-    return serial
-
-
 def __key_by_value(filename: Path, needle: str) -> Optional[str]:
     """
     Helper method to find key in CSV by value (needle)
