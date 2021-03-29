@@ -11,9 +11,7 @@ from data_transfer.lib import byteflies as lib
 @patch.object(lib.time, "sleep")
 def test_get_list(mock_time_sleep: Mock, mock_requests_session: dict) -> None:
 
-    result = lib.get_list(
-        mock_requests_session["session"], "studysite_1", "begindate", "enddate"
-    )
+    result = lib.get_list(mock_requests_session["session"], "studysite_1", 0, 1)
 
     # NOTE: Can't replicate, but sleep_call_count failed on me once (was 26853)
     assert mock_time_sleep.call_count == 5
