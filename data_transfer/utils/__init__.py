@@ -100,7 +100,7 @@ def normalise_day(_datetime: datetime) -> datetime:
     """
     Replaces day time with zero for comparison by day.
     """
-    return _datetime.replace(hour=0, minute=0, second=0)
+    return _datetime.replace(hour=0, minute=0, second=0, microsecond=0)
 
 
 def format_id_patient(patient_id: str) -> Optional[str]:
