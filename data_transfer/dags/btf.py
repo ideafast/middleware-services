@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from typing import Union
 
+from data_transfer.config import config
 from data_transfer.db import all_records_downloaded, records_not_uploaded
 from data_transfer.devices.byteflies import Byteflies
 from data_transfer.jobs import byteflies as byteflies_jobs
@@ -13,7 +14,7 @@ log = logging.getLogger(__name__)
 
 
 def dag(
-    study_site: StudySite, days: Union[int, str] = 50, from_today: Union[int, str] = 0
+    study_site: StudySite, days: Union[int, str] = 50, delta: Union[int, str] = 0
 ) -> None:
     """
     Directed acyclic graph (DAG) representing dreem data pipeline:
@@ -24,13 +25,13 @@ def dag(
             ->task_prepare_data
         ->batch_upload_data
 
-    Parametersi
+    Parameters
     ----------
     study_site : StudySite
     days : int, optional
         The amount of days in the past to query data for. This defaults to 50 days
         to ensure prior data which has been delayed in upload is picked up
-    from_today : int, optional
+    delta : int, optional
         Initial reference (0 == today) to query backwards from. This allows
         traversing back in time for historical data
 
@@ -39,7 +40,7 @@ def dag(
     """
     byteflies = Byteflies(study_site)
 
-    data_period = get_period_by_days(int(from_today), int(days))
+    data_period = get_period_by_days(int(delta), int(days))
 
     log.debug(
         f"Dowloading records from {datetime.fromtimestamp(int(data_period[0]))}"
@@ -65,3 +66,16 @@ def dag(
             shared_jobs.batch_upload_data(DeviceType.BTF)
         else:
             log.error(f"Some records for {patient_device} were not downloaded.")
+
+
+def historical_dag(study_site: StudySite, delta: int) -> None:
+    """Loops through set periods to retreive all historical data"""
+    days_to_cover = (
+        datetime.today() - datetime.fromisoformat(config.byteflies_historical_start)
+    ).days
+    # jump straight to delta reference and skip days in between
+    tracker = delta
+    while tracker < days_to_cover:
+        dag(study_site, 50, tracker)
+        # ensure 1 day overlap for sanity
+        tracker += 49
