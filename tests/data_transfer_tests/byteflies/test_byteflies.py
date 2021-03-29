@@ -62,12 +62,13 @@ def test_historical_dag_coverage(
 ) -> None:
     dags.historical_dag(mock_city)
     timespans = [call.args[1:3] for call in mock_batch_metadata.call_args_list]
-    comparison = []
-    for num, timespan in enumerate(timespans):
-        if num < len(timespans) - 1:
-            # the 'from' should be before the next 'end' to ensure overlap
-            comparison.append(timespan[0] < timespans[num + 1][1])
 
-    result = all(comparison)
+    result = all(
+        [
+            ts[0] < timespans[num + 1][1]
+            for num, ts in enumerate(timespans)
+            if num < len(timespans) - 1
+        ]
+    )
 
     assert result
