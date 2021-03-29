@@ -88,6 +88,9 @@ def get_list(
             session, studysite_id, recording["id"]
         )
 
+        for signal in recording_details["signals"]:
+            del signal["rawData"]
+
         template = __metadata_copy(json.dumps(recording_details))
 
         for signal in recording_details["signals"]:
