@@ -151,8 +151,6 @@ def __get_response(session: requests.Session, url: str) -> Any:
 
         result: dict = response.json()
 
-        log.info(f"Response from {url} was:\n    {result}")
-
         return result
     except requests.HTTPError:
         log.error(f"GET Exception to {url} ", exc_info=True)
