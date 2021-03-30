@@ -46,6 +46,8 @@ class Settings(GlobalConfig):
 
     # IDEAFAST
     database_uri: str
+    database_name: str
+
     inventory_api: str
     support_base_url: str
     support_token: str
