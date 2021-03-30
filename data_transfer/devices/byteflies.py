@@ -1,4 +1,5 @@
 import logging
+import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -259,8 +260,8 @@ class Byteflies:
         Determine PatientID by wear period of device in UCAM.
         """
         record = ucam.record_by_wear_period(device_id, start, end)
-        if record:
-            print("found in UCAM")
+        # TODO: inventory has small rate limit.
+        time.sleep(4)
         return record.patient_id if record else None
 
     def __patient_id_from_inventory(
@@ -270,6 +271,6 @@ class Byteflies:
         Determine PatientID by wear period in inventory.
         """
         record = inventory.record_by_device_id(device_id, start, end)
-        if record:
-            print("found in Inventory")
+        # TODO: inventory has small rate limit.
+        time.sleep(4)
         return record.get("patient_id", None) if record else None
