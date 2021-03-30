@@ -8,7 +8,7 @@ from typing import Any, List, Optional
 import requests
 
 from data_transfer.config import config
-from data_transfer.utils import DeviceType, read_csv_from_cache, uid_to_hash
+from data_transfer.utils import DeviceType, uid_to_hash
 
 log = logging.getLogger(__name__)
 
@@ -135,17 +135,6 @@ def download_file(
     except requests.HTTPError:
         log.error(f"GET Exception to {url} ", exc_info=True)
         return None
-
-
-def __key_by_value(filename: Path, needle: str) -> Optional[str]:
-    """
-    Helper method to find key in CSV by value (needle)
-    """
-    data = read_csv_from_cache(filename)
-    for item in data:
-        if needle == item["Serial"]:
-            return str(item["Asset Tag"])
-    return None
 
 
 def __get_response(session: requests.Session, url: str) -> Any:
