@@ -47,12 +47,18 @@ def format_weartime_from_timestamp(period: int) -> datetime:
     return datetime.fromtimestamp(period)
 
 
-def get_period_by_days(start: datetime, days: int) -> Tuple[str, str]:
+def get_period_by_days(start: int, days: int) -> Tuple[int, int]:
     """return two timestamps based on a startdate and duration"""
-    end_date = start.replace(hour=23, minute=59)
-    from_date = end_date - timedelta(days=days)
-    begin = str(int(from_date.timestamp()))
-    end = str(int(end_date.timestamp()))
+    reference = datetime.today() - timedelta(days=start)
+
+    # ensure end at night, but start in the morning to capture everything _those days_
+    end_date = reference.replace(hour=23, minute=59, second=59, microsecond=999999)
+    from_date = end_date - timedelta(
+        days=days, hours=23, minutes=59, seconds=59, microseconds=999999
+    )
+
+    begin = int(from_date.timestamp())
+    end = int(end_date.timestamp())
     return (begin, end)
 
 

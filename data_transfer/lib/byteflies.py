@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -7,7 +8,9 @@ from typing import Any, List, Optional
 import requests
 
 from data_transfer.config import config
-from data_transfer.utils import DeviceType, read_csv_from_cache, uid_to_hash
+from data_transfer.utils import DeviceType, uid_to_hash
+
+log = logging.getLogger(__name__)
 
 
 def get_token(creds: dict) -> str:
@@ -48,7 +51,7 @@ def get_session(token: str) -> requests.Session:
 
 
 def get_list(
-    session: requests.Session, studysite_id: str, from_date: str, to_date: str
+    session: requests.Session, studysite_id: str, from_date: int, to_date: int
 ) -> List[dict]:
     """
     GET a list of records (metadata) across study sites, or 'groups' in ByteFlies API
@@ -62,6 +65,7 @@ def get_list(
 
         def get(self, signal_id: str, algorithm_id: str = "") -> Any:
             copy = json.loads(self.jsondump)
+            # injecting data to copy with duplicates all based on one recording
             copy["IDEAFAST"] = {
                 "hash": uid_to_hash(
                     f"{copy['id']}/{signal_id}/{algorithm_id}", DeviceType.BTF
@@ -84,6 +88,9 @@ def get_list(
             session, studysite_id, recording["id"]
         )
 
+        for signal in recording_details["signals"]:
+            del signal["rawData"]
+
         template = __metadata_copy(json.dumps(recording_details))
 
         for signal in recording_details["signals"]:
@@ -96,51 +103,38 @@ def get_list(
 
 
 def download_file(
-    download_folder: Path,
     session: requests.Session,
+    download_folder: Path,
     studysite_id: str,
     recording_id: str,
     signal_id: str,
     algorithm_id: str = "",
-) -> bool:
+) -> Optional[str]:
     """
     Download all files associated with one ByteFlies recording.
     """
-    details: dict = __get_recording_by_id(session, studysite_id, recording_id)
-    signal: dict = next((s for s in details["signals"] if s["id"] == signal_id), None)
-    url, filename = (
-        (signal["rawData"], signal_id)
-        if not algorithm_id
-        else (
-            __get_algorithm_uri_by_id(
-                session, studysite_id, recording_id, algorithm_id
-            ),
-            algorithm_id,
+    try:
+        details: dict = __get_recording_by_id(session, studysite_id, recording_id)
+        signal: dict = next(
+            (s for s in details["signals"] if s["id"] == signal_id), None
         )
-    )
+        url, filename = (
+            (signal["rawData"], signal_id)
+            if not algorithm_id
+            else (
+                __get_algorithm_uri_by_id(
+                    session, studysite_id, recording_id, algorithm_id
+                ),
+                algorithm_id,
+            )
+        )
 
-    # TODO: for now, assumes that this method never throws ...
-    __download_file(download_folder, url, filename)
-    return True
-
-
-def serial_by_device(uuid: str) -> Optional[str]:
-    """
-    Lookup Device ID by ByteFlies dot.id
-    """
-    serial = __key_by_value(config.byteflies_devices, uuid)
-    return serial
-
-
-def __key_by_value(filename: Path, needle: str) -> Optional[str]:
-    """
-    Helper method to find key in CSV by value (needle)
-    """
-    data = read_csv_from_cache(filename)
-    for item in data:
-        if needle == item["Serial"]:
-            return str(item["Asset Tag"])
-    return None
+        if __download_file(download_folder, url, filename):
+            return filename
+        return None
+    except requests.HTTPError:
+        log.error(f"GET Exception to {url} ", exc_info=True)
+        return None
 
 
 def __get_response(session: requests.Session, url: str) -> Any:
@@ -148,19 +142,21 @@ def __get_response(session: requests.Session, url: str) -> Any:
     Wrapper method to execute a GET request. Gives a second
     break to avoid 429 / 502 TooManyRequests (as advised)
     """
-    # TODO: manage ByteFlies API requests through other means than time.sleep
+    # ByteFlies DEV: when too many requests, it throws 429 or 502
+    #    If once per second, should not be a problem
     time.sleep(1)
-    response = session.get(url)
-    if code := response.status_code != 200:
-        # when too many requests, we expect 429 or 502
-        if code != 429 and code != 502:
-            # TODO: catch/log exception
-            response.raise_for_status()
-        else:
-            # wait and retry soon-ish
-            pass
+    try:
+        response = session.get(url)
+        response.raise_for_status()
 
-    return response.json()
+        result: dict = response.json()
+
+        log.info(f"Response from {url} was:\n    {result}")
+
+        return result
+    except requests.HTTPError:
+        log.error(f"GET Exception to {url} ", exc_info=True)
+        return False
 
 
 def __get_groups(session: requests.Session) -> List[str]:
@@ -174,7 +170,7 @@ def __get_groups(session: requests.Session) -> List[str]:
 
 
 def __get_recordings_by_group(
-    session: requests.Session, studysite_id: str, begin_date: str, end_date: str
+    session: requests.Session, studysite_id: str, begin_date: int, end_date: int
 ) -> Any:
     """Returns the list of Recordings associated to a Group"""
     return __get_response(
@@ -206,16 +202,26 @@ def __get_algorithm_uri_by_id(
     return str(payload["uri"])
 
 
-def __download_file(download_folder: Path, url: str, filename: str) -> None:
+def __download_file(download_folder: Path, url: str, filename: str) -> bool:
     """
     Builds the target filename and starts downloading the file to disk
     No session parameter as this queries a non-BTF url with authentication
     embedded in the url
     """
-    path = download_folder / f"{filename}.csv"
+    try:
 
-    with requests.get(url, stream=True) as response:
-        with open(path, "wb") as output_file:
-            for chunk in response.iter_content(chunk_size=1024):
-                if chunk:
-                    output_file.write(chunk)
+        path = download_folder / f"{filename}.csv"
+
+        with requests.get(url, stream=True) as response:
+            log.debug(f"Headers from {url} was:\n    {response.headers}")
+
+            response.raise_for_status()
+
+            with open(path, "wb") as output_file:
+                for chunk in response.iter_content(chunk_size=1024):
+                    if chunk:
+                        output_file.write(chunk)
+        return True
+    except Exception:
+        log.error("Exception:", exc_info=True)
+        return False
