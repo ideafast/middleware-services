@@ -29,14 +29,20 @@ def device_id_by_serial(device_type: utils.DeviceType, serial: str) -> Optional[
 def device_history(device_id: str) -> Any:
     response = requests.get(f"{config.inventory_api}device/history/{device_id}")
     # TODO: validation
-    return response.json()["data"]
+    _response = response.json()
+    if not _response["meta"]["success"]:
+        return None
+    return _response["data"]
 
 
 @lru_cache
 def record_by_device_id(
     device_id: str, start_wear: datetime, end_wear: datetime
 ) -> Optional[Any]:
-    device_wears = [i for i in device_history(device_id).values()]
+    history = device_history(device_id)
+    if not history:
+        return None
+    device_wears = [i for i in history.values()]
 
     start_wear = utils.normalise_day(start_wear)
     end_wear = utils.normalise_day(end_wear)
