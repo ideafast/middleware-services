@@ -1,5 +1,5 @@
 # See: https://snipe-it.readme.io/reference
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from fastapi import APIRouter
 
@@ -26,6 +26,14 @@ def serialize_device(device: dict) -> Device:
         serial=device["serial"],
         id=device["id"],
     )
+
+
+@router.get("/devices/bytype/{model_id}")
+async def devices_by_type(model_id: int) -> List[Device]:
+    """Retrieve metadata about ALL devices for by a specific model."""
+    url = f"hardware?limit=500&model_id={model_id}"
+    res = await inventory.response(url)
+    return [serialize_device(i) for i in res["rows"]]
 
 
 @router.get("/device/byserial/{serial}")
