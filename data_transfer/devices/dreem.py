@@ -1,5 +1,4 @@
 import logging
-import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -198,8 +197,6 @@ class Dreem:
         # NOTE/TODO: given this is a 1-1 mapping, why not use a local CSV?
         device_id = inventory.device_id_by_serial(self.device_type, device_serial)
         record = ucam.record_by_wear_period(device_id, start, end)
-        # TODO: inventory has small rate limit.
-        time.sleep(4)
         return record.patient_id if record else None
 
     def __patient_id_from_inventory(
@@ -210,7 +207,6 @@ class Dreem:
         """
         device_id = inventory.device_id_by_serial(self.device_type, device_serial)
         record = inventory.record_by_device_id(device_id, start, end)
-        time.sleep(4)
         return record.get("patient_id", None) if record else None
 
     def download_file(self, mongo_id: str) -> None:
