@@ -23,7 +23,7 @@ def serialize_device(device: dict) -> Device:
         manufacturer=name_or_none(device["manufacturer"]),
         is_checkout=device["status_label"]["status_meta"] == "deployed",
         location=name_or_none(device["location"]),
-        serial=device["serial"],
+        serial=device["serial"].replace(" ", ""),
         id=device["id"],
     )
 
