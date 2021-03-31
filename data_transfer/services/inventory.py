@@ -25,6 +25,7 @@ def device_id_by_serial(device_type: utils.DeviceType, serial: str) -> Optional[
     )
 
 
+@lru_cache
 def device_history(device_id: str) -> Any:
     response = requests.get(f"{config.inventory_api}device/history/{device_id}")
     # TODO: validation
