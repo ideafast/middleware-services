@@ -57,7 +57,7 @@ class Byteflies:
         """
         self.study_site = study_site
         self.session = self.authenticate()
-        self.device_type = utils.DeviceType.BTF.name
+        self.device_type = utils.DeviceType.BTF
         self.file_type = ".csv"
 
     def authenticate(self) -> requests.Session:
@@ -150,7 +150,7 @@ class Byteflies:
                 # can relate to a single download file or a group of files
                 hash=hash_id,
                 manufacturer_ref=recording.recording_id,
-                device_type=self.device_type,
+                device_type=self.device_type.name,
                 device_id=device_id,
                 patient_id=patient_id,
                 start_wear=recording.start,
