@@ -9,14 +9,20 @@ from data_transfer.config import config
 
 
 @lru_cache
-def device_id_by_serial(serial: str) -> Optional[str]:
-    # TODO: there is a rate limit on the inventory!
-    response = requests.get(f"{config.inventory_api}device/byserial/{serial}")
-    # TODO: validation
-    _response = response.json()
-    if not _response["meta"]["success"]:
-        return None
-    return _response["data"]["device_id"]
+def all_devices_by_type(device_type: utils.DeviceType) -> Any:
+    """
+    Retrieve complete list of ALL Devices by model.
+    This is cached as response can be quite large and will be used multiple times per DAG."""
+    model_id = dict(BTF=6, DRM=8)[device_type.name]
+    response = requests.get(f"{config.inventory_api}devices/bytype/{model_id}")
+    return response.json()
+
+
+def device_id_by_serial(device_type: utils.DeviceType, serial: str) -> Optional[str]:
+    response = all_devices_by_type(device_type)
+    return next(
+        (i["device_id"] for i in response["data"] if i["serial"] == serial), None
+    )
 
 
 def device_history(device_id: str) -> Any:
