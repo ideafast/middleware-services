@@ -52,11 +52,12 @@ def test_all_devices_by_type_cache_success() -> None:
         assert hits == num_requests - 1
 
 
-def test_device_id_by_serial_hit_cache(mock_inventory_devices_bytype: dict) -> None:
+def test_device_id_by_serial_hit_cache_success(
+    mock_inventory_devices_bytype: dict,
+) -> None:
     inventory.all_devices_by_type.cache_clear()
     num_requests = 10
     response = MagicMock()
-    # mock requests json method by returning valid data...
     response.json = lambda: mock_inventory_devices_bytype
 
     with patch("requests.get", return_value=response) as _:  # act
