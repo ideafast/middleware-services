@@ -19,6 +19,11 @@ def mock_data() -> None:
     ucam.config.ucam_data = Path(f"{folder}/data/mock_ucam_db.csv")
 
 
+@pytest.fixture(scope="function")
+def mock_inventory_devices_bytype() -> dict:
+    return utils.read_json(Path(f"{folder}/data/inventory/mock_devices_bytype.json"))
+
+
 @pytest.fixture
 def mock_inventory_requests() -> dict:
     inventory_history_response = utils.read_json(

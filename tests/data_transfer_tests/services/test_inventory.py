@@ -1,5 +1,5 @@
 from datetime import datetime
-from unittest.mock import patch
+from unittest.mock import MagicMock, Mock, patch
 
 from data_transfer import utils
 from data_transfer.services import inventory
@@ -36,3 +36,33 @@ def test_normalise_day() -> None:
     result = one == two
 
     assert result
+
+
+def test_all_devices_by_type_cache_success() -> None:
+    inventory.all_devices_by_type.cache_clear()
+    num_requests = 10
+
+    with patch("requests.get", return_value=Mock()) as _:  # act
+        for __ in range(0, num_requests):
+            inventory.all_devices_by_type(utils.DeviceType.BTF)
+
+        hits, misses, _, __ = inventory.all_devices_by_type.cache_info()
+
+        assert misses == 1  # first request is cached
+        assert hits == num_requests - 1
+
+
+def test_device_id_by_serial_hit_cache(mock_inventory_devices_bytype: dict) -> None:
+    inventory.all_devices_by_type.cache_clear()
+    num_requests = 10
+    response = MagicMock()
+    # mock requests json method by returning valid data...
+    response.json = lambda: mock_inventory_devices_bytype
+
+    with patch("requests.get", return_value=response) as _:  # act
+        for __ in range(0, num_requests):
+            inventory.all_devices_by_type(utils.DeviceType.BTF)
+
+        hits, misses, _, __ = inventory.all_devices_by_type.cache_info()
+
+        assert hits == num_requests - 1
