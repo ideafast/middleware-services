@@ -42,12 +42,11 @@ def record_by_device_id(
     history = device_history(device_id)
     if not history:
         return None
-    device_wears = [i for i in history.values()]
 
     start_wear = utils.normalise_day(start_wear)
     end_wear = utils.normalise_day(end_wear)
 
-    for record in device_wears:
+    for record in history.values():
         inventory_start_wear = utils.format_weartime(record["checkout"], "inventory")
         checkin = record["checkin"] or datetime.now().strftime(
             utils.FORMATS["inventory"]
