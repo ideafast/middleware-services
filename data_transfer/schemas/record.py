@@ -32,10 +32,10 @@ class Record(BaseModel):
     dmp_folder: Optional[str]
 
     # Each stage of the pipeline
-    is_downloaded: Optional[bool] = False
-    is_processed: Optional[bool] = False
-    is_prepared: Optional[bool] = False
-    is_uploaded: Optional[bool] = False
+    is_downloaded: bool = False
+    is_processed: bool = False
+    is_prepared: bool = False
+    is_uploaded: bool = False
 
     @validator("id")
     def validate_id(cls, id: str) -> ObjectId:
@@ -57,3 +57,28 @@ class Record(BaseModel):
         )
         path.mkdir(parents=True, exist_ok=True)
         return path
+
+    # ensure validators are run when changing values, not just construction
+    class Config:
+        validate_assignment = True
+
+    @validator("is_processed")
+    def after_downloaded(cls, v: bool, values: dict) -> bool:
+        # values: a dict containing the name-to-value mapping of any previously-validated fields
+        # NOTE: only checks if the value 'v' is set to True
+        if v and not values["is_downloaded"]:
+            raise ValueError("NOT ALLOWED: this Record is not downloaded yet.")
+        return v
+
+    @validator("is_prepared", always=True)
+    def after_processed(cls, v: bool, values: dict) -> bool:
+        if v and not values["is_processed"]:
+            raise ValueError("NOT ALLOWED: this Record is not processed yet.")
+        return v
+
+    @validator("is_uploaded")
+    def after_prepared(cls, v: bool, values: dict) -> bool:
+        # NOTE: this value is normally set after upload; somewhat 'too little to late'
+        if v and not values["is_prepared"]:
+            raise ValueError("NOT ALLOWED: this Record is not prepared yet.")
+        return v
