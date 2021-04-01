@@ -27,7 +27,7 @@ def mock_inventory_devices_bytype() -> dict:
 @pytest.fixture
 def mock_inventory_requests() -> dict:
     inventory_history_response = utils.read_json(
-        Path(f"{folder}/data/mock_inventory_history.json")
+        Path(f"{folder}/data/inventory/mock_history.json")
     )
     session = requests.Session()
     adapter = requests_mock.Adapter()

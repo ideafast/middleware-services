@@ -1,0 +1,35 @@
+{
+	"data": [
+        {
+			"id": 750,
+			"serial": "ABC123",
+			"device_id": "BTF-HA7YPH",
+			"is_checkout": false,
+			"model": "Byteflies",
+			"manufacturer": "Byteflies",
+			"location": "Rotterdam"
+		},
+		{
+			"id": 749,
+			"serial": "ABC456",
+			"device_id": "BTF-K93DTY",
+			"is_checkout": false,
+			"model": "Byteflies",
+			"manufacturer": "Byteflies",
+			"location": "Rotterdam"
+		},
+		{
+			"id": 748,
+			"serial": "ABC123",
+			"device_id": "BTF-7E9N2G",
+			"is_checkout": false,
+			"model": "Byteflies",
+			"manufacturer": "Byteflies",
+			"location": "Rotterdam"
+		}
+	],
+	"meta": {
+		"success": true,
+		"errors": null
+	}
+}
