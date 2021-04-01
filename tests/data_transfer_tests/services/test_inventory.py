@@ -42,14 +42,14 @@ def test_all_devices_by_type_cache_success() -> None:
     inventory.all_devices_by_type.cache_clear()
     num_requests = 10
 
-    with patch("requests.get", return_value=Mock()) as _:  # act
+    with patch("requests.get", return_value=Mock()) as _:
         for __ in range(0, num_requests):
             inventory.all_devices_by_type(utils.DeviceType.BTF)
 
-        hits, misses, _, __ = inventory.all_devices_by_type.cache_info()
+        result = inventory.all_devices_by_type.cache_info()
 
-        assert misses == 1  # first request is cached
-        assert hits == num_requests - 1
+        assert result[1] == 1  # first request is cached
+        assert result[0] == num_requests - 1
 
 
 def test_device_id_by_serial_hit_cache_success(
@@ -60,10 +60,10 @@ def test_device_id_by_serial_hit_cache_success(
     response = MagicMock()
     response.json = lambda: mock_inventory_devices_bytype
 
-    with patch("requests.get", return_value=response) as _:  # act
+    with patch("requests.get", return_value=response) as _:
         for __ in range(0, num_requests):
             inventory.all_devices_by_type(utils.DeviceType.BTF)
 
-        hits, misses, _, __ = inventory.all_devices_by_type.cache_info()
+        result = inventory.all_devices_by_type.cache_info()
 
-        assert hits == num_requests - 1
+        assert result[0] == num_requests - 1
