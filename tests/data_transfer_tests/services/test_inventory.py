@@ -56,7 +56,7 @@ def test_device_id_by_serial_valid_result(
     response = MagicMock()
     response.json = lambda: mock_inventory_devices_bytype
 
-    with patch("requests.get", return_value=response) as _:
+    with patch("requests.get", return_value=response):
 
         result = inventory.device_id_by_serial(utils.DeviceType.BTF, "ABC456")
 
@@ -71,8 +71,8 @@ def test_device_id_by_serial_hit_cache_success(
     response = MagicMock()
     response.json = lambda: mock_inventory_devices_bytype
 
-    with patch("requests.get", return_value=response) as _:
-        for __ in range(0, num_requests):
+    with patch("requests.get", return_value=response):
+        for _ in range(0, num_requests):
             inventory.all_devices_by_type(utils.DeviceType.BTF)
 
         result = inventory.all_devices_by_type.cache_info()
