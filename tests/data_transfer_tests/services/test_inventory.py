@@ -42,14 +42,11 @@ def test_all_devices_by_type_cache_success() -> None:
     inventory.all_devices_by_type.cache_clear()
     num_requests = 10
 
-    with patch("requests.get", return_value=Mock()) as _:
+    with patch("requests.get", return_value=Mock()) as get:
         for __ in range(0, num_requests):
             inventory.all_devices_by_type(utils.DeviceType.BTF)
 
-        result = inventory.all_devices_by_type.cache_info()
-
-        assert result[1] == 1  # first request is cached
-        assert result[0] == num_requests - 1
+        get.assert_called_once()  # Act
 
 
 def test_device_id_by_serial_valid_result(
