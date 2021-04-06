@@ -147,11 +147,10 @@ def __get_response(session: requests.Session, url: str) -> Any:
     time.sleep(1)
     try:
         response = session.get(url)
+        log.info(f"Response from {url} was:\n    {response.headers}")
         response.raise_for_status()
 
         result: dict = response.json()
-
-        log.info(f"Response from {url} was:\n    {result}")
 
         return result
     except requests.HTTPError:
