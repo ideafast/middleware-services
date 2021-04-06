@@ -15,7 +15,7 @@ def task_preprocess_data(mongoid: str) -> str:
     Preprocessing tasks on byteflies data.
     """
     record = read_record(mongoid)
-    if not record.is_processed:
+    if record.is_downloaded and not record.is_processed:
         record.is_processed = True
         update_record(record)
     return mongoid
