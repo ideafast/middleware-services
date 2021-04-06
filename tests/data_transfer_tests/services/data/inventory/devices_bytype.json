@@ -3,7 +3,7 @@
         {
 			"id": 750,
 			"serial": "ABC123",
-			"device_id": "BTF-HA7YPH",
+			"device_id": "BTF-123456",
 			"is_checkout": false,
 			"model": "Byteflies",
 			"manufacturer": "Byteflies",
@@ -12,7 +12,7 @@
 		{
 			"id": 749,
 			"serial": "ABC456",
-			"device_id": "BTF-K93DTY",
+			"device_id": "BTF-TEST01",
 			"is_checkout": false,
 			"model": "Byteflies",
 			"manufacturer": "Byteflies",
@@ -21,7 +21,7 @@
 		{
 			"id": 748,
 			"serial": "ABC123",
-			"device_id": "BTF-7E9N2G",
+			"device_id": "BTF-999999",
 			"is_checkout": false,
 			"model": "Byteflies",
 			"manufacturer": "Byteflies",
