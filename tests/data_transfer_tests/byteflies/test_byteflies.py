@@ -37,7 +37,7 @@ def test_download_file(mock_requests_session: dict, tmpdir: Path) -> None:
     assert Path(tmpdir / "random_id_13.csv").is_file()
 
 
-def test_recording_by_id(mock_requests_session: dict, tmpdir: Path) -> None:
+def test_recording_by_id() -> None:
     # TODO: involve Byteflies()__get_timestamp()
     lib.__get_recording_by_id.cache_clear()
     response = MagicMock()
