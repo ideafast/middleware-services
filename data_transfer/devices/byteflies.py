@@ -4,8 +4,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
-import requests
-
 from data_transfer import utils
 from data_transfer.config import config
 from data_transfer.db import all_hashes, create_record, read_record, update_record
@@ -55,23 +53,8 @@ class Byteflies:
         Authenticate with AWS cognito to access ByteFlies resources
         """
         self.study_site = study_site
-        self.session = self.authenticate()
         self.device_type = utils.DeviceType.BTF
         self.file_type = ".csv"
-
-    def authenticate(self) -> requests.Session:
-        """
-        Authenticate once when object created to share session between requests
-        """
-        credentials = dict(
-            username=config.byteflies_username,
-            password=config.byteflies_password,
-            client_id=config.byteflies_aws_client_id,
-        )
-        token = byteflies_api.get_token(credentials)
-        session = byteflies_api.get_session(token)
-        log.info("Authentication successful")
-        return session
 
     def download_metadata(self, from_date: int, to_date: int) -> None:
         """
@@ -83,7 +66,6 @@ class Byteflies:
         """
         # Note: includes metadata for ALL data records, therefore we must filter them
         all_records = byteflies_api.get_list(
-            self.session,
             config.byteflies_group_ids[self.study_site],
             from_date,
             to_date,
@@ -197,7 +179,6 @@ class Byteflies:
             return
 
         filename = byteflies_api.download_file(
-            self.session,
             record.download_folder(),
             record.meta["studysite_id"],
             record.meta["recording_id"],
