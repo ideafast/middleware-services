@@ -20,30 +20,30 @@ services:
     volumes:
       - mongodb:/data/db
 
-  consumer:
-    container_name: consumer
-    image: middleware-consumer:latest
-    networks:
-      - web
-      - database
-    env_file:
-      - .consumer.env
+  # consumer:
+  #   container_name: consumer
+  #   image: middleware-consumer:latest
+  #   networks:
+  #     - web
+  #     - database
+  #   env_file:
+  #     - .consumer.env
 
-  dtransfer:
-    container_name: dtransfer
-    image: middleware-dtransfer:latest
-    networks:
-      - web
-      - database
-    env_file:
-      # As this is for local development use both
-      - .dtransfer.prod.env
-      - .dtransfer.dev.env
-    volumes:
-      # Useful for development purposes
-      - ./data:/app/data/
-      # Relevant CSVs
-      - ./local:/app/local/
+  # dtransfer:
+  #   container_name: dtransfer
+  #   image: middleware-dtransfer:latest
+  #   networks:
+  #     - web
+  #     - database
+  #   env_file:
+  #     # As this is for local development use both
+  #     - .dtransfer.prod.env
+  #     - .dtransfer.dev.env
+  #   volumes:
+  #     # Useful for development purposes
+  #     - ./data:/app/data/
+  #     # Relevant CSVs
+  #     - ./local:/app/local/
 
 volumes:
   mongodb:

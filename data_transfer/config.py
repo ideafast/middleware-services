@@ -40,6 +40,8 @@ class GlobalConfig(BaseSettings):
 
     ucam_data: Path = csvs_path / "ucam_db.csv"
 
+    # ThinkFast does not map devices to patients as only one device ID is used to represent the phone app
+
 
 class Settings(GlobalConfig):
     is_dev: bool
@@ -79,6 +81,14 @@ class Settings(GlobalConfig):
     # DREEM
     dreem_login_url: str
     dreem_api_url: str
+
+    # THINKFAST
+    thinkfast_api_url: str = get_env_value("THINKFAST_API_URL")
+    thinkfast_username: str = get_env_value("THINKFAST_USERNAME")
+    thinkfast_password: str = get_env_value("THINKFAST_PASSWORD")
+
+    print("thinkfast_api_url")
+    print(thinkfast_api_url)
 
     # Hardcoded as this data structure is not
     # supported unless JSON is stored in .env

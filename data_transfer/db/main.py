@@ -39,6 +39,7 @@ def update_record(record: Record) -> None:
 
 
 def all_hashes() -> List[str]:
+    print("looking in the DB to get all records")
     return [doc["hash"] for doc in _db.records.find()]
 
 
