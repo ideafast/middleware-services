@@ -71,9 +71,8 @@ def mock_requests_session() -> dict:
 
 
 @pytest.fixture
-@patch.object(byteflies.Byteflies, "authenticate")
 @patch.object(byteflies, "StudySite")
-def populated_db(mock_authenticate: Mock, mock_city: Mock) -> Collection:
+def populated_db(mock_city: Mock) -> Collection:
     # path db with mock
     mock_db = mongomock.MongoClient().db
     # get mock data
