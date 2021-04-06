@@ -4,6 +4,7 @@ import os
 import time
 from dataclasses import dataclass
 from datetime import datetime
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, List, Optional
 
@@ -111,13 +112,14 @@ def download_file(
     studysite_id: str,
     recording_id: str,
     signal_id: str,
-    algorithm_id: str = "",
+    algorithm_id: str,
+    timestamp: int,
 ) -> Optional[str]:
     """
     Download all files associated with one ByteFlies recording.
     """
     try:
-        details: dict = __get_recording_by_id(studysite_id, recording_id)
+        details: dict = __get_recording_by_id(studysite_id, recording_id, timestamp)
         signal: dict = next(
             (s for s in details["signals"] if s["id"] == signal_id), None
         )
@@ -144,8 +146,8 @@ def __get_response(url: str) -> Any:
     break to avoid 429 / 502 TooManyRequests (as advised)
     """
     # ByteFlies DEV: when too many requests, it throws 429 or 502
-    #    If once per second, should not be a problem
-    time.sleep(1)
+    #    If ~once per second, should not be a problem
+    time.sleep(0.5)
     try:
         headers = {"Authorization": f"{__btf_access_token()}"}
         response = requests.get(url, headers=headers)
@@ -156,6 +158,8 @@ def __get_response(url: str) -> Any:
 
         return result
     except requests.HTTPError:
+        # TODO: catch 401 and auth with force
+        # TODO: catch 429 and 502 and time.sleep and retry
         log.error(f"GET Exception to {url} ", exc_info=True)
         return False
 
@@ -178,8 +182,15 @@ def __get_recordings_by_group(studysite_id: str, begin_date: int, end_date: int)
     )
 
 
-def __get_recording_by_id(studysite_id: str, recording_id: str) -> Any:
-    """Returns the details of a particular Recording"""
+@lru_cache(maxsize=1)
+def __get_recording_by_id(
+    studysite_id: str, recording_id: str, timestamp: int = 0
+) -> Any:
+    """
+    Returns the details of a particular Recording
+    NOTE: cached (max 1 at a time); used in the download stage.
+    NOTE: The timestamp (see devices/btf) ensures it is refreshed every X seconds
+    """
     return __get_response(
         f"{config.byteflies_api_url}/groups/{studysite_id}/recordings/{recording_id}/",
     )
@@ -203,7 +214,6 @@ def __download_file(download_folder: Path, url: str, filename: str) -> bool:
     embedded in the url
     """
     try:
-
         path = download_folder / f"{filename}.csv"
 
         with requests.get(url, stream=True) as response:

@@ -55,6 +55,22 @@ class Byteflies:
         self.study_site = study_site
         self.device_type = utils.DeviceType.BTF
         self.file_type = ".csv"
+        # timestamp used to optimise lru_cache in file download pipeline
+        self.last_downloaded = 0
+        self.download_cache_expiry = 300  # 5 minutes
+
+    def __get_timestamp(self) -> int:
+        """
+        return a timestamp that changes every x minutes to allow caching of API call
+        # NOTE: only used in the download stage
+        """
+        now = int(datetime.now().timestamp())
+        self.last_downloaded = (
+            now
+            if now - self.last_downloaded > self.download_cache_expiry
+            else self.last_downloaded
+        )
+        return self.last_downloaded
 
     def download_metadata(self, from_date: int, to_date: int) -> None:
         """
@@ -184,6 +200,7 @@ class Byteflies:
             record.meta["recording_id"],
             record.meta["signal_id"],
             record.meta["algorithm_id"],
+            self.__get_timestamp(),
         )
 
         # filename if succes, None if not
