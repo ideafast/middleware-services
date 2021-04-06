@@ -64,21 +64,23 @@ class Record(BaseModel):
 
     @validator("is_processed")
     def after_downloaded(cls, v: bool, values: dict) -> bool:
-        # values: a dict containing the name-to-value mapping of any previously-validated fields
-        # NOTE: only checks if the value 'v' is set to True
-        if v and not values["is_downloaded"]:
-            raise ValueError("NOT ALLOWED: this Record is not downloaded yet.")
-        return v
+        return cls.is_set_true_after(v, values, "is_downloaded")
 
     @validator("is_prepared", always=True)
     def after_processed(cls, v: bool, values: dict) -> bool:
-        if v and not values["is_processed"]:
-            raise ValueError("NOT ALLOWED: this Record is not processed yet.")
-        return v
+        return cls.is_set_true_after(v, values, "is_processed")
 
     @validator("is_uploaded")
     def after_prepared(cls, v: bool, values: dict) -> bool:
-        # NOTE: this value is normally set after upload; somewhat 'too little to late'
-        if v and not values["is_prepared"]:
-            raise ValueError("NOT ALLOWED: this Record is not prepared yet.")
-        return v
+        # NOTE: 'is_uploaded' is normally set after upload; somewhat 'too little to late'
+        return cls.is_set_true_after(v, values, "is_prepared")
+
+    @staticmethod
+    def is_set_true_after(set_value: bool, values: dict, required_true: str) -> bool:
+        # values: a dict containing the name-to-value mapping of any previously-validated fields
+        # only validate if trying to set to true
+        # then, previous step should also be true
+        if set_value and not values[required_true]:
+            step = required_true.split("_")[1]
+            raise ValueError(f"NOT ALLOWED: this Record is not {step} yet.")
+        return set_value
