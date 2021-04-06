@@ -32,10 +32,10 @@ class Record(BaseModel):
     dmp_folder: Optional[str]
 
     # Each stage of the pipeline
-    is_downloaded: Optional[bool] = False
-    is_processed: Optional[bool] = False
-    is_prepared: Optional[bool] = False
-    is_uploaded: Optional[bool] = False
+    is_downloaded: bool = False
+    is_processed: bool = False
+    is_prepared: bool = False
+    is_uploaded: bool = False
 
     @validator("id")
     def validate_id(cls, id: str) -> ObjectId:
@@ -57,3 +57,30 @@ class Record(BaseModel):
         )
         path.mkdir(parents=True, exist_ok=True)
         return path
+
+    # ensure validators are run when changing values, not just construction
+    class Config:
+        validate_assignment = True
+
+    @validator("is_processed")
+    def after_downloaded(cls, v: bool, values: dict) -> bool:
+        return cls.is_set_true_after(v, values, "is_downloaded")
+
+    @validator("is_prepared", always=True)
+    def after_processed(cls, v: bool, values: dict) -> bool:
+        return cls.is_set_true_after(v, values, "is_processed")
+
+    @validator("is_uploaded")
+    def after_prepared(cls, v: bool, values: dict) -> bool:
+        # NOTE: 'is_uploaded' is normally set after upload; somewhat 'too little to late'
+        return cls.is_set_true_after(v, values, "is_prepared")
+
+    @staticmethod
+    def is_set_true_after(set_value: bool, values: dict, required_true: str) -> bool:
+        # values: a dict containing the name-to-value mapping of any previously-validated fields
+        # only validate if trying to set to true
+        # then, previous step should also be true
+        if set_value and not values[required_true]:
+            step = required_true.split("_")[1]
+            raise ValueError(f"NOT ALLOWED: this Record is not {step} yet.")
+        return set_value
