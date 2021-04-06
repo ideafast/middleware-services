@@ -20,7 +20,7 @@ def btf_access_token(forced: bool = False) -> str:
     """Obtain (or refresh) an access token. Can be forced (in case of 401 HTTP error)"""
 
     now = int(datetime.utcnow().timestamp())
-    last_created = int(os.getenv("UCAM_ACCESS_TOKEN_GEN_TIME", 0))
+    last_created = int(os.getenv("BTF_ACCESS_TOKEN_GEN_TIME", 0))
 
     # Refresh the token every 50 minutes  i.e., below 60 minute limit.
     token_expired = (last_created + (60 * 50)) <= now
