@@ -16,7 +16,7 @@ from data_transfer.utils import DeviceType, uid_to_hash
 log = logging.getLogger(__name__)
 
 
-def __btf_access_token(forced: bool = False) -> str:
+def btf_access_token(forced: bool = False) -> str:
     """Obtain (or refresh) an access token. Can be forced (in case of 401 HTTP error)"""
 
     now = int(datetime.utcnow().timestamp())
@@ -52,13 +52,13 @@ def __btf_access_token(forced: bool = False) -> str:
             resp = res.json()
             access_token = str(resp["AuthenticationResult"]["IdToken"])
 
-            os.environ["UCAM_ACCESS_TOKEN"] = access_token
-            os.environ["UCAM_ACCESS_TOKEN_GEN_TIME"] = str(now)
+            os.environ["BTF_ACCESS_TOKEN"] = access_token
+            os.environ["BTF_ACCESS_TOKEN_GEN_TIME"] = str(now)
 
         except Exception:
             log.error("Exception:", exc_info=True)
 
-    return os.getenv("UCAM_ACCESS_TOKEN")
+    return os.getenv("BTF_ACCESS_TOKEN")
 
 
 def get_list(studysite_id: str, from_date: int, to_date: int) -> List[dict]:
@@ -149,7 +149,7 @@ def __get_response(url: str) -> Any:
     #    If ~once per second, should not be a problem
     time.sleep(0.5)
     try:
-        headers = {"Authorization": f"{__btf_access_token()}"}
+        headers = {"Authorization": f"{btf_access_token()}"}
         response = requests.get(url, headers=headers)
         log.info(f"Response from {url} was:\n    {response.headers}")
         response.raise_for_status()
