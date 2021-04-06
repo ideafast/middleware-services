@@ -31,7 +31,7 @@ def test_clean_record(get_record: Record) -> None:
     assert result.is_uploaded is False
 
 
-@pytest.mark.xfail(raises=ValueError)
+@pytest.mark.xfail(raises=ValueError, strict=True)
 def test_not_allowed_prepared(get_record: Record) -> None:
     get_record.is_downloaded = True
     # NOTE: not doing: get_record.is_processed = True
@@ -39,7 +39,7 @@ def test_not_allowed_prepared(get_record: Record) -> None:
     get_record.is_prepared = True  # act
 
 
-@pytest.mark.xfail(raises=ValueError)
+@pytest.mark.xfail(raises=ValueError, strict=True)
 def test_not_allowed_uploaded(get_record: Record) -> None:
     get_record.is_downloaded = True
     get_record.is_processed = True
@@ -47,7 +47,36 @@ def test_not_allowed_uploaded(get_record: Record) -> None:
     get_record.is_uploaded = True  # act
 
 
-@pytest.mark.xfail(raises=ValueError)
+@pytest.mark.xfail(raises=ValueError, strict=True)
 def test_not_allowed_processed(get_record: Record) -> None:
 
     get_record.is_processed = True  # act
+
+
+@pytest.mark.xfail(raises=ValueError, strict=True)
+def test_is_set_true_after_error() -> None:
+    value = True
+    values = dict(is_required=False)
+    required = "is_required"
+
+    result = Record.is_set_true_after(value, values, required)
+
+    assert result is value
+
+
+def test_is_set_true_after_valid() -> None:
+    value = True
+    values = dict(is_required=True)
+    required = "is_required"
+
+    result = Record.is_set_true_after(value, values, required)
+
+    assert result is value
+
+
+def test_skip_validation_if_set_false() -> None:
+    value = False
+
+    result = Record.is_set_true_after(value, {}, "")
+
+    assert result is value
