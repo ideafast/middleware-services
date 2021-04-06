@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pytest
 
 from data_transfer.utils import (
@@ -5,6 +7,7 @@ from data_transfer.utils import (
     __get_remainder,
     format_id_device,
     format_id_patient,
+    normalise_day,
 )
 
 
@@ -89,3 +92,12 @@ def test_derived_remainders(key: str, expected: int) -> None:
 
     assert result[0] == expected
     assert result[1] == 0
+
+
+def test_normalise_day() -> None:
+    one = normalise_day(datetime(2021, 3, 26, 0, 0, 0, 647241))
+    two = normalise_day(datetime(2021, 3, 26, 0, 0, 0, 565704))
+
+    result = one == two
+
+    assert result

@@ -1,5 +1,4 @@
 import logging
-import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -57,7 +56,7 @@ class Byteflies:
         """
         self.study_site = study_site
         self.session = self.authenticate()
-        self.device_type = utils.DeviceType.BTF.name
+        self.device_type = utils.DeviceType.BTF
         self.file_type = ".csv"
 
     def authenticate(self) -> requests.Session:
@@ -104,7 +103,11 @@ class Byteflies:
             # Pulls out the most relevant metadata for this recording
             recording = self.recording_metadata(item)
 
-            if not (_device_id := inventory.device_id_by_serial(recording.dot_id)):
+            if not (
+                _device_id := inventory.device_id_by_serial(
+                    self.device_type, recording.dot_id
+                )
+            ):
                 log.debug(f"Record NOT created for unknown device\n   {recording}")
                 unknown += 1
                 continue  # Skip record
@@ -146,7 +149,7 @@ class Byteflies:
                 # can relate to a single download file or a group of files
                 hash=hash_id,
                 manufacturer_ref=recording.recording_id,
-                device_type=self.device_type,
+                device_type=self.device_type.name,
                 device_id=device_id,
                 patient_id=patient_id,
                 start_wear=recording.start,
@@ -260,8 +263,6 @@ class Byteflies:
         Determine PatientID by wear period of device in UCAM.
         """
         record = ucam.record_by_wear_period(device_id, start, end)
-        # TODO: inventory has small rate limit.
-        time.sleep(4)
         return record.patient_id if record else None
 
     def __patient_id_from_inventory(
@@ -271,6 +272,4 @@ class Byteflies:
         Determine PatientID by wear period in inventory.
         """
         record = inventory.record_by_device_id(device_id, start, end)
-        # TODO: inventory has small rate limit.
-        time.sleep(4)
         return record.get("patient_id", None) if record else None

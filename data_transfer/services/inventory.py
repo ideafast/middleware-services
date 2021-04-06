@@ -9,32 +9,44 @@ from data_transfer.config import config
 
 
 @lru_cache
-def device_id_by_serial(serial: str) -> Optional[str]:
-    # TODO: there is a rate limit on the inventory!
-    response = requests.get(f"{config.inventory_api}device/byserial/{serial}")
+def all_devices_by_type(device_type: utils.DeviceType) -> Any:
+    """
+    Retrieve complete list of ALL Devices by model.
+    This is cached as response can be quite large and will be used multiple times per DAG."""
+    model_id = dict(BTF=6, DRM=8)[device_type.name]
+    response = requests.get(f"{config.inventory_api}devices/bytype/{model_id}")
+    return response.json()
+
+
+def device_id_by_serial(device_type: utils.DeviceType, serial: str) -> Optional[str]:
+    response = all_devices_by_type(device_type)
+    return next(
+        (i["device_id"] for i in response["data"] if i["serial"] == serial), None
+    )
+
+
+@lru_cache
+def device_history(device_id: str) -> Any:
+    response = requests.get(f"{config.inventory_api}device/history/{device_id}")
     # TODO: validation
     _response = response.json()
     if not _response["meta"]["success"]:
         return None
-    return _response["data"]["device_id"]
-
-
-def device_history(device_id: str) -> Any:
-    response = requests.get(f"{config.inventory_api}device/history/{device_id}")
-    # TODO: validation
-    return response.json()["data"]
+    return _response["data"]
 
 
 @lru_cache
 def record_by_device_id(
     device_id: str, start_wear: datetime, end_wear: datetime
 ) -> Optional[Any]:
-    device_wears = [i for i in device_history(device_id).values()]
+    history = device_history(device_id)
+    if not history:
+        return None
 
     start_wear = utils.normalise_day(start_wear)
     end_wear = utils.normalise_day(end_wear)
 
-    for record in device_wears:
+    for record in history.values():
         inventory_start_wear = utils.format_weartime(record["checkout"], "inventory")
         checkin = record["checkin"] or datetime.now().strftime(
             utils.FORMATS["inventory"]
