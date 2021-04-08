@@ -30,10 +30,8 @@ nox = "^2020.12.31"
 isort = "^5.7.0"
 mypy = "^0.800"
 pre-commit = "^2.10.0"
-pytest-mock = "^3.5.1"
 requests-mock = "^1.8.0"
 mongomock = "^3.22.1"
-pymongo = "^3.11.3"
 nox-poetry = "^0.8.4"
 
 [tool.poetry.scripts]
