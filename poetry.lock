@@ -180,7 +180,7 @@ python-versions = "*"
 
 [[package]]
 name = "dmpy"
-version = "0.1.0"
+version = "0.1.3"
 description = "Python package to access the IDEA-FAST Data Management Portal (DMP)"
 category = "main"
 optional = false
@@ -197,8 +197,8 @@ cli = ["colorama[cli] (>=0.4.4,<0.5.0)", "pandas[cli] (>=1.1.4,<2.0.0)"]
 [package.source]
 type = "git"
 url = "https://github.com/ideafast/dmpy"
-reference = "0.1.2"
-resolved_reference = "b22b04b6c5a0585e78d58522aeb85a82c52b1351"
+reference = "0.1.3"
+resolved_reference = "d13c49030370156c90f42467d381c808304c5641"
 
 [[package]]
 name = "fastapi"
