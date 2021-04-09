@@ -47,9 +47,6 @@ class GlobalConfig(BaseSettings):
     support_base_url: str = ""
     support_token: str = ""
 
-    # TODO: as BTF tests invoke lib private methods this is required
-    byteflies_api_url: str = ""
-
 
 class Settings(GlobalConfig):
     is_dev: bool
