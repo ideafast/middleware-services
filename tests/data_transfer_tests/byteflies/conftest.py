@@ -20,7 +20,7 @@ folder = Path(__file__).parent
 @pytest.fixture(scope="module")
 def mock_config() -> Generator[MagicMock, None, None]:
 
-    nconfig = MagicMock(byteflies_api_url="https://mock_url.com")
+    nconfig = MagicMock(byteflies_api_url="mock://mock_url.com")
 
     with patch.object(lib, "config", nconfig) as mockconfig:
         yield mockconfig
@@ -29,12 +29,13 @@ def mock_config() -> Generator[MagicMock, None, None]:
 @pytest.fixture
 def mock_requests_session(mock_config: Generator[MagicMock, None, None]) -> dict:
     byteflies_response = utils.read_json(Path(f"{folder}/data/byteflies_payload.json"))
-    btf_url = mock_config.byteflies_api_url  # type: ignore[attr-defined]
+
     session = requests.Session()
     adapter = requests_mock.Adapter()
 
-    btf_url = f"mock://{btf_url[len('https://'):]}"
-    baseurl = f"{btf_url}/groups/studysite_1/recordings"
+    btfurl = mock_config.byteflies_api_url  # type: ignore[attr-defined]
+    baseurl = f"{btfurl}/groups/studysite_1/recordings"
+
     # mocks __get_recordings_by_group
     get_all = adapter.register_uri(
         "GET", baseurl, json=byteflies_response, status_code=200
