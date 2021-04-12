@@ -28,8 +28,9 @@ async def http_error_handler_requests(
 ) -> CustomResponse:
     """General errors handled for all requests errors"""
     # TODO: log that this occured, and exc.response.reason, and status_code
-    status_code = exc.response.status_code
-    return CustomResponse({"errors": [exc.response.reason]}, status_code=status_code)
+    status_code = exc.response.status_code if exc.response else 500
+    reason = exc.response.reason if exc.response else "ERROR_500"
+    return CustomResponse({"errors": [reason]}, status_code=status_code)
 
 
 async def custom_error_handler(
