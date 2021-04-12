@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
-from typing import IO
-from unittest.mock import Mock, patch
+from typing import IO, Generator
+from unittest.mock import MagicMock, Mock, patch
 
 import mongomock
 import pytest
@@ -10,21 +10,31 @@ import requests_mock
 from pymongo.collection import Collection
 
 from data_transfer import utils
-from data_transfer.config import config
 from data_transfer.devices import byteflies
+from data_transfer.lib import byteflies as lib
 from data_transfer.schemas.record import Record
 
 folder = Path(__file__).parent
 
 
+@pytest.fixture(scope="module")
+def mock_config() -> Generator[MagicMock, None, None]:
+
+    nconfig = MagicMock(byteflies_api_url="mock://mock_url.com")
+
+    with patch.object(lib, "config", nconfig) as mockconfig:
+        yield mockconfig
+
+
 @pytest.fixture
-def mock_requests_session() -> dict:
+def mock_requests_session(mock_config: Generator[MagicMock, None, None]) -> dict:
     byteflies_response = utils.read_json(Path(f"{folder}/data/byteflies_payload.json"))
+
     session = requests.Session()
     adapter = requests_mock.Adapter()
 
-    config.byteflies_api_url = f"mock://{config.byteflies_api_url[len('https://'):]}"
-    baseurl = f"{config.byteflies_api_url}/groups/studysite_1/recordings"
+    btfurl = mock_config.byteflies_api_url  # type: ignore[attr-defined]
+    baseurl = f"{btfurl}/groups/studysite_1/recordings"
 
     # mocks __get_recordings_by_group
     get_all = adapter.register_uri(
