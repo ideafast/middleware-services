@@ -43,6 +43,11 @@ compose = "cli:compose"
 [tool.isort]
 profile = "black"
 
+[tool.pytest.ini_options]
+markers = [
+    "live: integration tests with LIVE apis (exclude with '-m \"not live\"')",
+]
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"

@@ -45,6 +45,7 @@ class GlobalConfig(BaseSettings):
     database_name: str = "pipeline_local"
 
     inventory_api: str = ""
+    ucam_api: str = ""
     support_base_url: str = ""
     support_token: str = ""
 
@@ -105,6 +106,12 @@ class Settings(GlobalConfig):
 
 
 @lru_cache()
+<<<<<<< HEAD
+def settings() -> Any:
+=======
+<<<<<<< HEAD
+def settings() -> GlobalConfig:
+=======
 def settings() -> Any:
     """
     Only a few services provide development environments, e.g., DMPY.

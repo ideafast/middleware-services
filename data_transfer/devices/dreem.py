@@ -171,7 +171,7 @@ class Dreem:
             1. If only one device is used then use Patient ID
             2. Else use wear period to perform lookup.
         """
-        if patient_id and (ucam_entry := ucam.get_record(patient_id)):
+        if patient_id and (ucam_entry := ucam.get_one_patient(patient_id)):
             devices = [
                 d for d in ucam_entry.devices if self.device_type.name in d.device_id
             ]
@@ -182,7 +182,7 @@ class Dreem:
             # Edge-case: multiple dreem headbands used, e.g., if one broke.
             elif len(devices) > 1:
                 # Determine usage based on weartime as it exists in UCAM
-                device = ucam.record_by_wear_period_in_list(devices, start, end)
+                device = ucam.device_by_wear_period(devices, start, end)
                 return device.device_id if device else None
         return None
 
@@ -194,9 +194,16 @@ class Dreem:
 
         Note: uses inventory API to determine DeviceID to make association.
         """
+<<<<<<< HEAD
         # NOTE/TODO: given this is a 1-1 mapping, why not use a local CSV?
         device_id = inventory.device_id_by_serial(self.device_type, device_serial)
         record = ucam.record_by_wear_period(device_id, start, end)
+=======
+        device_id = inventory.device_id_by_serial(self.device_type, device_serial)
+        record = (
+            ucam.patient_by_wear_period(device_id, start, end) if device_id else None
+        )
+>>>>>>> 5c24f58... squash commits
         return record.patient_id if record else None
 
     def __patient_id_from_inventory(
@@ -206,7 +213,13 @@ class Dreem:
         Determine PatientID by wear period in inventory.
         """
         device_id = inventory.device_id_by_serial(self.device_type, device_serial)
+<<<<<<< HEAD
         record = inventory.record_by_device_id(device_id, start, end)
+=======
+        record = (
+            inventory.record_by_device_id(device_id, start, end) if device_id else None
+        )
+>>>>>>> 5c24f58... squash commits
         return record.get("patient_id", None) if record else None
 
     def download_file(self, mongo_id: str) -> None:

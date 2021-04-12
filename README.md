@@ -50,7 +50,7 @@ To run all these libraries:
 
 Or individual checks by choosing one of the options from the list:
 
-    poetry run nox -rs [tests, mypy, isort, lint, black]
+    poetry run nox -rs [tests, mypy, isort, lint, black, live_tests]
 
 ### Developing with Docker
 

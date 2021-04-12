@@ -1,0 +1,203 @@
+{
+    "patients": [
+        {
+            "patient_id": "E-PATIENT",
+            "disease": 4,
+            "devices": [
+                {
+                    "device_id": "NR1-DEVICE",
+                    "vttsma_id": null,
+                    "start_wear": "2020-07-21T00:00:00",
+                    "end_wear": null,
+                    "deviations": null
+                }
+            ]
+        },
+        {
+            "patient_id": "A-PATIENT",
+            "disease": 4,
+            "devices": [
+                {
+                    "device_id": "NR2-DEVICE",
+                    "vttsma_id": null,
+                    "start_wear": "2020-07-21T00:00:00",
+                    "end_wear": null,
+                    "deviations": null
+                }
+            ]
+        },
+        {
+            "patient_id": "B-PATIENT",
+            "disease": 3,
+            "devices": [
+                {
+                    "device_id": "NR3-DEVICE",
+                    "vttsma_id": null,
+                    "start_wear": "2020-06-20T00:00:00",
+                    "end_wear": "2020-07-20T00:00:00",
+                    "deviations": null
+                },
+                {
+                    "device_id": "NR3-DEVICE",
+                    "vttsma_id": null,
+                    "start_wear": "2020-07-21T00:00:00",
+                    "end_wear": "2020-07-22T00:00:00",
+                    "deviations": null
+                },
+                {
+                    "device_id": "NR3-DEVICE",
+                    "vttsma_id": null,
+                    "start_wear": "2020-07-22T00:00:00",
+                    "end_wear": null,
+                    "deviations": null
+                },
+                {
+                    "device_id": "NR4-DEVICE",
+                    "vttsma_id": null,
+                    "start_wear": "2020-07-22T00:00:00",
+                    "end_wear": null,
+                    "deviations": null
+                }
+            ]
+        },
+        {
+            "patient_id": "C-PATIENT",
+            "disease": 3,
+            "devices": []
+        },
+        {
+            "patient_id": "D-PATIENT",
+            "disease": 5,
+            "devices": [
+                {
+                    "device_id": null,
+                    "vttsma_id": "VTT_COMPLEX_HASH",
+                    "start_wear": "2020-09-17T00:00:00",
+                    "end_wear": null,
+                    "deviations": null
+                }
+            ]
+        },
+        {
+            "patient_id": "F-PATIENT",
+            "disease": 4,
+            "devices": [
+                {
+                    "device_id": "NR5-DEVICE",
+                    "vttsma_id": null,
+                    "start_wear": "2020-09-09T00:00:00",
+                    "end_wear": "2020-09-09T00:00:00",
+                    "deviations": null
+                },
+                {
+                    "device_id": null,
+                    "vttsma_id": "VTT_COMPLEX_HASH",
+                    "start_wear": "2020-09-22T00:00:00",
+                    "end_wear": null,
+                    "deviations": null
+                }
+            ]
+        }
+    ],
+    "devices": [
+        {
+            "device_id": "NR1-DEVICE",
+            "patients": [
+                {
+                    "patient_id": "E-PATIENT",
+                    "disease": 4,
+                    "start_wear": "2020-07-21T00:00:00",
+                    "end_wear": null,
+                    "deviations": null,
+                    "vttsma_id": null
+                }
+            ]
+        },
+        {
+            "device_id": "NR2-DEVICE",
+            "patients": [
+                {
+                    "patient_id": "A-PATIENT",
+                    "disease": 4,
+                    "start_wear": "2020-07-21T00:00:00",
+                    "end_wear": null,
+                    "deviations": null,
+                    "vttsma_id": null
+                }
+            ]
+        },
+        {
+            "device_id": "NR3-DEVICE",
+            "patients": [
+                {
+                    "patient_id": "B-PATIENT",
+                    "disease": 3,
+                    "start_wear": "2020-06-20T00:00:00",
+                    "end_wear": "2020-07-20T00:00:00",
+                    "deviations": null,
+                    "vttsma_id": null
+                },
+                {
+                    "patient_id": "B-PATIENT",
+                    "disease": 3,
+                    "start_wear": "2020-07-21T00:00:00",
+                    "end_wear": "2020-07-22T00:00:00",
+                    "deviations": null,
+                    "vttsma_id": null
+                },
+                {
+                    "patient_id": "B-PATIENT",
+                    "disease": 3,
+                    "start_wear": "2020-07-22T00:00:00",
+                    "end_wear": null,
+                    "deviations": null,
+                    "vttsma_id": null
+                }
+            ]
+        },
+        {
+            "device_id": "NR4-DEVICE",
+            "patients": [
+                {
+                    "patient_id": "B-PATIENT",
+                    "disease": 3,
+                    "start_wear": "2020-07-22T00:00:00",
+                    "end_wear": null,
+                    "deviations": null,
+                    "vttsma_id": null
+                }
+            ]
+        },
+        {
+            "device_id": "NR5-DEVICE",
+            "patients": [
+                {
+                    "patient_id": "F-PATIENT",
+                    "disease": 4,
+                    "start_wear": "2020-09-09T00:00:00",
+                    "end_wear": "2020-09-09T00:00:00",
+                    "deviations": null,
+                    "vttsma_id": null
+                }
+            ]
+        }
+    ],
+    "vtt":[
+        {
+            "patient_id": "D-PATIENT",
+            "disease": 5,
+            "start_wear": "2020-09-17T00:00:00",
+            "end_wear": null,
+            "deviations": null,
+            "vttsma_id": "VTT_COMPLEX_HASH"
+        },
+        {
+            "patient_id": "E-AH5NHH",
+            "disease": 4,
+            "start_wear": "2020-09-22T00:00:00",
+            "end_wear": null,
+            "deviations": null,
+            "vttsma_id": "VTT_COMPLEX_HASH"
+        }
+    ]
+}
