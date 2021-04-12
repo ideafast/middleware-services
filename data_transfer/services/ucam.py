@@ -1,4 +1,5 @@
 from datetime import datetime
+from functools import lru_cache
 from typing import List, Optional
 
 import requests
@@ -14,11 +15,13 @@ from data_transfer.schemas.ucam import (
 from data_transfer.utils import format_weartime, normalise_day
 
 
+@lru_cache
 def get_one_patient(patient_id: str) -> Optional[Patient]:
     response = requests.get(f"{config.ucam_api}patients/{patient_id}").json()
     return __as_patient(response["data"]) if response["meta"]["success"] else None
 
 
+@lru_cache
 def get_one_device(device_id: str) -> Optional[List[Device]]:
     response = requests.get(f"{config.ucam_api}devices/{device_id}").json()
     return (
