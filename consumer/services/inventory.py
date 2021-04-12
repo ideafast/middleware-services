@@ -12,6 +12,8 @@ async def response(path: str, params: dict = None) -> Any:
     url = f"{config.inventory_base_url}/{path}"
     res = requests.get(url, params=params, headers=headers)
 
+    res.raise_for_status()
+
     if res.status_code == 429:
         raise CustomException(errors=["Rate Limit on API access."], status_code=429)
 
