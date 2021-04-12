@@ -16,10 +16,7 @@ if __name__ == "__main__":
     >   python data_transfer/main.py [DeviceType] [StudySite] [days] [reference_day]
     >   [days] == -1 will trigger a historical query to the beginning of the IDEAFAST FS
     """
-<<<<<<< HEAD
-=======
 
->>>>>>> 5c24f58... squash commits
     # Create this once upon setup
     config.csvs_path.mkdir(exist_ok=True)
     config.data_path.mkdir(exist_ok=True)

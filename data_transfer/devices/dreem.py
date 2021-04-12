@@ -194,16 +194,10 @@ class Dreem:
 
         Note: uses inventory API to determine DeviceID to make association.
         """
-<<<<<<< HEAD
-        # NOTE/TODO: given this is a 1-1 mapping, why not use a local CSV?
-        device_id = inventory.device_id_by_serial(self.device_type, device_serial)
-        record = ucam.record_by_wear_period(device_id, start, end)
-=======
         device_id = inventory.device_id_by_serial(self.device_type, device_serial)
         record = (
             ucam.patient_by_wear_period(device_id, start, end) if device_id else None
         )
->>>>>>> 5c24f58... squash commits
         return record.patient_id if record else None
 
     def __patient_id_from_inventory(
@@ -213,13 +207,9 @@ class Dreem:
         Determine PatientID by wear period in inventory.
         """
         device_id = inventory.device_id_by_serial(self.device_type, device_serial)
-<<<<<<< HEAD
-        record = inventory.record_by_device_id(device_id, start, end)
-=======
         record = (
             inventory.record_by_device_id(device_id, start, end) if device_id else None
         )
->>>>>>> 5c24f58... squash commits
         return record.get("patient_id", None) if record else None
 
     def download_file(self, mongo_id: str) -> None:

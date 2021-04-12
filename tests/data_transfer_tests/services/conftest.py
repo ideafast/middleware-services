@@ -5,10 +5,6 @@ from typing import Any
 import pytest
 
 from data_transfer import utils
-<<<<<<< HEAD
-from data_transfer.services import ucam
-=======
->>>>>>> 5c24f58... squash commits
 
 folder = Path(__file__).parent
 
@@ -35,21 +31,5 @@ def mock_inventory_devices_bytype_response() -> dict:
 
 
 @pytest.fixture(scope="function")
-<<<<<<< HEAD
-def mock_data() -> None:
-    """
-    Overrides configuration to use mock data
-    """
-    ucam.config.ucam_data = Path(f"{folder}/data/mock_ucam_db.csv")
-
-
-@pytest.fixture(scope="function")
-def mock_inventory_devices_bytype_response() -> dict:
-    return utils.read_json(Path(f"{folder}/data/inventory/devices_bytype.json"))
-
-
-@pytest.fixture(scope="function")
-=======
->>>>>>> 5c24f58... squash commits
 def mock_inventory_history_response() -> dict:
     return utils.read_json(Path(f"{folder}/data/inventory/history.json"))

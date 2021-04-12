@@ -260,11 +260,7 @@ class Byteflies:
         """
         Determine PatientID by wear period of device in UCAM.
         """
-<<<<<<< HEAD
-        record = ucam.record_by_wear_period(device_id, start, end)
-=======
         record = ucam.patient_by_wear_period(device_id, start, end)
->>>>>>> 5c24f58... squash commits
         return record.patient_id if record else None
 
     def __patient_id_from_inventory(

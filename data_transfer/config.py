@@ -106,12 +106,6 @@ class Settings(GlobalConfig):
 
 
 @lru_cache()
-<<<<<<< HEAD
-def settings() -> Any:
-=======
-<<<<<<< HEAD
-def settings() -> GlobalConfig:
-=======
 def settings() -> Any:
     """
     Only a few services provide development environments, e.g., DMPY.
