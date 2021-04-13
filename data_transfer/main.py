@@ -23,7 +23,7 @@ if __name__ == "__main__":
     config.upload_folder.mkdir(exist_ok=True)
 
     device = DeviceType[sys.argv[1]]
-    study_site = StudySite[sys.argv[2].capitalize()]
+    study_site = StudySite[sys.argv[2].capitalize()] if len(sys.argv) > 2 else None
 
     if device == DeviceType.DRM:
         drm.dag(study_site)

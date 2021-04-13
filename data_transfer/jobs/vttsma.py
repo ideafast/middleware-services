@@ -1,7 +1,7 @@
 from data_transfer.devices.vttsma import Vttsma
 
 
-def batch_metadata() -> None:
+def batch_metadata(vttsma: Vttsma) -> None:
     """
     VTT exports the patient data weekly in an S3 bucket
 
@@ -9,5 +9,4 @@ def batch_metadata() -> None:
 
     NOTE/TODO: this cron batch should be run weekly to accomodate the weekly VTT S3 export
     """
-    vttsma = Vttsma()
     vttsma.download_metadata()

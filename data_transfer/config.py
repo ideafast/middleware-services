@@ -1,6 +1,7 @@
 import os
 from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
 from dotenv import get_key, load_dotenv
 from pydantic import BaseSettings
@@ -104,7 +105,7 @@ class Settings(GlobalConfig):
 
 
 @lru_cache()
-def settings() -> GlobalConfig:
+def settings() -> Any:
     """
     Only a few services provide development environments, e.g., DMPY.
     As such, live APIs are used for most local developement and
