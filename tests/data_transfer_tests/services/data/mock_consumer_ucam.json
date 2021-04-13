@@ -142,7 +142,7 @@
                     "disease": 3,
                     "start_wear": "2020-07-21T00:00:00",
                     "end_wear": "2020-07-22T00:00:00",
-                    "deviations": null,
+                    "deviations": "correct tag couldn't be chosen",
                     "vttsma_id": null
                 },
                 {
