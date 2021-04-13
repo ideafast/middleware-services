@@ -2,23 +2,13 @@ from fastapi import FastAPI
 from requests import RequestException
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-from .routers import auth, devices, inventory, support
-<<<<<<< HEAD
+from .routers import auth, devices, inventory, support, ucam
 from .utils.errors import (
     CustomException,
     custom_error_handler,
     http_error_handler,
     http_error_handler_requests,
 )
-=======
-=======
-=======
->>>>>>> 14f07f6... remove rebase conflicts
-from .routers import auth, devices, inventory, support, ucam
-from .utils.errors import CustomException, custom_error_handler, http_error_handler
->>>>>>> 799a2b7... squash commits
 from .utils.general import CustomResponse
 
 consumer = FastAPI(default_response_class=CustomResponse)
