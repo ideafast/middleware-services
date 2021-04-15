@@ -34,7 +34,7 @@ def device_history():
     This is only a subset of a response that is used in the middleware.
     """
     yield {
-        "total": 4,
+        "total": 5,
         "rows": [
             {
                 "created_at": {
@@ -46,7 +46,7 @@ def device_history():
             },
             {
                 "created_at": {
-                    "datetime": "2020-11-24 15:22:06",
+                    "datetime": "2020-11-25 09:37:36",
                 },
                 "target": {
                     "name": "T-456 ",
@@ -54,10 +54,18 @@ def device_history():
             },
             {
                 "created_at": {
-                    "datetime": "2020-10-19 11:25:31",
+                    "datetime": "2020-11-10 11:24:03",
                 },
                 "target": {
-                    "name": "T-456",
+                    "name": "T-456 ",
+                },
+            },
+            {
+                "created_at": {
+                    "datetime": "2020-11-10 11:24:04",
+                },
+                "target": {
+                    "name": "T-456 ",
                 },
             },
             {

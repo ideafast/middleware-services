@@ -66,7 +66,7 @@ def test_device_id_not_found(response_row, client, monkeypatch) -> None:
     assert result.json()["meta"]["errors"][0] == response_row["messages"]
 
 
-def test_device_history_with_device_in_use(
+def test_device_history_with_device_in_use_success(
     response_row, device_history, client, monkeypatch
 ) -> None:
     async def mock_device_by_id(device_id: str):
@@ -83,6 +83,25 @@ def test_device_history_with_device_in_use(
 
     assert result["T-123"]["checkout"] and not result["T-123"]["checkin"]
     assert result["T-456"]["checkout"] and result["T-456"]["checkin"]
+
+
+def test_device_history_with_device_in_use_fail(
+    response_row, device_history, client, monkeypatch
+) -> None:
+    async def mock_device_by_id(device_id: str):
+        return router_inventory.serialize_device(response_row)
+
+    monkeypatch.setattr(router_inventory, "device_by_id", mock_device_by_id)
+
+    async def mock_get(path: str, params: str = None):
+        return device_history
+
+    monkeypatch.setattr(inventory, "response", mock_get)
+
+    result = client.get("/inventory/device/history/VALID_ID").json()["data"]
+
+    assert result["T-456"]["checkout"] == "2020-11-10 11:24:03"
+    assert result["T-456"]["checkin"] == "2020-11-25 09:37:36"
 
 
 # NOTE: these are the keys from the response rather than device object

@@ -79,19 +79,27 @@ async def device_history(device_id: str) -> Dict[str, PatientDevice]:
     history: Dict[str, PatientDevice] = dict()
 
     # The device has been assigned to a patient ID.
-    rows = [row for row in res["rows"] if row["target"]]
+    patient_ids = {
+        row["target"]["name"].strip() for row in res["rows"] if row["target"]
+    }
 
-    for row in rows:
-        item = PatientDevice(
-            patient_id=row["target"]["name"].strip(),
-            device_id=device_id,
-            checkout=row["created_at"]["datetime"],
-        )
-        # Device has been returned
-        if item.patient_id in history:
-            # Sorting by checkout implies last item is checkin date.
-            # Each history activity uses the same date for checkin/out.
-            pairs = sorted([item.checkout, history[item.patient_id].checkout])
-            item.checkout, item.checkin = pairs
-        history[item.patient_id] = item
+    for patient_id in patient_ids:
+        if patient_id not in history:
+            # There may exist multiple checkouts for a single item
+            # such as if the checkout button was pressed many times.
+            datetimes = sorted(
+                [
+                    row["created_at"]["datetime"]
+                    for row in res["rows"]
+                    if row["target"] and patient_id == row["target"]["name"].strip()
+                ]
+            )
+
+            history[patient_id] = PatientDevice(
+                patient_id=patient_id,
+                device_id=device_id,
+                checkout=datetimes[0],
+                checkin=datetimes[-1] if len(datetimes) > 1 else None,
+            )
+
     return history
