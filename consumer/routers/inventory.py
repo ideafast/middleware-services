@@ -1,10 +1,11 @@
 # See: https://snipe-it.readme.io/reference
+from datetime import datetime
 from typing import Dict, List, Optional
 
 from fastapi import APIRouter
 
 from consumer.schemas.device import Device
-from consumer.schemas.patient import PatientDevice
+from consumer.schemas.inventory import HistoryItem, HistoryItemResponse
 from consumer.services import inventory
 from consumer.utils.errors import CustomException
 
@@ -49,7 +50,7 @@ async def device_by_id(device_id: str) -> Device:
 
 
 @router.get("/device/history/{device_id}")
-async def device_history(device_id: str) -> Dict[str, PatientDevice]:
+async def device_history(device_id: str) -> Dict[str, HistoryItemResponse]:
     """
     The history of a device based on its ID within the inventory.
     This is NOT the serial ID nor the tag ID.
@@ -59,30 +60,26 @@ async def device_history(device_id: str) -> Dict[str, PatientDevice]:
     params = {"item_id": device.id, "item_type": "asset"}
     res = await inventory.response("reports/activity", params)
 
-    history: Dict[str, PatientDevice] = dict()
+    # Filter response to only show relevant data for checkin/checkout (=target)
+    response = [HistoryItem.serialize(row) for row in res["rows"] if row["target"]]
 
-    pairs = [
-        (device_use["target"]["name"].strip(), device_use["created_at"]["datetime"])
-        for device_use in res["rows"]
-        if device_use["target"]
-    ]
+    history: Dict[str, HistoryItemResponse] = dict()
 
-    for patient_id, __ in pairs:
-        if patient_id not in history:
-            # Response contains
-            datetimes = sorted([r[1] for r in pairs if r[0] == patient_id])
+    for patient_id in {item.patient_id for item in response}:
+        # All datetimes for checkin/checkout of a device per patient.
+        # The first is the initial checkout and last (if exists) is checkin.
+        datetimes = sorted(
+            [r.datetime for r in response if r.patient_id == patient_id],
+            key=lambda t: datetime.strptime(t, "%Y-%m-%d %H:%M:%S"),
+        )
 
+        history[patient_id] = HistoryItemResponse(
+            patient_id=patient_id,
+            device_id=device_id,
             # The device will always have a checkout from the response,
-            # but may not have a checkin, e.g., if device with a patient.
-            checkout = datetimes[0]
-            #  In that case, checkin is None
-            checkin = datetimes[-1] if len(datetimes) > 1 else None
-
-            history[patient_id] = PatientDevice(
-                patient_id=patient_id,
-                device_id=device_id,
-                checkout=checkout,
-                checkin=checkin,
-            )
+            checkout=datetimes[0],
+            # but may not have checkin, e.g., if device is with patient.
+            checkin=datetimes[-1] if len(datetimes) > 1 else None,
+        )
 
     return history
