@@ -4,8 +4,7 @@ from typing import Dict, List, Optional
 
 from fastapi import APIRouter
 
-from consumer.schemas.device import Device
-from consumer.schemas.inventory import HistoryItem, HistoryItemResponse
+from consumer.schemas.inventory import Device, HistoryItem, HistoryItemResponse
 from consumer.services import inventory
 from consumer.utils.errors import CustomException
 

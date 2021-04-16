@@ -1,7 +1,7 @@
 import pytest
 
 from consumer.routers import inventory as router_inventory
-from consumer.schemas.device import Device
+from consumer.schemas.inventory import Device
 from consumer.services import inventory
 
 
