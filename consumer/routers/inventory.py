@@ -11,29 +11,12 @@ from consumer.utils.errors import CustomException
 router = APIRouter()
 
 
-def serialize_device(device: dict) -> Device:
-    """Simplifies reuse across inventory API."""
-
-    def name_or_none(item: dict) -> Optional[str]:
-        return item.get("name", None) if item else None
-
-    return Device(
-        device_id=device["asset_tag"],
-        model=name_or_none(device["model"]),
-        manufacturer=name_or_none(device["manufacturer"]),
-        is_checkout=device["status_label"]["status_meta"] == "deployed",
-        location=name_or_none(device["location"]),
-        serial=device["serial"].replace(" ", ""),
-        id=device["id"],
-    )
-
-
 @router.get("/devices/bytype/{model_id}")
 async def devices_by_type(model_id: int) -> List[Device]:
     """Retrieve metadata about ALL devices for by a specific model."""
     url = f"hardware?limit=500&model_id={model_id}"
     res = await inventory.response(url)
-    return [serialize_device(i) for i in res["rows"]]
+    return [Device.serialize(i) for i in res["rows"]]
 
 
 @router.get("/device/byserial/{serial}")
@@ -50,7 +33,7 @@ async def device_by_serial(serial: str) -> Optional[Device]:
     # e.g. DRMDAX2S4 and DRM-DAX2S4. As such, sort by use.
     # TODO: typing throws as `rows` is not promised to be a `SupportsLessThan` Iterable
     sorted_rows = sorted(rows, key=lambda k: k["checkout_counter"], reverse=True)  # type: ignore
-    return serialize_device(sorted_rows[0]) if len(sorted_rows) > 0 else None
+    return Device.serialize(sorted_rows[0]) if len(sorted_rows) > 0 else None
 
 
 @router.get("/device/byid/{device_id}")
@@ -62,7 +45,7 @@ async def device_by_id(device_id: str) -> Device:
     if device.get("status", "") == "error":
         raise CustomException(errors=[device["messages"]], status_code=404)
 
-    return serialize_device(device)
+    return Device.serialize(device)
 
 
 @router.get("/device/history/{device_id}")
