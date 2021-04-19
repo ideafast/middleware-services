@@ -86,7 +86,7 @@ def test_device_history_with_device_in_use_success(
     assert result["T-456"]["checkout"] and result["T-456"]["checkin"]
 
 
-def test_device_history_with_device_in_use_fail(
+def test_device_history_with_device_multiple_checkouts(
     response_row, device_history, client, monkeypatch
 ) -> None:
     async def mock_device_by_id(device_id: str):
@@ -105,16 +105,12 @@ def test_device_history_with_device_in_use_fail(
     assert result["T-456"]["checkin"] == "2020-11-25 09:37:36"
 
 
-# NOTE: these are the keys from the response rather than device object
-serial_required_params = ["id", "serial", "asset_tag", "status_label"]
-
-
-@pytest.mark.parametrize("key", serial_required_params)
+@pytest.mark.parametrize("key", ["id", "serial", "asset_tag", "status_label"])
+@pytest.mark.xfail(raises=KeyError, strict=True)
 def test_serialize_device_required_params(key, response_row) -> None:
     del response_row[key]
 
-    with pytest.raises(KeyError):
-        Device.serialize(response_row)
+    Device.serialize(response_row)  # Act
 
 
 serial_optional_params = [
