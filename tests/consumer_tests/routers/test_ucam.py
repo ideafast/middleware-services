@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 from fastapi.testclient import TestClient
 
-from consumer.schemas.ucam import Device, DevicePatient, Patient
+from consumer.schemas.ucam import DeviceWithPatients, Patient, PatientWithDevices
 from consumer.services import ucam
 
 
@@ -95,7 +95,7 @@ def test_LIVE_auth_OK() -> None:
         os.environ, {"UCAM_ACCESS_TOKEN": "", "UCAM_ACCESS_TOKEN_GEN_TIME": "0"}
     ):
 
-        result = ucam.__ucam_access_token()
+        result = ucam.ucam_access_token()
 
         assert isinstance(result, str)
 
@@ -105,7 +105,7 @@ def test_LIVE_get_patients_OK() -> None:
 
     result = ucam.get_patients()
 
-    assert all(isinstance(x, Patient) for x in result)
+    assert all(isinstance(x, PatientWithDevices) for x in result)
 
 
 @pytest.mark.live
@@ -113,7 +113,7 @@ def test_LIVE_get_devices_OK() -> None:
 
     result = ucam.get_devices()
 
-    assert all(isinstance(x, Device) for x in result)
+    assert all(isinstance(x, DeviceWithPatients) for x in result)
 
 
 @pytest.mark.live
@@ -121,7 +121,7 @@ def test_LIVE_get_vtt_OK() -> None:
 
     result = ucam.get_vtt()
 
-    assert all(isinstance(p, DevicePatient) for p in result)
+    assert all(isinstance(p, Patient) for p in result)
 
 
 @pytest.mark.live
