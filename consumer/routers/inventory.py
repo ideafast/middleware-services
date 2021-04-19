@@ -1,31 +1,14 @@
 # See: https://snipe-it.readme.io/reference
+from datetime import datetime
 from typing import Dict, List, Optional
 
 from fastapi import APIRouter
 
-from consumer.schemas.device import Device
-from consumer.schemas.patient import PatientDevice
+from consumer.schemas.inventory import Device, HistoryItem, HistoryItemResponse
 from consumer.services import inventory
 from consumer.utils.errors import CustomException
 
 router = APIRouter()
-
-
-def serialize_device(device: dict) -> Device:
-    """Simplifies reuse across inventory API."""
-
-    def name_or_none(item: dict) -> Optional[str]:
-        return item.get("name", None) if item else None
-
-    return Device(
-        device_id=device["asset_tag"],
-        model=name_or_none(device["model"]),
-        manufacturer=name_or_none(device["manufacturer"]),
-        is_checkout=device["status_label"]["status_meta"] == "deployed",
-        location=name_or_none(device["location"]),
-        serial=device["serial"].replace(" ", ""),
-        id=device["id"],
-    )
 
 
 @router.get("/devices/bytype/{model_id}")
@@ -33,7 +16,7 @@ async def devices_by_type(model_id: int) -> List[Device]:
     """Retrieve metadata about ALL devices for by a specific model."""
     url = f"hardware?limit=500&model_id={model_id}"
     res = await inventory.response(url)
-    return [serialize_device(i) for i in res["rows"]]
+    return [Device.serialize(i) for i in res["rows"]]
 
 
 @router.get("/device/byserial/{serial}")
@@ -50,7 +33,7 @@ async def device_by_serial(serial: str) -> Optional[Device]:
     # e.g. DRMDAX2S4 and DRM-DAX2S4. As such, sort by use.
     # TODO: typing throws as `rows` is not promised to be a `SupportsLessThan` Iterable
     sorted_rows = sorted(rows, key=lambda k: k["checkout_counter"], reverse=True)  # type: ignore
-    return serialize_device(sorted_rows[0]) if len(sorted_rows) > 0 else None
+    return Device.serialize(sorted_rows[0]) if len(sorted_rows) > 0 else None
 
 
 @router.get("/device/byid/{device_id}")
@@ -62,11 +45,11 @@ async def device_by_id(device_id: str) -> Device:
     if device.get("status", "") == "error":
         raise CustomException(errors=[device["messages"]], status_code=404)
 
-    return serialize_device(device)
+    return Device.serialize(device)
 
 
 @router.get("/device/history/{device_id}")
-async def device_history(device_id: str) -> Dict[str, PatientDevice]:
+async def device_history(device_id: str) -> Dict[str, HistoryItemResponse]:
     """
     The history of a device based on its ID within the inventory.
     This is NOT the serial ID nor the tag ID.
@@ -76,22 +59,26 @@ async def device_history(device_id: str) -> Dict[str, PatientDevice]:
     params = {"item_id": device.id, "item_type": "asset"}
     res = await inventory.response("reports/activity", params)
 
-    history: Dict[str, PatientDevice] = dict()
+    # Filter response to only show relevant data for checkin/checkout (=target)
+    response = [HistoryItem.serialize(row) for row in res["rows"] if row["target"]]
 
-    # The device has been assigned to a patient ID.
-    rows = [row for row in res["rows"] if row["target"]]
+    history: Dict[str, HistoryItemResponse] = dict()
 
-    for row in rows:
-        item = PatientDevice(
-            patient_id=row["target"]["name"].strip(),
-            device_id=device_id,
-            checkout=row["created_at"]["datetime"],
+    for patient_id in {item.patient_id for item in response}:
+        # All datetimes for checkin/checkout of a device per patient.
+        # The first is the initial checkout and last (if exists) is checkin.
+        datetimes = sorted(
+            [r.datetime for r in response if r.patient_id == patient_id],
+            key=lambda t: datetime.strptime(t, "%Y-%m-%d %H:%M:%S"),
         )
-        # Device has been returned
-        if item.patient_id in history:
-            # Sorting by checkout implies last item is checkin date.
-            # Each history activity uses the same date for checkin/out.
-            pairs = sorted([item.checkout, history[item.patient_id].checkout])
-            item.checkout, item.checkin = pairs
-        history[item.patient_id] = item
+
+        history[patient_id] = HistoryItemResponse(
+            patient_id=patient_id,
+            device_id=device_id,
+            # The device will always have a checkout from the response,
+            checkout=datetimes[0],
+            # but may not have checkin, e.g., if device is with patient.
+            checkin=datetimes[-1] if len(datetimes) > 1 else None,
+        )
+
     return history
