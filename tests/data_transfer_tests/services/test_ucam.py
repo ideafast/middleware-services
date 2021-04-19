@@ -13,7 +13,7 @@ from data_transfer.utils import format_weartime
 def test_get_patient_success(
     mock_ucam_config: MagicMock, mock_data: dict, mock_payload: dict
 ) -> None:
-    mock_payload["data"] = mock_data["patients"][0]
+    mock_payload.update({"data": mock_data["patients"][0]})
     get_response = MagicMock(json=lambda: mock_payload)
 
     with patch("requests.get", return_value=get_response):
@@ -26,11 +26,13 @@ def test_get_patient_success(
         assert result.disease == DiseaseType.PD
 
 
-def test_get_patient_not_found(mock_ucam_config: MagicMock) -> None:
-    mock_payload = {
-        "data": None,
-        "meta": {"success": False, "errors": ["No patient with that id."]},
-    }
+def test_get_patient_not_found(mock_ucam_config: MagicMock, mock_payload: dict) -> None:
+    mock_payload.update(
+        {
+            "data": None,
+            "meta": {"success": False, "errors": ["No patient with that id."]},
+        }
+    )
     get_response = MagicMock(json=lambda: mock_payload)
 
     with patch("requests.get", return_value=get_response):
@@ -43,9 +45,9 @@ def test_get_patient_not_found(mock_ucam_config: MagicMock) -> None:
 def test_get_device_success(
     mock_ucam_config: MagicMock, mock_data: dict, mock_payload: dict
 ) -> None:
-    mock_payload["data"] = [
-        d for d in mock_data["devices"] if d["device_id"] == "NR3-DEVICE"
-    ]
+    mock_payload.update(
+        {"data": [d for d in mock_data["devices"] if d["device_id"] == "NR3-DEVICE"]}
+    )
     get_response = MagicMock(json=lambda: mock_payload)
 
     with patch("requests.get", return_value=get_response):
@@ -58,11 +60,13 @@ def test_get_device_success(
         assert all(isinstance(x, Patient) for x in result[0].patients)
 
 
-def test_get_device_not_found(mock_ucam_config: MagicMock) -> None:
-    mock_payload = {
-        "data": None,
-        "meta": {"success": False, "errors": ["No device with that id."]},
-    }
+def test_get_device_not_found(mock_ucam_config: MagicMock, mock_payload: dict) -> None:
+    mock_payload.update(
+        {
+            "data": None,
+            "meta": {"success": False, "errors": ["No device with that id."]},
+        }
+    )
     get_response = MagicMock(json=lambda: mock_payload)
 
     with patch("requests.get", return_value=get_response):
@@ -75,7 +79,7 @@ def test_get_device_not_found(mock_ucam_config: MagicMock) -> None:
 def test_get_vtt_success(
     mock_ucam_config: MagicMock, mock_data: dict, mock_payload: dict
 ) -> None:
-    mock_payload["data"] = mock_data["vtt"]
+    mock_payload.update({"data": mock_data["vtt"]})
     get_response = MagicMock(json=lambda: mock_payload)
 
     with patch("requests.get", return_value=get_response):
@@ -91,7 +95,7 @@ def test_get_vtt_success(
 def test_get_vtts_success(
     mock_ucam_config: MagicMock, mock_data: dict, mock_payload: dict
 ) -> None:
-    mock_payload["data"] = mock_data["vtt"]
+    mock_payload.update({"data": mock_data["vtt"]})
     get_response = MagicMock(json=lambda: mock_payload)
 
     with patch("requests.get", return_value=get_response):
@@ -103,9 +107,9 @@ def test_get_vtts_success(
 
 
 def test_get_patient_by_period_date_within(mock_data: dict, mock_payload: dict) -> None:
-    mock_payload["data"] = [
-        d for d in mock_data["devices"] if d["device_id"] == "NR3-DEVICE"
-    ]
+    mock_payload.update(
+        {"data": [d for d in mock_data["devices"] if d["device_id"] == "NR3-DEVICE"]}
+    )
     get_response = MagicMock(json=lambda: mock_payload)
 
     device_id = "NR3-DEVICE"
@@ -136,9 +140,9 @@ def test_get_patient_by_period_invalid_patient_id(mock_payload: dict) -> None:
 def test_get_patient_by_period_date_with_endwear_none(
     mock_data: dict, mock_payload: dict, mock_ucam_config: MagicMock
 ) -> None:
-    mock_payload["data"] = [
-        d for d in mock_data["devices"] if d["device_id"] == "NR3-DEVICE"
-    ]
+    mock_payload.update(
+        {"data": [d for d in mock_data["devices"] if d["device_id"] == "NR3-DEVICE"]}
+    )
     get_response = MagicMock(json=lambda: mock_payload)
 
     device_id = "NR3-DEVICE"
@@ -155,9 +159,9 @@ def test_get_patient_by_period_date_with_endwear_none(
 def test_get_patient_by_period_date_not_found(
     mock_data: dict, mock_payload: dict, mock_ucam_config: MagicMock
 ) -> None:
-    mock_payload["data"] = [
-        d for d in mock_data["devices"] if d["device_id"] == "NR3-DEVICE"
-    ]
+    mock_payload.update(
+        {"data": [d for d in mock_data["devices"] if d["device_id"] == "NR3-DEVICE"]}
+    )
     get_response = MagicMock(json=lambda: mock_payload)
 
     device_id = "NR3-DEVICE"
@@ -177,9 +181,9 @@ def test_get_patient_by_period_date_not_found(
 def test_get_patient_by_period_date_ignore_deviations(
     mock_data: dict, mock_payload: dict, mock_ucam_config: MagicMock
 ) -> None:
-    mock_payload["data"] = [
-        d for d in mock_data["devices"] if d["device_id"] == "NR3-DEVICE"
-    ]
+    mock_payload.update(
+        {"data": [d for d in mock_data["devices"] if d["device_id"] == "NR3-DEVICE"]}
+    )
     get_response = MagicMock(json=lambda: mock_payload)
 
     device_id = "NR3-DEVICE"
