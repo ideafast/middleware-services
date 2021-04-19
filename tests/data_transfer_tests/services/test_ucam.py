@@ -1,11 +1,6 @@
 from unittest.mock import MagicMock, patch
 
-from data_transfer.schemas.ucam import (
-    DeviceWithPatients,
-    DiseaseType,
-    Patient,
-    PatientWithDevices,
-)
+from data_transfer.schemas.ucam import DiseaseType, PatientWithDevices
 from data_transfer.services import ucam
 from data_transfer.utils import format_weartime
 
@@ -20,9 +15,10 @@ def test_get_patient_success(
 
         result = ucam.get_one_patient("E-PATIENT")
 
-        assert isinstance(result, PatientWithDevices)
         assert result.patient_id == "E-PATIENT"
         assert len(result.devices) == 1
+
+        # test if casting to DiseaseType went OK
         assert result.disease == DiseaseType.PD
 
 
@@ -54,10 +50,8 @@ def test_get_device_success(
 
         result = ucam.get_one_device("NR3-DEVICE")
 
-        assert all(isinstance(x, DeviceWithPatients) for x in result)
         assert len(result) == 1
         assert result[0].device_id == "NR3-DEVICE"
-        assert all(isinstance(x, Patient) for x in result[0].patients)
 
 
 def test_get_device_not_found(mock_ucam_config: MagicMock, mock_payload: dict) -> None:
@@ -87,9 +81,7 @@ def test_get_vtt_success(
         result = ucam.get_one_vtt("VTT_COMPLEX_HASH")
 
         assert len(result) == 2
-        assert result[0].vttsma_id == "VTT_COMPLEX_HASH"
-        assert result[1].vttsma_id == "VTT_COMPLEX_HASH"
-        assert all(isinstance(x, Patient) for x in result)
+        assert result[0].vttsma_id == result[1].vttsma_id == "VTT_COMPLEX_HASH"
 
 
 def test_get_vtts_success(
@@ -103,7 +95,6 @@ def test_get_vtts_success(
         result = ucam.get_all_vtt()
 
         assert len(result) == 2
-        assert all(isinstance(x, Patient) for x in result)
 
 
 def test_get_patient_by_period_date_within(mock_data: dict, mock_payload: dict) -> None:
