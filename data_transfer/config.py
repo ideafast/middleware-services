@@ -42,14 +42,16 @@ class GlobalConfig(BaseSettings):
     database_uri: str = "mongodb://user:password@localhost:27017"
     database_name: str = "pipeline_local"
 
-    inventory_api: str = ""
-    ucam_api: str = ""
     support_base_url: str = ""
     support_token: str = ""
 
 
 class Settings(GlobalConfig):
     is_dev: bool
+
+    # WP3 MIDDLEWARE
+    inventory_api: str
+    ucam_api: str
 
     # DATA MANAGEMENT PORTAL
     dmp_study_id: str
