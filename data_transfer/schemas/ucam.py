@@ -1,7 +1,11 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional
+
+from data_transfer.utils import format_weartime
 
 
 class DiseaseType(Enum):
@@ -36,21 +40,58 @@ class CommonBase:
 
 
 @dataclass
-class DevicePatient(PatientBase, CommonBase):
+class Patient(PatientBase, CommonBase):
     # NOTE: is identical to VTT payload
-    pass
+
+    @classmethod
+    def serialize(cls, payload: dict) -> Patient:
+        return cls(
+            start_wear=format_weartime(payload["start_wear"], "ucam"),
+            end_wear=format_weartime(payload["end_wear"], "ucam")
+            if payload["end_wear"]
+            else None,
+            deviations=payload["deviations"],
+            vttsma_id=payload["vttsma_id"],
+            patient_id=payload["patient_id"],
+            disease=DiseaseType(int(payload["disease"])),
+        )
 
 
 @dataclass
-class PatientDevice(DeviceBase, CommonBase):
-    pass
+class Device(DeviceBase, CommonBase):
+    @classmethod
+    def serialize(cls, payload: dict) -> Device:
+        return cls(
+            start_wear=format_weartime(payload["start_wear"], "ucam"),
+            end_wear=format_weartime(payload["end_wear"], "ucam")
+            if payload["end_wear"]
+            else None,
+            deviations=payload["deviations"],
+            vttsma_id=payload["vttsma_id"],
+            device_id=payload["device_id"],
+        )
 
 
 @dataclass
-class Device(DeviceBase):
-    patients: List[DevicePatient]
+class DeviceWithPatients(DeviceBase):
+    patients: List[Patient]
+
+    @classmethod
+    def serialize(cls, payload: dict) -> DeviceWithPatients:
+        return cls(
+            device_id=payload["device_id"],
+            patients=[Patient.serialize(patient) for patient in payload["patients"]],
+        )
 
 
 @dataclass
-class Patient(PatientBase):
-    devices: List[PatientDevice]
+class PatientWithDevices(PatientBase):
+    devices: List[Device]
+
+    @classmethod
+    def serialize(cls, payload: dict) -> PatientWithDevices:
+        return cls(
+            patient_id=payload["patient_id"],
+            disease=DiseaseType(int(payload["disease"])),
+            devices=[Device.serialize(device) for device in payload["devices"]],
+        )
