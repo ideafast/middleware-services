@@ -16,6 +16,18 @@ def test_device_serial_correct_id(serial_response, client, monkeypatch) -> None:
     assert result is True
 
 
+def test_device_serial_no_location(serial_response, client, monkeypatch) -> None:
+    async def mock_get(path: str, params: str = None):
+        serial_response["rows"][0]["location"] = None
+        return serial_response
+
+    monkeypatch.setattr(inventory, "response", mock_get)
+
+    result = client.get("/inventory/device/byserial/VALID_ID").json()["meta"]["success"]
+
+    assert result is True
+
+
 def test_device_serial_incorrect_id(serial_response, client, monkeypatch) -> None:
     async def mock_get(path: str, params: str = None):
         serial_response.update({"total": 0, "rows": []})
