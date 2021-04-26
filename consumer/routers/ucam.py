@@ -52,3 +52,12 @@ def get_one_vtt(vtt_id: str) -> List[Patient]:
     if not res:
         raise CustomException(errors=["No vtt with that hash_id."], status_code=404)
     return res
+
+
+@router.get("/btf/")
+def get_btfdots() -> List[DeviceWithPatients]:
+    """
+    A temporary endpoint to resolve UCAM payload complexity for BTF dots
+    This method can possibly be removed once UCAM refactors dots as devices
+    """
+    return ucam.get_btfdots()

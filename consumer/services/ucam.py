@@ -1,4 +1,5 @@
 import os
+from collections import defaultdict
 from datetime import datetime
 from typing import List, Optional
 
@@ -80,3 +81,59 @@ def get_vtt(vtt_id: str = "") -> Optional[List[Patient]]:
     # always returns a list, even for one vvt_id; also cannot be assumed to be unique
     payload = response(f"/devices/VTT/{vtt_id}")
     return [Patient.serialize(vtt) for vtt in payload] if payload else None
+
+
+dot_keys = {
+    "bytefliesEEGSet1DeviceID",
+    "bytefliesEEGSet2DeviceID",
+    "bytefliesECGSet1DeviceID",
+    "bytefliesECGSet2DeviceID",
+    "bytefliesIMUSet1DeviceID",
+    "bytefliesIMUSet2DeviceID",
+}
+
+
+def get_btfdots() -> Optional[List[DeviceWithPatients]]:
+    """
+    A temporary endpoint to resolve UCAM payload complexity for BTF dots
+    Returns all dots transformed to devices and their associated patients
+    This method can possibly be removed once UCAM refactors dots as devices
+    """
+    result = defaultdict(list)
+    payload = response("/patients/")
+
+    for patient in payload:
+        for device in patient["devices"]:
+            if device["device_id"] and device["device_id"].startswith("BTF-"):
+
+                dots = [
+                    dot
+                    for key, dot in device.items()
+                    if key in dot_keys and dot is not None
+                ]
+                for dot in dots:
+                    # match raw JSON struct to be used with our serializer
+                    result[dot].append(
+                        {
+                            "subject_id": patient["subject_id"],
+                            "subject_Group": patient["subject_Group"],
+                            "start_Date": device["start_Date"],
+                            "end_Date": device["end_Date"],
+                            "deviations": device["deviations"],
+                            "vtT_id": device["vtT_id"],
+                        }
+                    )
+
+    device_payload = [
+        {
+            "device_id": dot,
+            "patients": patients,
+        }
+        for dot, patients in result.items()
+    ]
+
+    return (
+        [DeviceWithPatients.serialize(device) for device in device_payload]
+        if device_payload
+        else None
+    )
