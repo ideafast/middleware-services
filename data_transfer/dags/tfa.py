@@ -1,9 +1,8 @@
 import logging
 
-from data_transfer.db import all_records_downloaded, records_not_uploaded
+from data_transfer.db import records_not_uploaded
 from data_transfer.devices.thinkfast import ThinkFast
 from data_transfer.jobs import shared as shared_jobs
-from data_transfer.jobs import thinkfast as thinkfast_jobs
 from data_transfer.tasks import thinkfast as thinkfast_tasks
 from data_transfer.utils import DeviceType, StudySite
 

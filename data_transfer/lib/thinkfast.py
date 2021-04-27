@@ -5,7 +5,7 @@ import json
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import requests
 
@@ -51,7 +51,7 @@ def get_participants_records(user_id: str) -> List[dict]:
     headers_dict = {"accept": "application/json", "content-type": "application/json"}
     parameters = {"offset": 0, "limit": 100}
     filter = json.dumps({"subject": user_id})
-    parameters["filter"] = filter
+    parameters["filter"] = int(filter)
     # sort = json.dumps([{"property":"id", "direction":"ASC"}])
     # parameters['sort'] = sort
     results = []
@@ -67,23 +67,27 @@ def get_participants_records(user_id: str) -> List[dict]:
             # store the response
             results.append(response.json()["records"])
             log.debug(
-                f"total records for this participant are: "
+                "total records for this participant are: "
                 + str(response.json()["total"])
             )
             parameters["offset"] += 100
             if parameters["offset"] > response.json()["total"]:
                 break
         except requests.HTTPError:
-            log.error(f"GET Exception to:", exc_info=True)
+            log.error("GET Exception to:", exc_info=True)
     return results
 
 
 def get_participants() -> List[Participant]:
     # will store our participant records
     headers_dict = {"accept": "application/json", "content-type": "application/json"}
-    parameters = {"offset": 0, "limit": 100, "includes": "subjectIds,site,subjectItems"}
+    parameters = {
+        "offset": "0",
+        "limit": "100",
+        "includes": "subjectIds,site,subjectItems",
+    }
     participants = []
-    known_incorrect_ids = {}
+    known_incorrect_ids: Dict[str, str] = {}
 
     while True:
         # make API call
@@ -96,7 +100,8 @@ def get_participants() -> List[Participant]:
             )
             # push participant identifiers into participants array
             for rec in response.json()["records"]:
-                # find the ideaFast id in the json - this is a bit tricky as it's not always in the same place.
+                # find the ideaFast id in the json...
+                # this is a bit tricky as it's not always in the same place.
                 ideaId = ""
                 # The line below is a horribly shakey solution!
                 if len(rec["subjectItems"][2]["text"]) == 7:
@@ -105,34 +110,26 @@ def get_participants() -> List[Participant]:
                     ideaId = rec["subjectItems"][1]["text"]
                 # validate ID
                 newID = format_id_patient(ideaId)
-                if newID == None:
+                if newID is None:
                     log.debug(
-                        f"INVALID ID FOUND WITHIN THE THINKFAST RECORDS. ID = " + ideaId
+                        f"INVALID ID FOUND WITHIN THE THINKFAST RECORDS. ID = {ideaId}"
                     )
                     # check dictionary of oddities and if we have a hit do the replacement
                     if ideaId in known_incorrect_ids:
                         print(
-                            f"CORRECTED AN ERROR USING THE ODDITIES DICT: "
-                            + known_incorrect_ids[ideaId]
+                            f"CORRECTED AN ERROR USING THE ODDITIES DICT: {known_incorrect_ids[ideaId]}"
                         )
-                        participants.append(
-                            Participant(
-                                known_incorrect_ids[ideaId],
-                                rec["subjectIds"][0],
-                                rec["id"],
-                            )
-                        )
-                else:
-                    participants.append(
-                        Participant(newID, rec["subjectIds"][0], rec["id"])
-                    )
+                        newID = known_incorrect_ids[ideaId]
+                    else:
+                        continue
+                participants.append(Participant(newID, rec["subjectIds"][0], rec["id"]))
             # increment offset by the retreival limit
-            parameters["offset"] += 100
+            parameters["offset"] = str(int(parameters["offset"]) + 100)
             # got all the data or do we need to make more API calls?
             if parameters["offset"] > response.json()["total"]:
                 break
         except requests.HTTPError:
-            log.error(f"GET Exception to:", exc_info=True)
+            log.error("GET Exception to:", exc_info=True)
     return participants
 
 
