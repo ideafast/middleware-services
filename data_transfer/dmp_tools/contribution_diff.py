@@ -33,7 +33,7 @@ def write_json(filepath: Path, data: dict) -> None:
 if __name__ == "__main__":
     """
     Compare the upload of WP3 Pipeline to all other users to debug
-    and test it's behaviour. Outputs the diff in root/local/
+    and test it's behaviour. Outputs the diff in root/dmp_tools_output/
 
     $ python contribution_diff.py [devicetype] [studysite]
     $ python contribution_diff.py BTF Kiel  (for example)
@@ -49,7 +49,6 @@ if __name__ == "__main__":
     us: Dict[str, set] = {}
     them: Dict[str, set] = {}
 
-    # @jawrainey, can we get this payload from dmpy package?
     dmp_response = read_json(Path(f"{folder}/src/all_records.json"))
 
     data = dmp_response["data"]["getStudy"]["files"]
@@ -95,7 +94,7 @@ if __name__ == "__main__":
     print("\nother uploaded these sets, where we did not: ")
     print(json.dumps(result_them, cls=SetEncoder, sort_keys=True, indent=4))
 
-    output = Path(f"./dmp_tools_output/{device}_{site.name}_{data_set_name}")
+    output = Path(f"./dmp_tools_output/diff/{device}_{site.name}_{data_set_name}")
     output.mkdir(parents=True, exist_ok=True)
 
     write_json(output / "us_not_them.json", result_us)
