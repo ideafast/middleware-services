@@ -10,23 +10,36 @@ unused methods which Jay used for Dreem:
 def __unknown_records
 
 """
-import json
+# import json
 import logging
-import time
+
+# import time
 from dataclasses import dataclass
 from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
-import requests
+# from pathlib import Path
+# from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 
 from data_transfer import utils
-from data_transfer.config import config
-from data_transfer.db import all_hashes, create_record, read_record, update_record
+
+# from data_transfer.config import config
+from data_transfer.db import all_hashes, create_record
+
+# from data_transfer.db import all_hashes, create_record, read_record, update_record
 from data_transfer.lib import thinkfast as thinkfast_api
 from data_transfer.schemas.record import Record
-from data_transfer.services import inventory, ucam
-from data_transfer.utils import StudySite, uid_to_hash, write_json
+
+# from data_transfer.services import inventory, ucam
+from data_transfer.utils import StudySite, uid_to_hash
+
+# import requests
+
+
+
+
+
+# from data_transfer.utils import StudySite, uid_to_hash, write_json
 
 log = logging.getLogger(__name__)
 
@@ -63,7 +76,7 @@ class ThinkFast:
         self.study_site = study_site
         self.device_type = utils.DeviceType.TFA
 
-    def __unknown_records(self, records: list) -> list:
+    def __unknown_records(self, records: list) -> Dict:
         """
         Only add records that are not known in the DB, i.e., ID and filename.
         """
@@ -75,7 +88,7 @@ class ThinkFast:
                 results[record_hash] = record
         return results
 
-    def format_record(self, raw_rec, participant) -> Record:
+    def format_record(self, raw_rec: Dict, participant: Participant) -> Record:
         """
         takes a single record from the api return and extracts the parameters used to create our 'record'
         """
@@ -132,7 +145,9 @@ class ThinkFast:
         for participant in participants:
             raw_records = thinkfast_api.get_participants_records(participant.guid)
             if len(raw_records) != 1:
-                log.debug("Wow, raw_rec length is not 1, it is: " + len(raw_records))
+                log.debug(
+                    "Wow, raw_rec length is not 1, it is: " + str(len(raw_records))
+                )
             # setup to process and store these records
             all_recs = []
             # create a formatted record
