@@ -155,30 +155,6 @@ class Dreem:
 
         return DreemRecording(*(id, device_id, user_id, start, end))
 
-    def __device_id_from_ucam(
-        self, patient_id: str, start: datetime, end: datetime
-    ) -> Optional[str]:
-        """
-        Determine DeviceID in UCAM in two ways:
-
-            1. If only one device is used then use Patient ID
-            2. Else use wear period to perform lookup.
-        """
-        if patient_id and (ucam_entry := ucam.get_record(patient_id)):
-            devices = [
-                d for d in ucam_entry.devices if self.device_type.name in d.device_id
-            ]
-
-            # Best-case: only one device was worn and UCAM knows it
-            if len(devices) == 1:
-                return devices[0].device_id
-            # Edge-case: multiple dreem headbands used, e.g., if one broke.
-            elif len(devices) > 1:
-                # Determine usage based on weartime as it exists in UCAM
-                device = ucam.record_by_wear_period_in_list(devices, start, end)
-                return device.device_id if device else None
-        return None
-
     def __patient_id_from_ucam(
         self, device_id: str, start: datetime, end: datetime
     ) -> Optional[str]:
