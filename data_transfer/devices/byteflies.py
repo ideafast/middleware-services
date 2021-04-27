@@ -4,8 +4,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
-import requests
-
 from data_transfer import utils
 from data_transfer.config import config
 from data_transfer.db import all_hashes, create_record, read_record, update_record
@@ -55,23 +53,24 @@ class Byteflies:
         Authenticate with AWS cognito to access ByteFlies resources
         """
         self.study_site = study_site
-        self.session = self.authenticate()
         self.device_type = utils.DeviceType.BTF
         self.file_type = ".csv"
+        # timestamp used to optimise lru_cache in file download pipeline
+        self.last_downloaded = 0
+        self.download_cache_expiry = 300  # 5 minutes
 
-    def authenticate(self) -> requests.Session:
+    def __get_timestamp(self) -> int:
         """
-        Authenticate once when object created to share session between requests
+        return a timestamp that changes every x minutes to allow caching of API call
+        # NOTE: only used in the download stage
         """
-        credentials = dict(
-            username=config.byteflies_username,
-            password=config.byteflies_password,
-            client_id=config.byteflies_aws_client_id,
+        now = int(datetime.now().timestamp())
+        self.last_downloaded = (
+            now
+            if now - self.last_downloaded > self.download_cache_expiry
+            else self.last_downloaded
         )
-        token = byteflies_api.get_token(credentials)
-        session = byteflies_api.get_session(token)
-        log.info("Authentication successful")
-        return session
+        return self.last_downloaded
 
     def download_metadata(self, from_date: int, to_date: int) -> None:
         """
@@ -83,7 +82,6 @@ class Byteflies:
         """
         # Note: includes metadata for ALL data records, therefore we must filter them
         all_records = byteflies_api.get_list(
-            self.session,
             config.byteflies_group_ids[self.study_site],
             from_date,
             to_date,
@@ -197,12 +195,12 @@ class Byteflies:
             return
 
         filename = byteflies_api.download_file(
-            self.session,
             record.download_folder(),
             record.meta["studysite_id"],
             record.meta["recording_id"],
             record.meta["signal_id"],
             record.meta["algorithm_id"],
+            self.__get_timestamp(),
         )
 
         # filename if succes, None if not

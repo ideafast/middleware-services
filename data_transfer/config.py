@@ -1,6 +1,7 @@
 import os
 from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
 from dotenv import get_key, load_dotenv
 from pydantic import BaseSettings
@@ -40,17 +41,16 @@ class GlobalConfig(BaseSettings):
 
     ucam_data: Path = csvs_path / "ucam_db.csv"
 
+    database_uri: str = "mongodb://user:password@localhost:27017"
+    database_name: str = "pipeline_local"
+
+    inventory_api: str = ""
+    support_base_url: str = ""
+    support_token: str = ""
+
 
 class Settings(GlobalConfig):
     is_dev: bool
-
-    # IDEAFAST
-    database_uri: str
-    database_name: str
-
-    inventory_api: str
-    support_base_url: str
-    support_token: str
 
     # DATA MANAGEMENT PORTAL
     dmp_study_id: str
@@ -110,7 +110,7 @@ class Settings(GlobalConfig):
 
 
 @lru_cache()
-def settings() -> Settings:
+def settings() -> Any:
     """
     Only a few services provide development environments, e.g., DMPY.
     As such, live APIs are used for most local developement and
@@ -122,6 +122,9 @@ def settings() -> Settings:
     if get_env_value("IS_DEV"):
         # Override specific prod values, e.g., DMP.
         load_dotenv(".dtransfer.dev.env", override=True)
+
+    if get_env_value("IS_TESTING"):
+        return GlobalConfig()
 
     return Settings()
 

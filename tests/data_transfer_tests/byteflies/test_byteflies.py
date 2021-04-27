@@ -1,5 +1,5 @@
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 from pymongo.collection import Collection
 
@@ -8,16 +8,16 @@ from data_transfer.db import main as db
 from data_transfer.lib import byteflies as lib
 
 
-@patch.object(lib.time, "sleep")
+@patch.object(lib.time, "sleep", scope="function")
 def test_get_list(mock_time_sleep: Mock, mock_requests_session: dict) -> None:
 
-    result = lib.get_list(mock_requests_session["session"], "studysite_1", 0, 1)
+    with patch.object(lib, "requests", mock_requests_session["session"]):
 
-    # NOTE: Can't replicate, but sleep_call_count failed on me once (was 26853)
-    assert mock_time_sleep.call_count == 5
-    assert mock_requests_session["get_all"].call_count == 1
-    assert mock_requests_session["get_one"].call_count == 4
-    assert len(result) == 40
+        result = lib.get_list("studysite_1", 0, 1)
+
+        assert mock_requests_session["get_all"].call_count == 1
+        assert mock_requests_session["get_one"].call_count == 4
+        assert len(result) == 40
 
 
 def test_download_file(mock_requests_session: dict, tmpdir: Path) -> None:
@@ -28,18 +28,31 @@ def test_download_file(mock_requests_session: dict, tmpdir: Path) -> None:
     ):
 
         result = lib.download_file(
-            mock_requests_session["session"],
-            tmpdir,
-            "studysite_1",
-            "random_id_12",
-            "random_id_13",
-            "",
+            tmpdir, "studysite_1", "random_id_12", "random_id_13", "", 0
         )
 
     assert result
     assert mock_requests_session["get_one"].call_count == 1
     assert mock_requests_session["get_file"].call_count == 1
     assert Path(tmpdir / "random_id_13.csv").is_file()
+
+
+def test_recording_by_id() -> None:
+    # TODO: involve Byteflies()__get_timestamp()
+    lib.__get_recording_by_id.cache_clear()
+    response = MagicMock()
+
+    timestamps = [0, 0, 0, 1]
+
+    with patch.object(lib, "__get_response", response):
+        for time in timestamps:
+            lib.__get_recording_by_id("studysite_1", "random_id_12", time)
+
+        result = lib.__get_recording_by_id.cache_info()
+
+        assert result[0] == 2  # two 'hits' on the cache
+        assert result[1] == 2  # two 'misses' on the cache
+        assert response.call_count == 2  # same as the misses
 
 
 def test_populated_db(populated_db: Collection) -> None:
