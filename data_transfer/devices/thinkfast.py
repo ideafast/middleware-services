@@ -36,9 +36,6 @@ from data_transfer.utils import StudySite, uid_to_hash
 # import requests
 
 
-
-
-
 # from data_transfer.utils import StudySite, uid_to_hash, write_json
 
 log = logging.getLogger(__name__)
