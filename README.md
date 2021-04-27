@@ -83,6 +83,11 @@ Due to our current manual setup, the pipeline needs to be manually initates with
 
     docker exec -it $CONTAINERNAME sh
 
-Then add `/proc/1/fd/1` to have the output logged to the container logs, e.g.
+
+#### Logs
+
+Add `/proc/1/fd/1` to have the output logged to the container logs (good practise). You can also keep tabs on the logs _and_ store this in a separate file. Finally, you can pull down a (most recent) copy of this log file for investigation on your machine.
 
     python data_transfer/main.py $DEVICE $STUDYSITE -1 >> /proc/1/fd/1
+    docker logs -f $CONTAINERNAME > tee path/to/log/file.log &
+    scp username@ip:/remote/file.txt /local/directory
