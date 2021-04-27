@@ -52,6 +52,26 @@ def get_one_vtt(vtt_id: str) -> Optional[List[Patient]]:
     )
 
 
+@lru_cache(maxsize=1)
+def get_all_btf_dots() -> Optional[List[DeviceWithPatients]]:
+    """
+    Temporary method to accomodate temporary BTF endpoint
+    Cached, so we can look up with 'get_one_btf_dot'
+    """
+    response = requests.get(f"{config.ucam_api}btf/").json()
+    return (
+        [DeviceWithPatients.serialize(device) for device in response["data"]]
+        if response["meta"]["success"]
+        else None
+    )
+
+
+@lru_cache
+def get_one_btf_dot(dot_id: str) -> Optional[List[DeviceWithPatients]]:
+    dots = [dot for dot in get_all_btf_dots() if dot.device_id == dot_id]
+    return dots if dots else None
+
+
 def patient_by_wear_period(
     device_id: str, start_wear: datetime, end_wear: datetime
 ) -> Optional[Patient]:

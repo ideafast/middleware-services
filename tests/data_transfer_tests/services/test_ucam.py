@@ -97,6 +97,51 @@ def test_get_vtts_success(
         assert len(result) == 2
 
 
+def test_get_all_btfdots_success(
+    mock_ucam_config: MagicMock, mock_data: dict, mock_payload: dict
+) -> None:
+    mock_payload.update({"data": mock_data["btf_dots"]})
+    get_response = MagicMock(json=lambda: mock_payload)
+
+    with patch("requests.get", return_value=get_response):
+
+        result = ucam.get_all_btf_dots()
+
+        assert len(result) == 6
+
+
+def test_get_btfdot_success(
+    mock_ucam_config: MagicMock, mock_data: dict, mock_payload: dict
+) -> None:
+    mock_payload.update(
+        {"data": [d for d in mock_data["btf_dots"] if d["device_id"] == "NR1-BTFDOT"]}
+    )
+    get_response = MagicMock(json=lambda: mock_payload)
+
+    with patch("requests.get", return_value=get_response):
+
+        result = ucam.get_one_btf_dot("NR1-BTFDOT")
+
+        assert len(result) == 1
+        assert result[0].device_id == "NR1-BTFDOT"
+
+
+def test_get_btfdot_not_found(mock_ucam_config: MagicMock, mock_payload: dict) -> None:
+    mock_payload.update(
+        {
+            "data": None,
+            "meta": {"success": False, "errors": ["No device with that id."]},
+        }
+    )
+    get_response = MagicMock(json=lambda: mock_payload)
+
+    with patch("requests.get", return_value=get_response):
+
+        result = ucam.get_one_btf_dot("NOT-BTFDOT")
+
+        assert result is None
+
+
 def test_get_patient_by_period_date_within(mock_data: dict, mock_payload: dict) -> None:
     mock_payload.update(
         {"data": [d for d in mock_data["devices"] if d["device_id"] == "NR3-DEVICE"]}
