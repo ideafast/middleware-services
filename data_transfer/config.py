@@ -58,6 +58,9 @@ class Settings(GlobalConfig):
     dmp_public_key: str
     dmp_signature: str
 
+    # DMP_TOOLS
+    dmp_tools_user_name: str
+
     # BYTEFLIES
     byteflies_api_url: str
     byteflies_username: str
