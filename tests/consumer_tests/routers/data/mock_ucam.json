@@ -9,7 +9,13 @@
                     "vtT_id": null,
                     "start_Date": "2020-07-21T00:00:00",
                     "end_Date": null,
-                    "deviations": null
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
                 }
             ]
         },
@@ -22,7 +28,13 @@
                     "vtT_id": null,
                     "start_Date": "2020-07-21T00:00:00",
                     "end_Date": null,
-                    "deviations": null
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
                 }
             ]
         },
@@ -35,28 +47,52 @@
                     "vtT_id": null,
                     "start_Date": "2020-06-20T00:00:00",
                     "end_Date": "2020-07-20T00:00:00",
-                    "deviations": null
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
                 },
                 {
                     "device_id": "NR3-DEVICE",
                     "vtT_id": null,
                     "start_Date": "2020-07-21T00:00:00",
                     "end_Date": "2020-07-22T00:00:00",
-                    "deviations": null
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
                 },
                 {
                     "device_id": "NR3-DEVICE",
                     "vtT_id": null,
                     "start_Date": "2020-07-22T00:00:00",
                     "end_Date": null,
-                    "deviations": null
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
                 },
                 {
                     "device_id": "NR4-DEVICE",
                     "vtT_id": null,
                     "start_Date": "2020-07-22T00:00:00",
                     "end_Date": null,
-                    "deviations": null
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
                 }
             ]
         },
@@ -74,7 +110,13 @@
                     "vtT_id": "VTT_COMPLEX_HASH",
                     "start_Date": "2020-09-17T00:00:00",
                     "end_Date": null,
-                    "deviations": null
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
                 }
             ]
         },
@@ -87,14 +129,45 @@
                     "vtT_id": null,
                     "start_Date": "2020-09-09T00:00:00",
                     "end_Date": "2020-09-09T00:00:00",
-                    "deviations": null
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
                 },
                 {
                     "device_id": null,
                     "vtT_id": "VTT_COMPLEX_HASH",
                     "start_Date": "2020-09-22T00:00:00",
                     "end_Date": null,
-                    "deviations": null
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
+                }
+            ]
+        },
+        {
+            "subject_id": "G-PATIENT",
+            "subject_Group": 4,
+            "devices": [
+                {
+                    "device_id": "BTF-DEVICE",
+                    "vtT_id": null,
+                    "start_Date": "2020-07-21T00:00:00",
+                    "end_Date": null,
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": "NR1-BTFDOT",
+                    "bytefliesEEGSet2DeviceID": "NR2-BTFDOT",
+                    "bytefliesECGSet1DeviceID": "NR3-BTFDOT",
+                    "bytefliesECGSet2DeviceID": "NR4-BTFDOT",
+                    "bytefliesIMUSet1DeviceID": "NR5-BTFDOT",
+                    "bytefliesIMUSet2DeviceID": "NR6-BTFDOT"
                 }
             ]
         }

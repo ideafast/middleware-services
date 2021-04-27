@@ -32,7 +32,7 @@ def test_get_patients_success(mock_data: dict, client: TestClient) -> None:
 
         result = client.get("/ucam/patients/").json()
 
-        assert len(result["data"]) == 6
+        assert len(result["data"]) == 7
         assert result["meta"]["success"] is True
 
 
@@ -68,6 +68,15 @@ def test_get_devices_success(mock_data: dict, client: TestClient) -> None:
         result = client.get("/ucam/devices/").json()
 
         assert len(result["data"]) == 5
+        assert result["meta"]["success"] is True
+
+
+def test_get_btf_dots_success(mock_data: dict, client: TestClient) -> None:
+    with patch.object(ucam, "response", return_value=mock_data["patients"]):
+
+        result = client.get("/ucam/btf/").json()
+
+        assert len(result["data"]) == 6
         assert result["meta"]["success"] is True
 
 
@@ -146,3 +155,11 @@ def test_get_no_vtt() -> None:
     result = ucam.get_vtt("THIS VTT HASH SHOULD REALLY NOT EXIST")
 
     assert result is None
+
+
+@pytest.mark.live
+def test_LIVE_get_btf_OK() -> None:
+
+    result = ucam.get_btfdots()
+
+    assert all(isinstance(x, DeviceWithPatients) for x in result)
