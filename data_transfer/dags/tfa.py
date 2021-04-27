@@ -26,24 +26,17 @@ def dag(study_site: StudySite) -> None:
 
     thinkfast = ThinkFast(study_site)
 
+    # step 1. get all new records
     thinkfast.download_participants_data()
+    results = records_not_uploaded(DeviceType.TFA)
 
-    # knock out everything else until I get batch metadata running
-    """
-    results = records_not_uploaded(DeviceType.TFA) #changed from DRM
-
-    # NOTE: group records by patients per device to process small batches.
-    for patient_device, records in results.items():
+    # step 2. preprocess data
+    for _patient_device, records in results.items():
         for record in records:
             # Each task should be idempotent. Returned values feeds subsequent task
-            mongoid = thinkfast_tasks.task_download_data(thinkfast, record.id)
-            thinkfast_tasks.task_preprocess_data(mongoid)
-        # Only upload when all records are ready
-        if all_records_downloaded(records):
-            log.debug(f"All records for {patient_device} DOWNLOADED -> PREPARING ...")
-            shared_jobs.prepare_data_folders(DeviceType.TFA) #changed from DRM
-            log.debug(f"All records for {patient_device} PREPARED   -> UPLOADING ...")
-            shared_jobs.batch_upload_data(DeviceType.TFA) #changed from DRM
-        else:
-            log.error(f"Some records for {patient_device} were not downloaded.")
-    """
+            thinkfast_tasks.task_preprocess_data(record.id)
+
+        # step 3. prepare data for uploadingData by moving data to a folder in /uploading/
+        shared_jobs.prepare_data_folders(DeviceType.TFA)
+        # step 4. Upload the data to the dmp
+        # shared_jobs.batch_upload_data(DeviceType.TFA)

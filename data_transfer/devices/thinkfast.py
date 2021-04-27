@@ -63,37 +63,63 @@ class ThinkFast:
         self.study_site = study_site
         self.device_type = utils.DeviceType.TFA
 
-    def __unknown_records(self, records: List[Dict]) -> Dict[str, Dict]:
+    def __unknown_records(self, records: list) -> list:
         """
         Only add records that are not known in the DB, i.e., ID and filename.
         """
         results = {}
         known_records = all_hashes()
         for record in records:
-            record_hash = uid_to_hash(record, self.device_type)
+            record_hash = uid_to_hash(record.manufacturer_ref, self.device_type)
             if record_hash not in known_records:
                 results[record_hash] = record
         return results
 
     def format_record(self, raw_rec, participant) -> Record:
-        print("formatting record")
-        text = json.dumps(raw_rec, sort_keys=True, indent=4)
-        print(text)
-        # TO DO - OBVIOUSLY THIS NEEDS FIXING!!!!
-        new_record = Record(
-            hash="hash_id",
-            manufacturer_ref=raw_rec["id"],
-            device_type="TFA",
-            patient_id=participant.id_ideafast,
-            device_id="TFAP6RJG3",
-            start_wear=datetime.now(),
-            end_wear=datetime.now(),
-        )
-        return new_record
+        """
+        takes a single record from the api return and extracts the parameters used to create our 'record'
+        """
+
+        # text = json.dumps(raw_rec["id"], sort_keys=True, indent=4)
+        # print(text)
+
+        try:
+            if raw_rec["itemGroups"][0]["items"][0]["measureCode"] == "SWMTE":
+                # print("we have CANTAB")
+                new_record = Record(
+                    hash=uid_to_hash(raw_rec["id"], self.device_type),
+                    manufacturer_ref=raw_rec["id"],
+                    device_type="TFA",
+                    patient_id=participant.id_ideafast,
+                    device_id="TFAP6RJG3",
+                    start_wear=raw_rec["startTime"],
+                    end_wear=raw_rec["itemGroups"][0]["endTime"],
+                    is_downloaded=True,
+                    meta={"tfa_type": "CANTAB", "full_data": raw_rec},
+                )
+            else:
+                print("we have ThinkFAST")
+                new_record = Record(
+                    hash=uid_to_hash(raw_rec["id"], self.device_type),
+                    manufacturer_ref=raw_rec["id"],
+                    device_type="TFA",
+                    patient_id=participant.id_ideafast,
+                    device_id="TFAP6RJG3",
+                    start_wear=raw_rec["startTime"],
+                    end_wear=raw_rec["itemGroups"][0]["endTime"],
+                    is_downloaded=True,
+                    meta={
+                        "tfa_type": "ThinkFAST",
+                        "full_data": raw_rec["itemGroups"][0]["items"],
+                    },
+                )
+            return new_record
+        except:
+            log.debug("Something went wrong whilst creating a new TFA record")
 
     def download_participants_data(self) -> None:
         """
-        get a list of all participants on the thinkfast platform
+        get all participant data on the thinkfast platform and return unknown records
         """
         participants: List = thinkfast_api.get_participants()
         # print the number of participants
@@ -105,109 +131,49 @@ class ThinkFast:
         # loop through our list of participants retreiving their test data
         for participant in participants:
             raw_records = thinkfast_api.get_participants_records(participant.guid)
-            print(f"total records for this participant: " + str(len(raw_records)))
-
-            for raw_rec in raw_records:
-                # loop thought and create a formatted record
-                new_rec = self.format_record(raw_rec, participant)
-                return
-                # check if this already exists in the DB
-                # if not, create a record
-                # create_record(new_rec)
-
-            return
-            # record = Record(
-            #     hash=hash_id,
-            #     manufacturer_ref=recording.id,
-            #     device_type=self.device_type.name,
-            #     patient_id=patient_id,
-            #     device_id=device_id,
-            #     start_wear=recording.start,
-            #     end_wear=recording.end,
-            # )
-
-            """
-            # create record and store to json
-            # print(records)
-            #return
-            # print number of participants remaining
-            remaining = remaining - 1
-            print(str(remaining) + " participants to go")
-            # setup for API call
-            self.parameters["offset"] = 0
-            result = []
-            new_results = []
-            deviceId = "TFAP6RJG3"  # hard coded as they all share the same device ID
-            # set the filter to use the next participant's information
-            log.debug(f"getting data for subject with GUID: " + rec.guid)
-            filter = json.dumps({"subject": rec.guid})
-            self.parameters["filter"] = filter
-            # make api call(s) to retreive data for this participant
-            startTime = (
-                2000000000000  # random high start time which we will reduce in the loop
+            if len(raw_records) != 1:
+                log.debug("Wow, raw_rec length is not 1, it is: " + len(raw_records))
+            # setup to process and store these records
+            all_recs = []
+            # create a formatted record
+            # print("length of raw_records[0]: " + str(len(raw_records[0])))
+            # LOOP THROUGH RAW_RECORDS[0] making an entry for each
+            for Record in raw_records[0]:
+                newRec = self.format_record(Record, participant)
+                if newRec is not None:
+                    all_recs.append(newRec)
+                else:
+                    log.debug("skipping this record")
+            # do a diff with our DB
+            unknown_records = self.__unknown_records(all_recs)
+            log.debug(
+                "Participant "
+                + participant.guid
+                + " has "
+                + str(len(raw_records[0]))
+                + " total TFA records. Writing "
+                + str(len(unknown_records))
+                + " new records to the DB"
             )
-            endTime = 1000000000000  # random low time which we will incrase in the loop
-
-            # make the api calls until total records are retreived
-
-            # do a diff to only keep unknown records
-            unknown_records = self.__unknown_records(all_records)
-
-            # CHANGE THIS NEXT LOOP TO COMPARE EACH RECORD AGAINST THE MONGO DB - PASS NEW RECORDS TO A NEW_RECORDS ARRAY
-            # loop through the results looking for the earliest start time
-
-                    record = Record(
-                                    hash=hash_id,
-                                    manufacturer_ref=recording.id,
-                                    device_type=self.device_type.name,
-                                    patient_id=patient_id,
-                                    device_id=device_id,
-                                    start_wear=recording.start,
-                                    end_wear=recording.end,
-                                )
-
-                            create_record(record)
-
-                            # Store metadata from memory to file
-                            utils.write_json(record.metadata_path(), x)
-
-                write_json("./test.json", response.json()['records'])
-                break
-                for record in response.json()['records']:
-                    # if isinstance(x["startTime"], int): #protection added as I occasionnally hit a 'type = none' bug
-                    #     if x["startTime"] < startTime:
-                    #         startTime = x["startTime"]
-                    # for y in x["itemGroups"]:
-                    #     if isinstance(y["endTime"], int):
-                    #         if y["endTime"] > endTime:
-                    #             endTime = y["endTime"]
-
-                    # make the hash
-                    uid_to_hash()
-                # increment offset
-                self.parameters['offset'] += 100
-                # check if all records retreived for this subject/guid
-                if self.parameters['offset'] > response.json()['total']:
-                    # check we have something to write by ensuring start and end time got updated
-                    if startTime != 2000000000000 and endTime != 1000000000000:
-                        # write the json records to disk
-                            #first, prep startTime & endTime
-                        newStart = str(time.strftime('%Y%m%d', time.localtime(startTime/1000)))
-                        newEnd = str(time.strftime('%Y%m%d', time.localtime(endTime/1000)))
-                        pName = rec.ideafast_id.replace(" ", "_")
-                        dirName = "./camcogData/" + pName + "-" + deviceId + "-" + newStart + "-" + newEnd
-                        fileName = dirName + "/" + pName + "-" + deviceId + "-" + newStart + "-" + newEnd + ".json"
-
-                        try:
-                            os.mkdir(dirName)
-                        except OSError:
-                            print ("creation of the directory %s failed" % dirName)
-                        else:
-                            print ("succesfully created the directory %s " % dirName)
-                        with open(fileName, "wb") as outfile:
-                            json.dump(result, outfile)
-                        zip_and_rm(dirName)
-
-                    break
-
-            """
+            # push the new records into the DB
+            for record in unknown_records.values():
+                create_record(record)
+                # create path
+                if record.meta["tfa_type"] == "CANTAB":
+                    path = (
+                        record.download_folder()
+                        / f"{record.manufacturer_ref}-CANTAB.json"
+                    )
+                elif record.meta["tfa_type"] == "ThinkFAST":
+                    path = (
+                        record.download_folder()
+                        / f"{record.manufacturer_ref}-ThinkFAST.json"
+                    )
+                else:
+                    path = (
+                        record.download_folder()
+                        / f"{record.manufacturer_ref}-unknown.json"
+                    )
+                # write the record locally
+                utils.write_json(path, record.meta["full_data"])
+                # utils.write_json(path, json.loads(record.dumps['full_data'], default=str))
