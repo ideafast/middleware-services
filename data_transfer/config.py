@@ -83,12 +83,9 @@ class Settings(GlobalConfig):
     dreem_api_url: str
 
     # THINKFAST
-    thinkfast_api_url: str = get_env_value("THINKFAST_API_URL")
-    thinkfast_username: str = get_env_value("THINKFAST_USERNAME")
-    thinkfast_password: str = get_env_value("THINKFAST_PASSWORD")
-
-    print("thinkfast_api_url")
-    print(thinkfast_api_url)
+    thinkfast_api_url: str
+    thinkfast_username: str
+    thinkfast_password: str
 
     # Hardcoded as this data structure is not
     # supported unless JSON is stored in .env

@@ -87,45 +87,29 @@ class ThinkFast:
 
     def format_record(self, raw_rec: Dict, participant: Participant) -> Record:
         """
-        takes a single record from the api return and extracts the parameters used to create our 'record'
+        takes a single record from the api return
+        and extracts the parameters used to create our 'record'
         """
 
-        # text = json.dumps(raw_rec["id"], sort_keys=True, indent=4)
-        # print(text)
+        new_record = Record(
+            hash=uid_to_hash(raw_rec["id"], self.device_type),
+            manufacturer_ref=raw_rec["id"],
+            device_type="TFA",
+            patient_id=participant.id_ideafast,
+            device_id="TFAP6RJG3",
+            start_wear=raw_rec["startTime"],
+            end_wear=raw_rec["itemGroups"][0]["endTime"],
+            is_downloaded=True,
+        )
 
-        try:
-            if raw_rec["itemGroups"][0]["items"][0]["measureCode"] == "SWMTE":
-                # print("we have CANTAB")
-                new_record = Record(
-                    hash=uid_to_hash(raw_rec["id"], self.device_type),
-                    manufacturer_ref=raw_rec["id"],
-                    device_type="TFA",
-                    patient_id=participant.id_ideafast,
-                    device_id="TFAP6RJG3",
-                    start_wear=raw_rec["startTime"],
-                    end_wear=raw_rec["itemGroups"][0]["endTime"],
-                    is_downloaded=True,
-                    meta={"tfa_type": "CANTAB", "full_data": raw_rec},
-                )
-            else:
-                print("we have ThinkFAST")
-                new_record = Record(
-                    hash=uid_to_hash(raw_rec["id"], self.device_type),
-                    manufacturer_ref=raw_rec["id"],
-                    device_type="TFA",
-                    patient_id=participant.id_ideafast,
-                    device_id="TFAP6RJG3",
-                    start_wear=raw_rec["startTime"],
-                    end_wear=raw_rec["itemGroups"][0]["endTime"],
-                    is_downloaded=True,
-                    meta={
-                        "tfa_type": "ThinkFAST",
-                        "full_data": raw_rec["itemGroups"][0]["items"],
-                    },
-                )
-            return new_record
-        except:
-            log.debug("Something went wrong whilst creating a new TFA record")
+        if raw_rec["itemGroups"][0]["items"][0]["measureCode"] == "SWMTE":
+            new_record.meta = {"tfa_type": "CANTAB", "full_data": raw_rec}
+        else:
+            new_record.meta = {
+                "tfa_type": "ThinkFAST",
+                "full_data": raw_rec["itemGroups"][0]["items"],
+            }
+        return new_record
 
     def download_participants_data(self) -> None:
         """
@@ -134,9 +118,7 @@ class ThinkFast:
         participants: List = thinkfast_api.get_participants()
         # print the number of participants
         remaining = len(participants)
-        log.debug(
-            f"Number of our participants found in CamCog's database: " + str(remaining)
-        )
+        log.debug(f"Number of our participants found in CamCog's database: {remaining}")
 
         # loop through our list of participants retreiving their test data
         for participant in participants:
@@ -150,12 +132,13 @@ class ThinkFast:
             # create a formatted record
             # print("length of raw_records[0]: " + str(len(raw_records[0])))
             # LOOP THROUGH RAW_RECORDS[0] making an entry for each
-            for Record in raw_records[0]:
-                newRec = self.format_record(Record, participant)
-                if newRec is not None:
-                    all_recs.append(newRec)
-                else:
-                    log.debug("skipping this record")
+            for record in raw_records[0]:
+                try:
+                    newRec = self.format_record(record, participant)
+                    if newRec:
+                        all_recs.append(newRec)
+                except Exception:
+                    log.debug("failed to create this record")
             # do a diff with our DB
             unknown_records = self.__unknown_records(all_recs)
             log.debug(

@@ -4,7 +4,7 @@
 import json
 import logging
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import requests
 
@@ -21,20 +21,15 @@ class Participant:
     guid: str
 
 
-def get_session(token: str) -> requests.Session:
-    """
-    Builds a requests session object with the required header
-    """
-    session = requests.Session()
-    session.headers.update({"Authorization": f"Bearer {token}"})
-    return session
-
-
 def get_participants_records(user_id: str) -> List[dict]:
     headers_dict = {"accept": "application/json", "content-type": "application/json"}
-    parameters = {"offset": 0, "limit": 100}
-    filter = json.dumps({"subject": user_id})
-    parameters["filter"] = int(filter)
+    parameters: Dict[str, Any] = {
+        "offset": 0,
+        "limit": 100,
+        "filter": json.dumps({"subject": user_id}),
+    }
+    # filter = json.dumps({"subject": user_id})
+    # parameters["filter"] = filter
     # sort = json.dumps([{"property":"id", "direction":"ASC"}])
     # parameters['sort'] = sort
     results = []
@@ -112,6 +107,6 @@ def get_participants() -> List[Participant]:
         # increment offset by the retreival limit
         parameters["offset"] = str(int(parameters["offset"]) + 100)
         # got all the data or do we need to make more API calls?
-        if parameters["offset"] > response.json()["total"]:
+        if int(parameters["offset"]) > int(response.json()["total"]):
             break
     return participants
