@@ -10,7 +10,7 @@ from data_transfer.schemas.record import Record
 from data_transfer.utils import DeviceType
 
 client = MongoClient(config.database_uri)
-_db = client.dtransfer
+_db = client[config.database_name]
 
 log = logging.getLogger(__name__)
 

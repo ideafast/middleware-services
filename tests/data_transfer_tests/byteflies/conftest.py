@@ -1,6 +1,7 @@
 import re
 from pathlib import Path
 from typing import IO
+from unittest.mock import Mock, patch
 
 import mongomock
 import pytest
@@ -70,10 +71,16 @@ def mock_requests_session() -> dict:
 
 
 @pytest.fixture
-def populated_db() -> Collection:
-    db = mongomock.MongoClient().db
+@patch.object(byteflies.Byteflies, "authenticate")
+@patch.object(byteflies, "StudySite")
+def populated_db(mock_authenticate: Mock, mock_city: Mock) -> Collection:
+    # path db with mock
+    mock_db = mongomock.MongoClient().db
+    # get mock data
     byteflies_itemised = utils.read_json(Path(f"{folder}/data/byteflies_itemised.json"))
-    btf_class = byteflies.Byteflies()
+
+    # note that authentication is patched, can test with mock_authenticate.assert_called_once()
+    btf_class = byteflies.Byteflies(mock_city)
 
     for item in byteflies_itemised:
         recording = btf_class.recording_metadata(item)
@@ -93,6 +100,6 @@ def populated_db() -> Collection:
             ),
         )
 
-        db.records.insert_one(record.dict())
+        mock_db.records.insert_one(record.dict())
 
-    return db
+    return mock_db

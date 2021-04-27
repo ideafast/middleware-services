@@ -1,5 +1,4 @@
 import logging
-import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -105,7 +104,7 @@ class Dreem:
 
             _device_id = self.__device_id_from_ucam(
                 patient_id, recording.start, recording.end
-            ) or inventory.device_id_by_serial(device_serial)
+            ) or inventory.device_id_by_serial(self.device_type, device_serial)
 
             if not (device_id := utils.format_id_device(_device_id)):
                 log.error(
@@ -196,10 +195,8 @@ class Dreem:
         Note: uses inventory API to determine DeviceID to make association.
         """
         # NOTE/TODO: given this is a 1-1 mapping, why not use a local CSV?
-        device_id = inventory.device_id_by_serial(device_serial)
+        device_id = inventory.device_id_by_serial(self.device_type, device_serial)
         record = ucam.record_by_wear_period(device_id, start, end)
-        # TODO: inventory has small rate limit.
-        time.sleep(4)
         return record.patient_id if record else None
 
     def __patient_id_from_inventory(
@@ -208,9 +205,8 @@ class Dreem:
         """
         Determine PatientID by wear period in inventory.
         """
-        device_id = inventory.device_id_by_serial(device_serial)
+        device_id = inventory.device_id_by_serial(self.device_type, device_serial)
         record = inventory.record_by_device_id(device_id, start, end)
-        time.sleep(4)
         return record.get("patient_id", None) if record else None
 
     def download_file(self, mongo_id: str) -> None:

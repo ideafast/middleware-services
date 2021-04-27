@@ -33,14 +33,12 @@ class GlobalConfig(BaseSettings):
     storage_vol: Path = data_path / "input"
     upload_folder: Path = data_path / "uploading"
 
-    byteflies_devices = root_path / "byteflies_devices.csv"
+    byteflies_historical_start = "2020-07-01"
 
     dreem_users: Path = csvs_path / "dreem_users.csv"
     dreem_devices: Path = csvs_path / "dreem_devices.csv"
 
     ucam_data: Path = csvs_path / "ucam_db.csv"
-
-    # ThinkFast does not map devices to patients as only one device ID is used to represent the phone app
 
 
 class Settings(GlobalConfig):
@@ -48,6 +46,8 @@ class Settings(GlobalConfig):
 
     # IDEAFAST
     database_uri: str
+    database_name: str
+
     inventory_api: str
     support_base_url: str
     support_token: str

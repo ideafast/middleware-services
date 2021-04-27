@@ -35,9 +35,10 @@ When developing the consumer API run:
 
     poetry run consumer
 
-When developing the data transfer jobs run where `DEVICE_TYPE` is the type of device (e.g., DRM, BTF, etc.) and `study_site` is one of the core study sites. View the [DAGs in data_transfer](./data_transfer/dags/) for more information:
+When developing the data transfer jobs run where `DEVICE_TYPE` is the type of device (e.g., DRM, BTF, etc.) and `study_site` is one of the core study sites. Note, for BTF you can add timespan parameters. View the [DAGs in data_transfer](./data_transfer/dags/) for more information:
 
     python data_transfer/main.py $DEVICE_TYPE $STUDY_SITE
+    python data_transfer/main.py BTF $STUDY_SITE $REFERENCE_DAY $DAYS_TIMESPAN
 
 ### Running Tests, Type Checking, Linting and Code Formatting
 
