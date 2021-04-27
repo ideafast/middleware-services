@@ -78,3 +78,11 @@ The compose file uses specified `.env` files and runs all services:
 to an image to a `$REPO` run  the following:
 
     poetry run publish $VERSION $REPO
+
+Due to our current manual setup, the pipeline needs to be manually initates within the container, e.g.
+
+    docker exec -it $CONTAINERNAME sh
+
+Then add `/proc/1/fd/1` to have the output logged to the container logs, e.g.
+
+    python data_transfer/main.py $DEVICE $STUDYSITE -1 >> /proc/1/fd/1
