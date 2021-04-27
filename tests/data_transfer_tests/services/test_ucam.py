@@ -159,6 +159,25 @@ def test_get_patient_by_period_date_within(mock_data: dict, mock_payload: dict) 
         assert result.patient_id == "B-PATIENT"
 
 
+def test_get_patient_btf_dots_by_period_date_within(
+    mock_data: dict, mock_payload: dict
+) -> None:
+    mock_payload.update(
+        {"data": [d for d in mock_data["btf_dots"] if d["device_id"] == "NR1-BTFDOT"]}
+    )
+    get_response = MagicMock(json=lambda: mock_payload)
+
+    device_id = "NR1-BTFDOT"
+    start_wear = format_weartime("2020-07-22T00:00:00", "ucam")
+    end_wear = format_weartime("2020-07-23T00:00:01", "ucam")
+
+    with patch("requests.get", return_value=get_response):
+
+        result = ucam.patient_by_btfdot_wear_period(device_id, start_wear, end_wear)
+
+        assert result.patient_id == "G-PATIENT"
+
+
 def test_get_patient_by_period_invalid_patient_id(mock_payload: dict) -> None:
     get_response = MagicMock(json=lambda: mock_payload)
 
