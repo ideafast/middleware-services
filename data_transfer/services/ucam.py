@@ -83,6 +83,29 @@ def patient_by_wear_period(
     end_wear = normalise_day(end_wear)
     devices = get_one_device(device_id)
 
+    return determine_by_wear_period(devices, start_wear, end_wear)
+
+
+def patient_by_btfdot_wear_period(
+    device_id: str, start_wear: datetime, end_wear: datetime
+) -> Optional[Patient]:
+    """
+    If data was created on a certain period then it belongs to an individual patient.
+    NOTE: returns DevicePatient, not Patient
+    """
+    start_wear = normalise_day(start_wear)
+    end_wear = normalise_day(end_wear)
+    devices = get_one_btf_dot(device_id)
+
+    return determine_by_wear_period(devices, start_wear, end_wear)
+
+
+def determine_by_wear_period(
+    devices: Optional[List[DeviceWithPatients]],
+    start_wear: datetime,
+    end_wear: datetime,
+) -> Optional[Patient]:
+    """Reusable method to determine patient by wear period from a (list of) DeviceWithPatients"""
     if devices:
         for device in devices:
             for patient in device.patients:
