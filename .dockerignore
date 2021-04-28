@@ -27,6 +27,7 @@ data/
 
 # json and .csv files
 /local/**/*
+*.json
 
 # secrets
 *.env

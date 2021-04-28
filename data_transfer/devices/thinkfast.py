@@ -5,53 +5,18 @@ for most devices this file does the following:
 > store metadata
 > check if device ID is in UCAM
 > download a file
-
-unused methods which Jay used for Dreem:
-def __unknown_records
-
 """
-# import json
 import logging
-
-# import time
 from dataclasses import dataclass
-from datetime import datetime
-
-# from pathlib import Path
-# from typing import Dict, List, Optional, Tuple
 from typing import Dict, List
 
 from data_transfer import utils
-
-# from data_transfer.config import config
 from data_transfer.db import all_hashes, create_record
-
-# from data_transfer.db import all_hashes, create_record, read_record, update_record
 from data_transfer.lib import thinkfast as thinkfast_api
 from data_transfer.schemas.record import Record
-
-# from data_transfer.services import inventory, ucam
 from data_transfer.utils import StudySite, uid_to_hash
 
-# import requests
-
-
-# from data_transfer.utils import StudySite, uid_to_hash, write_json
-
 log = logging.getLogger(__name__)
-
-
-@dataclass
-class ThinkFastRecording:
-    """
-    Stores most relevant metadata for readable lookup.
-    """
-
-    id: str
-    device_id: str
-    user_id: str
-    start: datetime
-    end: datetime
 
 
 @dataclass
@@ -73,7 +38,7 @@ class ThinkFast:
         self.study_site = study_site
         self.device_type = utils.DeviceType.TFA
 
-    def __unknown_records(self, records: list) -> Dict:
+    def __unknown_records(self, records: List[Record]) -> Dict[str, Record]:
         """
         Only add records that are not known in the DB, i.e., ID and filename.
         """
@@ -127,6 +92,7 @@ class ThinkFast:
                 log.debug(
                     "Wow, raw_rec length is not 1, it is: " + str(len(raw_records))
                 )
+                continue
             # setup to process and store these records
             all_recs = []
             # create a formatted record
@@ -142,33 +108,18 @@ class ThinkFast:
             # do a diff with our DB
             unknown_records = self.__unknown_records(all_recs)
             log.debug(
-                "Participant "
-                + participant.guid
-                + " has "
-                + str(len(raw_records[0]))
-                + " total TFA records. Writing "
-                + str(len(unknown_records))
-                + " new records to the DB"
+                f"Participant {participant.guid} has {len(raw_records[0])}"
+                f"total TFA records. Writing {(len(unknown_records))} new records to the DB"
             )
             # push the new records into the DB
             for record in unknown_records.values():
+                data = record.meta.pop("full_data")
                 create_record(record)
                 # create path
-                if record.meta["tfa_type"] == "CANTAB":
-                    path = (
-                        record.download_folder()
-                        / f"{record.manufacturer_ref}-CANTAB.json"
-                    )
-                elif record.meta["tfa_type"] == "ThinkFAST":
-                    path = (
-                        record.download_folder()
-                        / f"{record.manufacturer_ref}-ThinkFAST.json"
-                    )
-                else:
-                    path = (
-                        record.download_folder()
-                        / f"{record.manufacturer_ref}-unknown.json"
-                    )
+                path = (
+                    record.download_folder()
+                    / f"{record.manufacturer_ref}-{record.meta['tfa_type']}.json"
+                )
                 # write the record locally
-                utils.write_json(path, record.meta["full_data"])
+                utils.write_json(path, data)
                 # utils.write_json(path, json.loads(record.dumps['full_data'], default=str))

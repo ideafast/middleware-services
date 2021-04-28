@@ -1,10 +1,7 @@
-# This file should assist downloading data from thinkfast/CamCog's
-# platform per study-site
-
 import json
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import requests
 
@@ -28,10 +25,6 @@ def get_participants_records(user_id: str) -> List[dict]:
         "limit": 100,
         "filter": json.dumps({"subject": user_id}),
     }
-    # filter = json.dumps({"subject": user_id})
-    # parameters["filter"] = filter
-    # sort = json.dumps([{"property":"id", "direction":"ASC"}])
-    # parameters['sort'] = sort
     results = []
     while True:
         try:
@@ -43,29 +36,58 @@ def get_participants_records(user_id: str) -> List[dict]:
             )
             response.raise_for_status()
             # store the response
-            results.append(response.json()["records"])
-            log.debug(
-                "total records for this participant are: "
-                + str(response.json()["total"])
-            )
+            data = response.json()
+            results.append(data["records"])
+            log.debug(f"total records for this participant are: {data['total']}")
             parameters["offset"] += 100
-            if parameters["offset"] > response.json()["total"]:
+            if parameters["offset"] > data["total"]:
                 break
         except requests.HTTPError:
             log.error("GET Exception to:", exc_info=True)
+            break
     return results
+
+
+def id_in_whitelist(input_ID: str) -> Optional[str]:
+    known_incorrect_ids: Dict[str, str] = {}
+    if input_ID in known_incorrect_ids:
+        output_ID = known_incorrect_ids[input_ID]
+        log.warning(
+            f"CORRECTED AN ERROR USING THE ODDITIES DICT: INPUT {input_ID}, OUTPUT: {output_ID}"
+        )
+    else:
+        output_ID = input_ID
+    return output_ID
+
+
+def get_participant_id(subjectItems: Dict[int, Any]) -> Optional[str]:
+    # find the ideaFast id in the json...
+    # this is a bit tricky as it's not always in the same place.
+    ideaId = ""
+
+    # The line below is a horribly shakey solution!
+    if len(subjectItems[2]["text"]) == 7:
+        ideaId = subjectItems[2]["text"]
+    else:
+        ideaId = subjectItems[1]["text"]
+    # validate ID
+    newID = format_id_patient(ideaId)
+    if newID is None:
+        log.debug(f"INVALID ID FOUND WITHIN THE THINKFAST RECORDS. ID = {ideaId}")
+        # check dictionary of oddities and if we have a hit do the replacement
+        newID = id_in_whitelist(newID)
+    return newID
 
 
 def get_participants() -> List[Participant]:
     # will store our participant records
     headers_dict = {"accept": "application/json", "content-type": "application/json"}
-    parameters = {
+    parameters: Dict[str, Any] = {
         "offset": "0",
         "limit": "100",
         "includes": "subjectIds,site,subjectItems",
     }
     participants = []
-    known_incorrect_ids: Dict[str, str] = {}
 
     while True:
         # make API call
@@ -81,28 +103,8 @@ def get_participants() -> List[Participant]:
             break
         # push participant identifiers into participants array
         for rec in response.json()["records"]:
-            # find the ideaFast id in the json...
-            # this is a bit tricky as it's not always in the same place.
-            ideaId = ""
-            # The line below is a horribly shakey solution!
-            if len(rec["subjectItems"][2]["text"]) == 7:
-                ideaId = rec["subjectItems"][2]["text"]
-            else:
-                ideaId = rec["subjectItems"][1]["text"]
-            # validate ID
-            newID = format_id_patient(ideaId)
-            if newID is None:
-                log.debug(
-                    f"INVALID ID FOUND WITHIN THE THINKFAST RECORDS. ID = {ideaId}"
-                )
-                # check dictionary of oddities and if we have a hit do the replacement
-                if ideaId in known_incorrect_ids:
-                    print(
-                        f"CORRECTED AN ERROR USING THE ODDITIES DICT: {known_incorrect_ids[ideaId]}"
-                    )
-                    newID = known_incorrect_ids[ideaId]
-                else:
-                    continue
+            # get the participant's ID
+            newID = get_participant_id(rec["subjectItems"])
             participants.append(Participant(newID, rec["subjectIds"][0], rec["id"]))
         # increment offset by the retreival limit
         parameters["offset"] = str(int(parameters["offset"]) + 100)

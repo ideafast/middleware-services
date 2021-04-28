@@ -13,10 +13,9 @@ def dag(study_site: StudySite) -> None:
     """
     Directed acyclic graph (DAG) representing thinkfast data pipeline:
 
-        batch_metadata
-            ->task_download_data
-            ->task_preprocess_data
-            ->task_prepare_data
+        ->task_download_data
+        ->task_preprocess_data
+        ->task_prepare_data
         ->batch_upload_data
 
     NOTE/TODO: this method simulates the pipeline.
@@ -38,4 +37,4 @@ def dag(study_site: StudySite) -> None:
         # step 3. prepare data for uploadingData by moving data to a folder in /uploading/
         shared_jobs.prepare_data_folders(DeviceType.TFA)
         # step 4. Upload the data to the dmp
-        shared_jobs.batch_upload_data(DeviceType.TFA)
+        # shared_jobs.batch_upload_data(DeviceType.TFA)
