@@ -34,7 +34,7 @@ class StudySite(Enum):
     Rotterdam = 4  # i.e. Erasmus
 
 
-FORMATS = {"ucam": "%d/%m/%Y", "inventory": "%Y-%m-%d %H:%M:%S"}
+FORMATS = {"ucam": "%Y-%m-%dT%H:%M:%S", "inventory": "%Y-%m-%d %H:%M:%S"}
 
 
 def format_weartime(period: str, type: str) -> datetime:

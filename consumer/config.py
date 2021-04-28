@@ -13,6 +13,11 @@ class Settings(BaseSettings):
     support_base_url: str = ""
     support_token: str = ""
 
+    # UCAM API
+    ucam_uri: str = ""
+    ucam_username: str = ""
+    ucam_password: str = ""
+
 
 @lru_cache()
 def settings() -> Settings:

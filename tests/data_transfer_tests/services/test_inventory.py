@@ -4,7 +4,9 @@ from data_transfer import utils
 from data_transfer.services import inventory
 
 
-def test_record_by_device_id_date_within(mock_inventory_history_response: dict) -> None:
+def test_record_by_device_id_date_within(
+    mock_inventory_history_response: dict, mock_inv_config: MagicMock
+) -> None:
     response = MagicMock()
     response.json = lambda: mock_inventory_history_response
 
@@ -21,6 +23,7 @@ def test_record_by_device_id_date_within(mock_inventory_history_response: dict) 
 
 def test_record_by_device_id_history_is_none(
     mock_inventory_history_response: dict,
+    mock_inv_config: MagicMock,
 ) -> None:
     response = MagicMock()
     response.json = lambda: mock_inventory_history_response
@@ -36,6 +39,7 @@ def test_record_by_device_id_history_is_none(
 
 def test_device_history_failure(
     mock_inventory_history_response: dict,
+    mock_inv_config: MagicMock,
 ) -> None:
     inventory.device_history.cache_clear()
     response = MagicMock()
@@ -51,6 +55,7 @@ def test_device_history_failure(
 
 def test_device_history_success(
     mock_inventory_history_response: dict,
+    mock_inv_config: MagicMock,
 ) -> None:
     inventory.device_history.cache_clear()
     response = MagicMock()
@@ -65,6 +70,7 @@ def test_device_history_success(
 
 def test_record_by_device_id_date_outside(
     mock_inventory_history_response: dict,
+    mock_inv_config: MagicMock,
 ) -> None:
     response = MagicMock()
     response.json = lambda: mock_inventory_history_response
@@ -78,7 +84,7 @@ def test_record_by_device_id_date_outside(
         assert result is None
 
 
-def test_all_devices_by_type_cache_success() -> None:
+def test_all_devices_by_type_cache_success(mock_inv_config: MagicMock) -> None:
     inventory.all_devices_by_type.cache_clear()
     num_requests = 10
 
@@ -90,7 +96,7 @@ def test_all_devices_by_type_cache_success() -> None:
 
 
 def test_device_id_by_serial_valid_result(
-    mock_inventory_devices_bytype_response: dict,
+    mock_inventory_devices_bytype_response: dict, mock_inv_config: MagicMock
 ) -> None:
     inventory.all_devices_by_type.cache_clear()
     response = MagicMock()
@@ -104,7 +110,7 @@ def test_device_id_by_serial_valid_result(
 
 
 def test_device_id_by_serial_hit_cache_success(
-    mock_inventory_devices_bytype_response: dict,
+    mock_inventory_devices_bytype_response: dict, mock_inv_config: MagicMock
 ) -> None:
     inventory.all_devices_by_type.cache_clear()
     num_requests = 10

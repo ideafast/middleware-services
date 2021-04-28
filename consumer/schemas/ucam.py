@@ -5,8 +5,6 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Optional
 
-from data_transfer.utils import format_weartime
-
 
 class DiseaseType(Enum):
     Healthy = 1  #
@@ -46,14 +44,14 @@ class Patient(PatientBase, CommonBase):
     @classmethod
     def serialize(cls, payload: dict) -> Patient:
         return cls(
-            start_wear=format_weartime(payload["start_wear"], "ucam"),
-            end_wear=format_weartime(payload["end_wear"], "ucam")
-            if payload["end_wear"]
+            start_wear=format_weartime(payload["start_Date"]),
+            end_wear=format_weartime(payload["end_Date"])
+            if payload["end_Date"]
             else None,
             deviations=payload["deviations"],
-            vttsma_id=payload["vttsma_id"],
-            patient_id=payload["patient_id"],
-            disease=DiseaseType(int(payload["disease"])),
+            vttsma_id=payload["vtT_id"],
+            patient_id=payload["subject_id"],
+            disease=DiseaseType(int(payload["subject_Group"])),
         )
 
 
@@ -62,12 +60,12 @@ class Device(DeviceBase, CommonBase):
     @classmethod
     def serialize(cls, payload: dict) -> Device:
         return cls(
-            start_wear=format_weartime(payload["start_wear"], "ucam"),
-            end_wear=format_weartime(payload["end_wear"], "ucam")
-            if payload["end_wear"]
+            start_wear=format_weartime(payload["start_Date"]),
+            end_wear=format_weartime(payload["end_Date"])
+            if payload["end_Date"]
             else None,
             deviations=payload["deviations"],
-            vttsma_id=payload["vttsma_id"],
+            vttsma_id=payload["vtT_id"],
             device_id=payload["device_id"],
         )
 
@@ -80,7 +78,7 @@ class DeviceWithPatients(DeviceBase):
     def serialize(cls, payload: dict) -> DeviceWithPatients:
         return cls(
             device_id=payload["device_id"],
-            patients=[Patient.serialize(patient) for patient in payload["patients"]],
+            patients=[Patient.serialize(patients) for patients in payload["patients"]],
         )
 
 
@@ -91,7 +89,12 @@ class PatientWithDevices(PatientBase):
     @classmethod
     def serialize(cls, payload: dict) -> PatientWithDevices:
         return cls(
-            patient_id=payload["patient_id"],
-            disease=DiseaseType(int(payload["disease"])),
-            devices=[Device.serialize(device) for device in payload["devices"]],
+            patient_id=payload["subject_id"],
+            disease=DiseaseType(int(payload["subject_Group"])),
+            devices=[Device.serialize(devices) for devices in payload["devices"]],
         )
+
+
+def format_weartime(time: str) -> datetime:
+    """create a datetime object from a UCAM provide weartime string"""
+    return datetime.strptime(time, "%Y-%m-%dT%H:%M:%S")

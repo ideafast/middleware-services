@@ -47,8 +47,12 @@ def lint(session: nox.Session) -> None:
 
 @session(python=["3.8"])
 def tests(session: nox.Session) -> None:
-    """Setup for automated testing with pytest"""
-    session.run("poetry", "run", "pytest", "-vs")
+    """
+    Setup for automated testing with pytest
+    NOTE: Ignores live integration tests marked 'live'
+    Include these using `pytest -v` or only with `poetry nox -rs live_tests`
+    """
+    session.run("poetry", "run", "pytest", "-v", "-m", "not live")
 
     # NOTE: Old and perhaps proper approach below. But issues prevent it to be ran on
     # all dev's machines. Needs further investigation. Definitely a local issue.
@@ -57,3 +61,11 @@ def tests(session: nox.Session) -> None:
     # session.run("poetry", "install", "--no-dev", external=True)
     # install_with_constraints(session, "pytest")
     # session.run("pytest", *args)
+
+
+@session(python=["3.8"])
+def live_tests(session: nox.Session) -> None:
+    """
+    Pytests for live integration tests
+    """
+    session.run("poetry", "run", "pytest", "-v", "-m", "live")

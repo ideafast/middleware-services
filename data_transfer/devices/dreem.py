@@ -163,7 +163,7 @@ class Dreem:
 
         Note: uses inventory API to determine DeviceID to make association.
         """
-        record = ucam.record_by_wear_period(device_id, start, end)
+        record = ucam.patient_by_wear_period(device_id, start, end)
         return record.patient_id if record else None
 
     def __patient_id_from_inventory(

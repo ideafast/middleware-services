@@ -50,7 +50,7 @@ To run all these libraries:
 
 Or individual checks by choosing one of the options from the list:
 
-    poetry run nox -rs [tests, mypy, isort, lint, black]
+    poetry run nox -rs [tests, mypy, isort, lint, black, live_tests]
 
 ### Developing with Docker
 
@@ -63,8 +63,8 @@ Or individual checks by choosing one of the options from the list:
 to master to enable continuous deployment. To build an image locally run the following
 where `$VERSION` is your desired version and `$REPO` is the name of the image:
 
-    poetry run build $VERSION $REPO
-    # e.g., poetry run build 0.0.1-DRM dtransfer
+    poetry run build $REPO $VERSION
+    # e.g., poetry run build dtransfer 0.0.1-DRM
 
 The compose file uses specified `.env` files and runs all services:
 
@@ -78,3 +78,16 @@ The compose file uses specified `.env` files and runs all services:
 to an image to a `$REPO` run  the following:
 
     poetry run publish $VERSION $REPO
+
+Due to our current manual setup, the pipeline needs to be manually initates within the container, e.g.
+
+    docker exec -it $CONTAINERNAME sh
+
+
+#### Logs
+
+Add `/proc/1/fd/1` to have the output logged to the container logs (good practise). You can also keep tabs on the logs _and_ store this in a separate file. Finally, you can pull down a (most recent) copy of this log file for investigation on your machine.
+
+    python data_transfer/main.py $DEVICE $STUDYSITE -1 >> /proc/1/fd/1
+    docker logs -f $CONTAINERNAME > tee path/to/log/file.log &
+    scp username@ip:/remote/file.txt /local/directory
