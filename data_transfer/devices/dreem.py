@@ -84,14 +84,23 @@ class Dreem:
                 unknown += 1
                 continue  # Skip record
 
+            _device_id = inventory.device_id_by_serial(self.device_type, device_serial)
+
+            if not (device_id := utils.format_id_device(_device_id)):
+                log.error(
+                    f"Record NOT created: Error formatting DeviceID ({_device_id}) for\n{recording}\n"
+                )
+                unknown += 1
+                continue
+
             _patient_id = (
                 # NOTE: PatientID is encoded in email so there is a 1-2-1 mapping.
                 dreem_api.patient_id_by_user(recording.user_id)
                 or self.__patient_id_from_ucam(
-                    device_serial, recording.start, recording.end
+                    device_id, recording.start, recording.end
                 )
                 or self.__patient_id_from_inventory(
-                    device_serial, recording.start, recording.end
+                    device_id, recording.start, recording.end
                 )
             )
 
@@ -102,22 +111,6 @@ class Dreem:
                 unknown += 1
                 continue
 
-            _device_id = self.__device_id_from_ucam(
-                patient_id, recording.start, recording.end
-            ) or inventory.device_id_by_serial(self.device_type, device_serial)
-
-            if not (device_id := utils.format_id_device(_device_id)):
-                log.error(
-                    f"Record NOT created: Error formatting DeviceID ({_device_id}) for\n{recording}\n"
-                )
-                unknown += 1
-                continue
-
-            if not patient_id or not device_id:
-                log.error(f"Metadata cannot be determined for {recording}")
-                log.error(f"Patient ({patient_id}) or Device ID ({device_id}) missing.")
-                unknown += 1
-                continue  # Skip record
             known += 1
 
             record = Record(
@@ -162,50 +155,23 @@ class Dreem:
 
         return DreemRecording(*(id, device_id, user_id, start, end))
 
-    def __device_id_from_ucam(
-        self, patient_id: str, start: datetime, end: datetime
-    ) -> Optional[str]:
-        """
-        Determine DeviceID in UCAM in two ways:
-
-            1. If only one device is used then use Patient ID
-            2. Else use wear period to perform lookup.
-        """
-        if patient_id and (ucam_entry := ucam.get_record(patient_id)):
-            devices = [
-                d for d in ucam_entry.devices if self.device_type.name in d.device_id
-            ]
-
-            # Best-case: only one device was worn and UCAM knows it
-            if len(devices) == 1:
-                return devices[0].device_id
-            # Edge-case: multiple dreem headbands used, e.g., if one broke.
-            elif len(devices) > 1:
-                # Determine usage based on weartime as it exists in UCAM
-                device = ucam.record_by_wear_period_in_list(devices, start, end)
-                return device.device_id if device else None
-        return None
-
     def __patient_id_from_ucam(
-        self, device_serial: str, start: datetime, end: datetime
+        self, device_id: str, start: datetime, end: datetime
     ) -> Optional[str]:
         """
         Determine PatientID by wear period of device in UCAM.
 
         Note: uses inventory API to determine DeviceID to make association.
         """
-        # NOTE/TODO: given this is a 1-1 mapping, why not use a local CSV?
-        device_id = inventory.device_id_by_serial(self.device_type, device_serial)
         record = ucam.record_by_wear_period(device_id, start, end)
         return record.patient_id if record else None
 
     def __patient_id_from_inventory(
-        self, device_serial: str, start: datetime, end: datetime
+        self, device_id: str, start: datetime, end: datetime
     ) -> Optional[str]:
         """
         Determine PatientID by wear period in inventory.
         """
-        device_id = inventory.device_id_by_serial(self.device_type, device_serial)
         record = inventory.record_by_device_id(device_id, start, end)
         return record.get("patient_id", None) if record else None
 
