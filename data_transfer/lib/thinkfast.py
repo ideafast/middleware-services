@@ -56,12 +56,11 @@ def id_in_whitelist(input_ID: str) -> Optional[str]:
     # known_incorrect_ids: Dict[str, str] = {}
 
     # load the csv containing the incorrect IDs and corrections
-    with open("./local/ID_corrections.csv", mode="r") as infile:
+    with open(config.tfa_id_corrections, mode="r") as infile:
         reader = csv.reader(infile)
         # skip first line
         next(reader)
         known_incorrect_ids = {rows[0]: rows[1] for rows in reader}
-    print(known_incorrect_ids)
 
     if input_ID in known_incorrect_ids:
         output_ID = known_incorrect_ids[input_ID]

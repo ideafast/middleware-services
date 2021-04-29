@@ -39,6 +39,8 @@ class GlobalConfig(BaseSettings):
     dreem_users: Path = csvs_path / "dreem_users.csv"
     dreem_devices: Path = csvs_path / "dreem_devices.csv"
 
+    tfa_id_corrections = csvs_path / "ID_corrections.csv"
+
     ucam_data: Path = csvs_path / "ucam_db.csv"
 
     database_uri: str = "mongodb://user:password@localhost:27017"
