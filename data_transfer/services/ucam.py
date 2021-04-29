@@ -109,12 +109,6 @@ def determine_by_wear_period(
     if devices:
         for device in devices:
             for patient in device.patients:
-
-                # NOTE: ignores any device ID if record contains deviations
-                # TODO: removes this constraint once faulty device_id assignment has been resolved
-                if patient.deviations:
-                    continue
-
                 patient_start = normalise_day(patient.start_wear)
                 # if end_wear is none, use today
                 patient_end = normalise_day(patient.end_wear or datetime.today())
