@@ -84,7 +84,6 @@ class ThinkFast:
         # print the number of participants
         remaining = len(participants)
         log.debug(f"Number of our participants found in CamCog's database: {remaining}")
-
         # loop through our list of participants retreiving their test data
         for participant in participants:
             raw_records = thinkfast_api.get_participants_records(participant.guid)

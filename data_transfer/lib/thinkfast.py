@@ -69,7 +69,7 @@ def id_in_whitelist(input_ID: str) -> Optional[str]:
             f"INPUT {input_ID}, OUTPUT: {output_ID}"
         )
     else:
-        output_ID = input_ID
+        output_ID = None
     return output_ID
 
 
@@ -79,16 +79,16 @@ def get_participant_id(subjectItems: Dict[int, Any]) -> Optional[str]:
     ideaId = ""
 
     # The line below is a horribly shakey solution!
-    if len(subjectItems[2]["text"]) == 7:
+    if len(subjectItems[2]["text"]) == 7 and (" " in subjectItems[2]["text"]) is False:
         ideaId = subjectItems[2]["text"]
     else:
         ideaId = subjectItems[1]["text"]
     # validate ID
     newID = format_id_patient(ideaId)
     if newID is None:
-        log.debug(f"INVALID ID FOUND WITHIN THE THINKFAST RECORDS. ID = {ideaId}")
+        # log.debug(f"INVALID ID FOUND WITHIN THE THINKFAST RECORDS. ID = {ideaId}")
         # check dictionary of oddities and if we have a hit do the replacement
-        newID = id_in_whitelist(newID)
+        newID = id_in_whitelist(ideaId)
     return newID
 
 
@@ -118,7 +118,8 @@ def get_participants() -> List[Participant]:
         for rec in response.json()["records"]:
             # get the participant's ID
             newID = get_participant_id(rec["subjectItems"])
-            participants.append(Participant(newID, rec["subjectIds"][0], rec["id"]))
+            if newID is not None:
+                participants.append(Participant(newID, rec["subjectIds"][0], rec["id"]))
         # increment offset by the retreival limit
         parameters["offset"] = str(int(parameters["offset"]) + 100)
         # got all the data or do we need to make more API calls?
