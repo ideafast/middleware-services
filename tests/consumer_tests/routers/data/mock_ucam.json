@@ -1,0 +1,276 @@
+{
+    "patients": [
+        {
+            "subject_id": "E-PATIENT",
+            "subject_Group": 4,
+            "devices": [
+                {
+                    "device_id": "NR1-DEVICE",
+                    "vtT_id": null,
+                    "start_Date": "2020-07-21T00:00:00",
+                    "end_Date": null,
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
+                }
+            ]
+        },
+        {
+            "subject_id": "A-PATIENT",
+            "subject_Group": 4,
+            "devices": [
+                {
+                    "device_id": "NR2-DEVICE",
+                    "vtT_id": null,
+                    "start_Date": "2020-07-21T00:00:00",
+                    "end_Date": null,
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
+                }
+            ]
+        },
+        {
+            "subject_id": "B-PATIENT",
+            "subject_Group": 3,
+            "devices": [
+                {
+                    "device_id": "NR3-DEVICE",
+                    "vtT_id": null,
+                    "start_Date": "2020-06-20T00:00:00",
+                    "end_Date": "2020-07-20T00:00:00",
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
+                },
+                {
+                    "device_id": "NR3-DEVICE",
+                    "vtT_id": null,
+                    "start_Date": "2020-07-21T00:00:00",
+                    "end_Date": "2020-07-22T00:00:00",
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
+                },
+                {
+                    "device_id": "NR3-DEVICE",
+                    "vtT_id": null,
+                    "start_Date": "2020-07-22T00:00:00",
+                    "end_Date": null,
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
+                },
+                {
+                    "device_id": "NR4-DEVICE",
+                    "vtT_id": null,
+                    "start_Date": "2020-07-22T00:00:00",
+                    "end_Date": null,
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
+                }
+            ]
+        },
+        {
+            "subject_id": "C-PATIENT",
+            "subject_Group": 3,
+            "devices": []
+        },
+        {
+            "subject_id": "D-PATIENT",
+            "subject_Group": 5,
+            "devices": [
+                {
+                    "device_id": null,
+                    "vtT_id": "VTT_COMPLEX_HASH",
+                    "start_Date": "2020-09-17T00:00:00",
+                    "end_Date": null,
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
+                }
+            ]
+        },
+        {
+            "subject_id": "F-PATIENT",
+            "subject_Group": 4,
+            "devices": [
+                {
+                    "device_id": "NR5-DEVICE",
+                    "vtT_id": null,
+                    "start_Date": "2020-09-09T00:00:00",
+                    "end_Date": "2020-09-09T00:00:00",
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
+                },
+                {
+                    "device_id": null,
+                    "vtT_id": "VTT_COMPLEX_HASH",
+                    "start_Date": "2020-09-22T00:00:00",
+                    "end_Date": null,
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": null,
+                    "bytefliesEEGSet2DeviceID": null,
+                    "bytefliesECGSet1DeviceID": null,
+                    "bytefliesECGSet2DeviceID": null,
+                    "bytefliesIMUSet1DeviceID": null,
+                    "bytefliesIMUSet2DeviceID": null
+                }
+            ]
+        },
+        {
+            "subject_id": "G-PATIENT",
+            "subject_Group": 4,
+            "devices": [
+                {
+                    "device_id": "BTF-DEVICE",
+                    "vtT_id": null,
+                    "start_Date": "2020-07-21T00:00:00",
+                    "end_Date": null,
+                    "deviations": null,
+                    "bytefliesEEGSet1DeviceID": "NR1-BTFDOT",
+                    "bytefliesEEGSet2DeviceID": "NR2-BTFDOT",
+                    "bytefliesECGSet1DeviceID": "NR3-BTFDOT",
+                    "bytefliesECGSet2DeviceID": "NR4-BTFDOT",
+                    "bytefliesIMUSet1DeviceID": "NR5-BTFDOT",
+                    "bytefliesIMUSet2DeviceID": "NR6-BTFDOT"
+                }
+            ]
+        }
+    ],
+    "devices": [
+        {
+            "device_id": "NR1-DEVICE",
+            "patients": [
+                {
+                    "subject_id": "E-PATIENT",
+                    "subject_Group": 4,
+                    "start_Date": "2020-07-21T00:00:00",
+                    "end_Date": null,
+                    "deviations": null,
+                    "vtT_id": null
+                }
+            ]
+        },
+        {
+            "device_id": "NR2-DEVICE",
+            "patients": [
+                {
+                    "subject_id": "A-PATIENT",
+                    "subject_Group": 4,
+                    "start_Date": "2020-07-21T00:00:00",
+                    "end_Date": null,
+                    "deviations": null,
+                    "vtT_id": null
+                }
+            ]
+        },
+        {
+            "device_id": "NR3-DEVICE",
+            "patients": [
+                {
+                    "subject_id": "B-PATIENT",
+                    "subject_Group": 3,
+                    "start_Date": "2020-06-20T00:00:00",
+                    "end_Date": "2020-07-20T00:00:00",
+                    "deviations": null,
+                    "vtT_id": null
+                },
+                {
+                    "subject_id": "B-PATIENT",
+                    "subject_Group": 3,
+                    "start_Date": "2020-07-21T00:00:00",
+                    "end_Date": "2020-07-22T00:00:00",
+                    "deviations": null,
+                    "vtT_id": null
+                },
+                {
+                    "subject_id": "B-PATIENT",
+                    "subject_Group": 3,
+                    "start_Date": "2020-07-22T00:00:00",
+                    "end_Date": null,
+                    "deviations": null,
+                    "vtT_id": null
+                }
+            ]
+        },
+        {
+            "device_id": "NR4-DEVICE",
+            "patients": [
+                {
+                    "subject_id": "B-PATIENT",
+                    "subject_Group": 3,
+                    "start_Date": "2020-07-22T00:00:00",
+                    "end_Date": null,
+                    "deviations": null,
+                    "vtT_id": null
+                }
+            ]
+        },
+        {
+            "device_id": "NR5-DEVICE",
+            "patients": [
+                {
+                    "subject_id": "F-PATIENT",
+                    "subject_Group": 4,
+                    "start_Date": "2020-09-09T00:00:00",
+                    "end_Date": "2020-09-09T00:00:00",
+                    "deviations": null,
+                    "vtT_id": null
+                }
+            ]
+        }
+    ],
+    "vtt":[
+        {
+            "subject_id": "D-PATIENT",
+            "subject_Group": 5,
+            "start_Date": "2020-09-17T00:00:00",
+            "end_Date": null,
+            "deviations": null,
+            "vtT_id": "VTT_COMPLEX_HASH"
+        },
+        {
+            "subject_id": "E-AH5NHH",
+            "subject_Group": 4,
+            "start_Date": "2020-09-22T00:00:00",
+            "end_Date": null,
+            "deviations": null,
+            "vtT_id": "VTT_COMPLEX_HASH"
+        }
+    ]
+}

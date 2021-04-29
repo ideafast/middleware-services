@@ -64,10 +64,8 @@ class Vttsma:
         # Aim: construct valid record (metadata) and add to DB
         for item in unknown_records:
 
-            if patient_record := ucam.record_by_vtt(item["id"]):
-                devices_used = [
-                    r for r in patient_record.devices if r.vttsma_id == item["id"]
-                ]
+            if patients := ucam.get_one_vtt(item["id"])[0]:
+                devices_used = [r for r in patients if r.vttsma_id == item["id"]]
 
                 # Assuming that only one device (phone) is used for the VTT SMA
                 # TODO: re-evaluate once data from Newcastle is present on S3
@@ -80,7 +78,7 @@ class Vttsma:
                         0
                     ],  # TODO: expect data across exports
                     device_id=config.vttsma_global_device_id,  # All VTT-SMA share the same device ID
-                    patient_id=patient_record.patient.id,
+                    patient_id=patients.patient_id,
                     start_wear=device_used.start_wear,
                     end_wear=device_used.end_wear,
                 )
