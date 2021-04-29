@@ -230,10 +230,7 @@ def test_get_patient_by_period_date_not_found(
         assert result is None
 
 
-# NOTE: this is a temporary measure until device_id's are corrected in
-# the UCAM database and confirmed by all study sites
-# See data_transfer/services/ucam/patient_by_wear_period
-def test_get_patient_by_period_date_ignore_deviations(
+def test_get_patient_by_period_date_include_deviations(
     mock_data: dict, mock_payload: dict, mock_ucam_config: MagicMock
 ) -> None:
     mock_payload.update(
@@ -249,7 +246,7 @@ def test_get_patient_by_period_date_ignore_deviations(
 
         result = ucam.patient_by_wear_period(device_id, start_wear, end_wear)
 
-        assert result is None
+        assert result.patient_id == "B-PATIENT"
 
 
 def test_get_device_by_period_date_within(
