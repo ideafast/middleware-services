@@ -79,17 +79,12 @@ def get_participant_id(subjectItems: Dict[int, Any]) -> Optional[str]:
     ideaId = ""
 
     # The line below is a horribly shakey solution!
-    if len(subjectItems[2]["text"]) == 7 and (" " in subjectItems[2]["text"]) is False:
+    if len(subjectItems[2]["text"]) == 7 and (" " not in subjectItems[2]["text"]):
         ideaId = subjectItems[2]["text"]
     else:
         ideaId = subjectItems[1]["text"]
     # validate ID
-    newID = format_id_patient(ideaId)
-    if newID is None:
-        # log.debug(f"INVALID ID FOUND WITHIN THE THINKFAST RECORDS. ID = {ideaId}")
-        # check dictionary of oddities and if we have a hit do the replacement
-        newID = id_in_whitelist(ideaId)
-    return newID
+    return format_id_patient(ideaId) or id_in_whitelist(ideaId)
 
 
 def get_participants() -> List[Participant]:
@@ -118,7 +113,7 @@ def get_participants() -> List[Participant]:
         for rec in response.json()["records"]:
             # get the participant's ID
             newID = get_participant_id(rec["subjectItems"])
-            if newID is not None:
+            if newID:
                 participants.append(Participant(newID, rec["subjectIds"][0], rec["id"]))
         # increment offset by the retreival limit
         parameters["offset"] = str(int(parameters["offset"]) + 100)
