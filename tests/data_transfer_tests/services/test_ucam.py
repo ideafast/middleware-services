@@ -230,6 +230,25 @@ def test_get_patient_by_period_date_not_found(
         assert result is None
 
 
+def test_get_patient_by_period_date_include_deviations(
+    mock_data: dict, mock_payload: dict, mock_ucam_config: MagicMock
+) -> None:
+    mock_payload.update(
+        {"data": [d for d in mock_data["devices"] if d["device_id"] == "NR3-DEVICE"]}
+    )
+    get_response = MagicMock(json=lambda: mock_payload)
+
+    device_id = "NR3-DEVICE"
+    start_wear = format_weartime("2020-07-21T00:00:00", "ucam")
+    end_wear = format_weartime("2020-07-21T00:00:01", "ucam")
+
+    with patch("requests.get", return_value=get_response):
+
+        result = ucam.patient_by_wear_period(device_id, start_wear, end_wear)
+
+        assert result.patient_id == "B-PATIENT"
+
+
 def test_get_device_by_period_date_within(
     mock_data: dict, mock_ucam_config: MagicMock
 ) -> None:
