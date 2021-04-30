@@ -34,7 +34,11 @@ class StudySite(Enum):
     Rotterdam = 4  # i.e. Erasmus
 
 
-FORMATS = {"ucam": "%Y-%m-%dT%H:%M:%S", "inventory": "%Y-%m-%d %H:%M:%S"}
+FORMATS = {
+    "ucam": "%Y-%m-%dT%H:%M:%S",
+    "inventory": "%Y-%m-%d %H:%M:%S",
+    "oddity": "%d/%m/%Y",
+}
 
 
 def format_weartime(period: str, type: str) -> datetime:
@@ -163,3 +167,33 @@ def uid_to_hash(input: str, device_type: DeviceType) -> str:
     result.update(device_type.name.encode("utf-8"))
     result.update(input.encode("utf-8"))
     return result.hexdigest()
+
+
+def oddities_lookup(
+    file_path: Path,
+    device_type: DeviceType,
+    mapping: str,
+    target: str,
+    start_wear: Optional[datetime] = None,
+    end_wear: Optional[datetime] = None,
+) -> str:
+    """Searches for known/discovered aliases in the oddities.csv"""
+    oddities = [
+        r
+        for r in read_csv_from_cache(file_path)
+        if r["device_type"] == device_type.name and r["mapping"] == mapping
+    ]
+    for odd in oddities:
+        if odd["target"] == target:
+            if start_wear or end_wear:
+                s = normalise_day(format_weartime(odd["start_wear"], "oddity"))
+                e = normalise_day(format_weartime(odd["end_wear"], "oddity"))
+
+                within_start_period = s <= normalise_day(start_wear) <= e
+                within_end_period = s <= normalise_day(end_wear) <= e
+
+                if within_start_period and within_end_period:
+                    return str(odd["alias"])
+            else:
+                return str(odd["alias"])
+    return None

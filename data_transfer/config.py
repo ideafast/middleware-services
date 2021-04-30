@@ -38,6 +38,7 @@ class GlobalConfig(BaseSettings):
 
     dreem_users: Path = csvs_path / "dreem_users.csv"
     dreem_devices: Path = csvs_path / "dreem_devices.csv"
+    oddities: Path = csvs_path / "oddities.csv"
 
     database_uri: str = "mongodb://user:password@localhost:27017"
     database_name: str = "pipeline_local"

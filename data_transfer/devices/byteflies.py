@@ -105,6 +105,12 @@ class Byteflies:
                 _device_id := inventory.device_id_by_serial(
                     self.device_type, recording.dot_id
                 )
+                or utils.oddities_lookup(
+                    config.oddities,
+                    self.device_type,
+                    mapping="serial_to_deviceid",
+                    target=recording.dot_id,
+                )
             ):
                 log.debug(f"Record NOT created for unknown device\n   {recording}")
                 unknown += 1
@@ -123,6 +129,14 @@ class Byteflies:
                 self.__patient_id_from_ucam(device_id, recording.start, recording.end)
                 or self.__patient_id_from_inventory(
                     device_id, recording.start, recording.end
+                )
+                or utils.oddities_lookup(
+                    config.oddities,
+                    self.device_type,
+                    mapping="id_to_user",
+                    target=device_id,
+                    start_wear=recording.start,
+                    end_wear=recording.end,
                 )
             )
 
