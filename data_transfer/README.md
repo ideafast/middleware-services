@@ -32,8 +32,8 @@ Authentication is disabled in mongodb by default, and will need to be setup to a
 use admin
 db.createUser(
     {
-        user: "ADMIN_USER",
-        pwd: "ROOT_PASSWORD",
+        user: "root",
+        pwd: "root",
         roles:["root"]
     }
 );
@@ -41,8 +41,8 @@ db.createUser(
 use dtransfer
 db.createUser(
     {
-        user: "DT_USER",
-        pwd: "DT_PASSWORD",
+        user: "ideafast",
+        pwd: "ideafast",
         roles:[
             {
                 role: "readWrite",

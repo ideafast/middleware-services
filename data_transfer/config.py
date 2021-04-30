@@ -39,6 +39,10 @@ class GlobalConfig(BaseSettings):
     dreem_users: Path = csvs_path / "dreem_users.csv"
     dreem_devices: Path = csvs_path / "dreem_devices.csv"
 
+    tfa_id_corrections = csvs_path / "ID_corrections.csv"
+
+    ucam_data: Path = csvs_path / "ucam_db.csv"
+
     database_uri: str = "mongodb://user:password@localhost:27017"
     database_name: str = "pipeline_local"
 
@@ -82,6 +86,11 @@ class Settings(GlobalConfig):
     # DREEM
     dreem_login_url: str
     dreem_api_url: str
+
+    # THINKFAST
+    thinkfast_api_url: str
+    thinkfast_username: str
+    thinkfast_password: str
 
     # Hardcoded as this data structure is not
     # supported unless JSON is stored in .env

@@ -2,7 +2,7 @@ import sys
 from logging.config import fileConfig
 
 from data_transfer.config import config
-from data_transfer.dags import btf, drm, sma
+from data_transfer.dags import btf, drm, sma, tfa
 from data_transfer.utils import DeviceType, StudySite
 
 fileConfig(config.logger_path)
@@ -30,6 +30,8 @@ if __name__ == "__main__":
         drm.dag(study_site)
     if device == DeviceType.SMA:
         sma.dag()
+    if device == DeviceType.TFA:
+        tfa.dag(study_site)
     if device == DeviceType.BTF:
         btf_params = [int(x) for x in sys.argv[3:]]
 
