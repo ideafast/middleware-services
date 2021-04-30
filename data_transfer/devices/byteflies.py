@@ -95,7 +95,7 @@ class Byteflies:
 
         log.info(f"Total unknown records: {len(unknown_records.keys())}")
 
-        known, unknown = 0, 0
+        known, unknown_device, unknown_users, test_users = 0, 0, 0, 0
 
         for hash_id, item in unknown_records.items():
             # Pulls out the most relevant metadata for this recording
@@ -113,14 +113,14 @@ class Byteflies:
                 )
             ):
                 log.debug(f"Record NOT created for unknown device\n   {recording}")
-                unknown += 1
+                unknown_device += 1
                 continue  # Skip record
 
             if not (device_id := utils.format_id_device(_device_id)):
                 log.error(
                     f"Record NOT created: Error formatting DeviceID ({_device_id}) for\n{recording}\n"
                 )
-                unknown += 1
+                unknown_device += 1
                 continue
 
             _patient_id = (
@@ -142,6 +142,13 @@ class Byteflies:
 
             if not (patient_id := utils.format_id_patient(_patient_id)):
 
+                if "TEST" in _patient_id.upper():
+                    test_users += 1
+                    log.error(
+                        f"Record NOT created for TEST user: ({_patient_id})"
+                        f"for\n{recording}\n"
+                    )
+
                 if (api_patient_id := utils.format_id_patient(recording.patient_id)) :
                     log.error(
                         f"Record NOT created: Error finding provided PatientID ({api_patient_id})"
@@ -152,7 +159,7 @@ class Byteflies:
                         f"Record NOT created: Error formatting PatientID ({_patient_id})"
                         f"for\n{recording}\n"
                     )
-                unknown += 1
+                unknown_users += 1
                 continue
 
             known += 1
@@ -179,7 +186,11 @@ class Byteflies:
             del item["IDEAFAST"]  # remove record-specific temporary metadata
             utils.write_json(record.metadata_path(), item)
 
-        log.debug(f"{known} records created and {unknown} NOT this session.")
+        log.debug(
+            f"{known} records created and {unknown_device} (unknown device)",
+            f" + {unknown_users} (unknown users) NOT this session.\n",
+            f"{test_users} records for test users found.",
+        )
 
     def __unknown_records(self, records: List[dict]) -> Dict[str, dict]:
         """
