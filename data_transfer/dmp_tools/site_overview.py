@@ -99,7 +99,7 @@ if __name__ == "__main__":
     output.mkdir(parents=True, exist_ok=True)
 
     # to csv
-    csv_file = open(output / f"overview_{site.name}.csv", "w")
+    csv_file = open(output / f"DMP_overview_{site.name}_{date.today()}.csv", "w")
     csvwriter = csv.writer(csv_file)
 
     top_header = [""]
@@ -120,4 +120,4 @@ if __name__ == "__main__":
     csv_file.close()
 
     print(json.dumps(filtered, cls=SetEncoder, sort_keys=True, indent=4))
-    write_json(output / f"overview_{site.name}.json", filtered)
+    write_json(output / f"DMP_overview_{site.name}_{date.today()}.json", filtered)
