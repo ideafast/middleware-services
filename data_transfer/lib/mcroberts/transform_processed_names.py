@@ -7,6 +7,13 @@ the raw recordings that follow naming as: YEARMONTHDAY_IDEA-FAST_ACTION_RESULTSI
 Where Action is either "lying" or "classification" and CRITICALLY "RESULTSID" is the ID
 that McRobert's data pipeline generates that is also included in meta.csv. This is therefore
 used below to group CSVs by patient.
+
+Requires that /lookups/ has two files:
+
+1. inventory.csv: an export from inventory to obtain all MMM asset IDs and serials
+2. patients.csv: contains the table output from MyMcroberts website
+
+Requires a folder /data/ that contains all post-processed data and a metadata file from MMM.
 """
 from datetime import datetime
 from os import listdir, mkdir
