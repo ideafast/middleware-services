@@ -68,6 +68,9 @@ class ThinkFast:
         )
 
         if raw_rec["itemGroups"][0]["items"][0]["measureCode"] == "SWMTE":
+            # remove the 'user' field which contains
+            # clinician name and email and therefore may be a GDPR concern
+            raw_rec.pop("users")
             new_record.meta = {"tfa_type": "CANTAB", "full_data": raw_rec}
         else:
             new_record.meta = {
