@@ -37,4 +37,4 @@ def dag(study_site: StudySite) -> None:
         # step 3. prepare data for uploadingData by moving data to a folder in /uploading/
         shared_jobs.prepare_data_folders(DeviceType.TFA)
         # step 4. Upload the data to the dmp
-        # shared_jobs.batch_upload_data(DeviceType.TFA)
+        shared_jobs.batch_upload_data(DeviceType.TFA)
