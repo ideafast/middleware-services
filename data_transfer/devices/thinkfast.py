@@ -73,9 +73,14 @@ class ThinkFast:
             raw_rec.pop("users")
             new_record.meta = {"tfa_type": "CANTAB", "full_data": raw_rec}
         else:
+            temp = raw_rec["itemGroups"][0]["items"]
+            temp.append({"startTime": raw_rec["startTime"]})
+            temp.append({"startTimezone": raw_rec["startTimezone"]})
+            temp.append({"endTime": raw_rec["itemGroups"][0]["endTime"]})
+            temp.append({"endTimezone": raw_rec["itemGroups"][0]["endTimezone"]})
             new_record.meta = {
                 "tfa_type": "ThinkFAST",
-                "full_data": raw_rec["itemGroups"][0]["items"],
+                "full_data": temp,
             }
         return new_record
 
