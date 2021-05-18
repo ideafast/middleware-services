@@ -66,17 +66,14 @@ class ThinkFast:
             end_wear=raw_rec["itemGroups"][0]["endTime"],
             is_downloaded=True,
         )
+        # remove the 'user' field which contains
+        # clinician name and email and therefore may be a GDPR concern
+        raw_rec.pop("users")
 
-        if raw_rec["itemGroups"][0]["items"][0]["measureCode"] == "SWMTE":
-            # remove the 'user' field which contains
-            # clinician name and email and therefore may be a GDPR concern
-            raw_rec.pop("users")
-            new_record.meta = {"tfa_type": "CANTAB", "full_data": raw_rec}
-        else:
-            new_record.meta = {
-                "tfa_type": "ThinkFAST",
-                "full_data": raw_rec["itemGroups"][0]["items"],
-            }
+        is_cantab = raw_rec["itemGroups"][0]["items"][0]["measureCode"] == "SWMTE"
+        tfa_type = "CANTAB" if is_cantab else "ThinkFAST"
+        new_record.meta = {"tfa_type": tfa_type, "full_data": raw_rec}
+
         return new_record
 
     def download_participants_data(self) -> None:
