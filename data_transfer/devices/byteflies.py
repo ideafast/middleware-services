@@ -130,7 +130,7 @@ class Byteflies:
                 # or self.__patient_id_from_inventory(
                 #     device_id, recording.start, recording.end
                 # )
-                # or 
+                # or
                 utils.oddities_lookup(
                     config.oddities,
                     self.device_type,
