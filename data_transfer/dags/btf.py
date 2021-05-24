@@ -44,7 +44,7 @@ def dag(study_site: StudySite, days: int = 50, delta: int = 0) -> None:
         f" to {datetime.fromtimestamp(int(data_period[1]))}"
     )
 
-    byteflies_jobs.batch_metadata(byteflies, *data_period)
+    # byteflies_jobs.batch_metadata(byteflies, *data_period)
 
     results = records_not_uploaded(DeviceType.BTF)
 

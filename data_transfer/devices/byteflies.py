@@ -105,12 +105,12 @@ class Byteflies:
                 _device_id := inventory.device_id_by_serial(
                     self.device_type, recording.dot_id
                 )
-                or utils.oddities_lookup(
-                    config.oddities,
-                    self.device_type,
-                    mapping="serial_to_deviceid",
-                    target=recording.dot_id,
-                )
+                # or utils.oddities_lookup(
+                #     config.oddities,
+                #     self.device_type,
+                #     mapping="serial_to_deviceid",
+                #     target=recording.dot_id,
+                # )
             ):
                 log.debug(f"Record NOT created for unknown device\n   {recording}")
                 unknown_device += 1
@@ -126,11 +126,12 @@ class Byteflies:
             _patient_id = (
                 # To keep UCAM as the source of truth, we ignore the patient_id in the
                 # BTF payload - though log to debug later on
-                self.__patient_id_from_ucam(device_id, recording.start, recording.end)
-                or self.__patient_id_from_inventory(
-                    device_id, recording.start, recording.end
-                )
-                or utils.oddities_lookup(
+                # self.__patient_id_from_ucam(device_id, recording.start, recording.end)
+                # or self.__patient_id_from_inventory(
+                #     device_id, recording.start, recording.end
+                # )
+                # or 
+                utils.oddities_lookup(
                     config.oddities,
                     self.device_type,
                     mapping="id_to_user",
@@ -142,12 +143,12 @@ class Byteflies:
 
             if not (patient_id := utils.format_id_patient(_patient_id)):
 
-                if "TEST" in _patient_id.upper():
-                    test_users += 1
-                    log.error(
-                        f"Record NOT created for TEST user: ({_patient_id})"
-                        f"for\n{recording}\n"
-                    )
+                # if "TEST" in _patient_id.upper():
+                #     test_users += 1
+                #     log.error(
+                #         f"Record NOT created for TEST user: ({_patient_id})"
+                #         f"for\n{recording}\n"
+                #     )
 
                 if (api_patient_id := utils.format_id_patient(recording.patient_id)) :
                     log.error(

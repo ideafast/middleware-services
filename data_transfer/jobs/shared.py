@@ -44,14 +44,14 @@ def upload_data(data_folder: Path) -> None:
     log.debug(f"Uploading: {data_folder}")
 
     zip_path = dmpy.zip_folder(data_folder)
-    is_uploaded = dmpy.upload(zip_path)
+    # is_uploaded = dmpy.upload(zip_path)
 
-    if is_uploaded:
-        for record in records_by_dmp_folder(data_folder.stem):
-            record.is_uploaded = True
-            update_record(record)
+    # if is_uploaded:
+    #     for record in records_by_dmp_folder(data_folder.stem):
+    #         record.is_uploaded = True
+    #         update_record(record)
 
-        dmpy.rm_local_data(zip_path)
+    #     dmpy.rm_local_data(zip_path)
 
 
 def prepare_data_folders(device_type: DeviceType) -> None:
