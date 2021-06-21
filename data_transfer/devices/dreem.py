@@ -72,6 +72,9 @@ class Dreem:
         known, unknown = 0, 0
 
         for hash_id, item in unknown_records.items():
+            if not item.get("report") and not item.get("h5file").get("available"):
+                log.debug(f"No report for\n   {item}")
+                continue
             # Pulls out the most relevant metadata for this recording
             recording = self.__recording_metadata(item)
 
