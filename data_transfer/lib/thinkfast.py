@@ -75,7 +75,7 @@ def id_in_whitelist(input_ID: str) -> Optional[str]:
 
 def get_participant_id(subjectItems: dict) -> Optional[str]:
     # the ID can be placed in any of the list items. Iterate untill found.
-    ideaId = ""
+    ideaId = None
 
     for item in subjectItems:
         ideaId = format_id_patient(item["text"]) or id_in_whitelist(item["text"])
