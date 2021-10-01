@@ -46,7 +46,7 @@ columns = [
 
 def get_device_id(serial: str) -> str:
     _serial = int(row["device_serialnumber"][2:])
-    device_id = inventory[inventory["serial"] == _serial]["asset"]
+    device_id = inventory[inventory["Serial"] == _serial]["Asset Tag"]
     if len(device_id.values.tolist()) == 0:
         return None
     return device_id.values.item().replace("-", "").replace(" ", "")
@@ -68,7 +68,7 @@ metadata_file = next(i for i in csvs if "meta" in i)
 
 metadata = pd.read_csv(
     f"./data/{metadata_file}",
-    sep=";",
+    sep=",",
     # Not sure why the provided file is encoded in this way
     encoding="iso-8859-1",
 )
@@ -85,7 +85,7 @@ for _, row in metadata.iterrows():
     # Which device was it?
     device_id = get_device_id(row["device_serialnumber"])
     # Which patient wore it?
-    patient_id = get_patient_id(row["subject_code"])
+    patient_id = row["subject_code"].replace("-", "")
 
     # One may not exist :(
     if not patient_id or not device_id:
